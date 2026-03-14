@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Land-r - Admin Panel</title>
+    <title>My Quick Quote - Admin Panel</title>
     <!-- jsPDF Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
@@ -1564,6 +1564,7 @@
                             <h1 class="page-title">My Requests</h1>
                             <p class="page-subtitle">Manage incoming requests from customers</p>
                         </div>
+                        <button class="btn btn-secondary" onclick="showExportModal()">⬇ Export Requests</button>
                     </div>
 
                     <!-- Request Status Tabs -->
@@ -1950,6 +1951,46 @@
                         <div class="modal-footer">
                             <button class="btn btn-secondary" onclick="closeTransferAdminModal()">Cancel</button>
                             <button class="btn btn-danger" onclick="confirmTransferAdmin()">Transfer Admin Rights</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===================== EXPORT REQUESTS MODAL ===================== -->
+                <div id="exportRequestsModal" class="modal hidden">
+                    <div class="modal-content" style="max-width: 480px;">
+                        <div class="modal-header">
+                            <h2>Export Requests</h2>
+                            <button class="modal-close" onclick="closeExportModal()">×</button>
+                        </div>
+                        <div class="modal-body">
+                            <p style="margin-bottom: 20px; color: var(--text-secondary); font-size: 14px;">Select which request statuses to include in the CSV export.</p>
+                            <div id="exportStatusChecks" style="display: flex; flex-direction: column; gap: 12px;">
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 400;">
+                                    <input type="checkbox" value="New" checked style="width: 16px; height: 16px; accent-color: var(--primary);"> New
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 400;">
+                                    <input type="checkbox" value="Accepted" checked style="width: 16px; height: 16px; accent-color: var(--primary);"> Accepted
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 400;">
+                                    <input type="checkbox" value="Scheduled" checked style="width: 16px; height: 16px; accent-color: var(--primary);"> Scheduled
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 400;">
+                                    <input type="checkbox" value="Fulfilled" checked style="width: 16px; height: 16px; accent-color: var(--primary);"> Fulfilled
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 400;">
+                                    <input type="checkbox" value="Paid" checked style="width: 16px; height: 16px; accent-color: var(--primary);"> Paid
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 400;">
+                                    <input type="checkbox" value="Rejected" style="width: 16px; height: 16px; accent-color: var(--primary);"> Rejected
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 400;">
+                                    <input type="checkbox" value="Cancelled" style="width: 16px; height: 16px; accent-color: var(--primary);"> Cancelled
+                                </label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" onclick="closeExportModal()">Cancel</button>
+                            <button class="btn btn-primary" onclick="runExportCSV()">⬇ Download CSV</button>
                         </div>
                     </div>
                 </div>
@@ -3081,29 +3122,30 @@ window.addEventListener('message', function(e) {
                     <!-- Customer Info -->
                     <div class="modal-section">
                         <h3>Customer Information</h3>
-                        <div class="modal-info-grid">
-                            <div class="modal-info-label">Name:</div>
-                            <div>${req.customerName}</div>
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <label style="font-size:13px;color:var(--text-secondary);font-weight:500;">Name</label>
+                            <input type="text" id="editCustomerName" value="${req.customerName || ''}" placeholder="Customer name"
+                                style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;">
                         </div>
-                        ${req.customerEmail ? `
-                        <div class="modal-info-grid">
-                            <div class="modal-info-label">Email:</div>
-                            <div>
-                                ${req.customerEmail}
-                                <button class="btn btn-primary btn-sm" style="margin-left:12px;" onclick="emailCustomer('${req.customerEmail}', '${req.quoteNumber}')">✉ Email Customer</button>
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <label style="font-size:13px;color:var(--text-secondary);font-weight:500;">Email</label>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <input type="email" id="editCustomerEmail" value="${req.customerEmail || ''}" placeholder="customer@email.com"
+                                    style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;">
+                                ${req.customerEmail ? `<button class="btn btn-primary btn-sm" onclick="emailCustomer(document.getElementById('editCustomerEmail').value, '${req.quoteNumber}')">✉ Email</button>` : ''}
                             </div>
-                        </div>` : ''}
-                        ${req.customerPhone ? `
-                        <div class="modal-info-grid">
-                            <div class="modal-info-label">Phone:</div>
-                            <div>${req.customerPhone}</div>
-                        </div>` : ''}
+                        </div>
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <label style="font-size:13px;color:var(--text-secondary);font-weight:500;">Phone</label>
+                            <input type="text" id="editCustomerPhone" value="${req.customerPhone || ''}" placeholder="(555) 123-4567"
+                                style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;">
+                        </div>
                         ${req.notes ? `
-                        <div class="modal-info-grid">
+                        <div class="modal-info-grid" style="margin-top:4px;">
                             <div class="modal-info-label">Customer Notes:</div>
                             <div>${req.notes}</div>
                         </div>` : ''}
-                        <div class="modal-info-grid">
+                        <div class="modal-info-grid" style="margin-top:8px;">
                             <div class="modal-info-label">Submitted:</div>
                             <div>${new Date(req.createdAt).toLocaleString()}</div>
                         </div>
@@ -3261,6 +3303,14 @@ window.addEventListener('message', function(e) {
             if (!currentRequestId) return;
             try {
                 const changes = window.pendingRequestChanges || {};
+
+                // Capture editable contact fields
+                const nameEl = document.getElementById('editCustomerName');
+                const emailEl = document.getElementById('editCustomerEmail');
+                const phoneEl = document.getElementById('editCustomerPhone');
+                if (nameEl) changes.customerName = nameEl.value.trim();
+                if (emailEl) changes.customerEmail = emailEl.value.trim();
+                if (phoneEl) changes.customerPhone = phoneEl.value.trim();
 
                 // Capture notes from textarea
                 const notesEl = document.getElementById('requestInternalNotes');
@@ -3631,6 +3681,91 @@ window.addEventListener('message', function(e) {
         function showPopupInstallGuide() { document.getElementById('popupInstallModal').classList.remove('hidden'); }
         function closePopupInstallGuide() { document.getElementById('popupInstallModal').classList.add('hidden'); }
 
+        // ===================== EXPORT =====================
+
+        function showExportModal() {
+            document.getElementById('exportRequestsModal').classList.remove('hidden');
+        }
+
+        function closeExportModal() {
+            document.getElementById('exportRequestsModal').classList.add('hidden');
+        }
+
+        async function runExportCSV() {
+            if (!currentUser) return;
+
+            // Get selected statuses
+            const checks = document.querySelectorAll('#exportStatusChecks input[type="checkbox"]');
+            const selectedStatuses = [];
+            checks.forEach(cb => { if (cb.checked) selectedStatuses.push(cb.value); });
+
+            if (selectedStatuses.length === 0) {
+                alert('Please select at least one status to export.');
+                return;
+            }
+
+            try {
+                const requestsQuery = query(collection(db, 'quotes'), where('businessId', '==', window.businessId));
+                const snapshot = await getDocs(requestsQuery);
+
+                const rows = [];
+                snapshot.forEach((d) => {
+                    const req = d.data();
+                    // Normalize status
+                    let status = req.quoteStatus || 'New';
+                    if (!status || status === 'Follow Up' || status === 'Signed') status = 'New';
+                    if (req.status === 'watchlist') status = 'Accepted';
+
+                    if (selectedStatuses.includes(status)) {
+                        rows.push({
+                            requestNumber: req.quoteNumber || '',
+                            customerName: req.customerName || '',
+                            phone: req.customerPhone || '',
+                            email: req.customerEmail || '',
+                            submitted: req.createdAt ? new Date(req.createdAt).toLocaleString() : ''
+                        });
+                    }
+                });
+
+                if (rows.length === 0) {
+                    alert('No requests found for the selected statuses.');
+                    return;
+                }
+
+                // Build CSV
+                const headers = ['Request Number', 'Customer Name', 'Phone', 'Email', 'Submitted'];
+                const csvRows = [headers.join(',')];
+                rows.forEach(row => {
+                    const values = [
+                        `"${row.requestNumber}"`,
+                        `"${row.customerName.replace(/"/g, '""')}"`,
+                        `"${row.phone.replace(/"/g, '""')}"`,
+                        `"${row.email.replace(/"/g, '""')}"`,
+                        `"${row.submitted}"`
+                    ];
+                    csvRows.push(values.join(','));
+                });
+
+                const csvContent = csvRows.join('\n');
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                const date = new Date().toISOString().split('T')[0];
+                a.href = url;
+                a.download = `requests-export-${date}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                closeExportModal();
+                alert(`✓ Exported ${rows.length} request(s) successfully!`);
+
+            } catch (error) {
+                alert('Error exporting: ' + error.message);
+            }
+        }
+
         // ===================== GLOBAL WINDOW BINDINGS =====================
 
         window.showSection = showSection;
@@ -3691,6 +3826,9 @@ window.addEventListener('message', function(e) {
         window.copyPopupCode = copyPopupCode;
         window.showPopupInstallGuide = showPopupInstallGuide;
         window.closePopupInstallGuide = closePopupInstallGuide;
+        window.showExportModal = showExportModal;
+        window.closeExportModal = closeExportModal;
+        window.runExportCSV = runExportCSV;
 
         window.storageRef = ref;
         window.uploadBytesResumable = uploadBytesResumable;
