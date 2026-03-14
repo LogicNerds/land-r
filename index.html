@@ -3270,14 +3270,30 @@ window.addEventListener('message', function(e) {
 
         async function setStageFromTracker(stage) {
             if (!currentRequestId) return;
-            window.pendingRequestChanges = window.pendingRequestChanges || {};
-            window.pendingRequestChanges.quoteStatus = stage;
+
+            // Read current stageTimestamps from Firestore first
+            const reqDoc = await getDoc(doc(window.db, 'quotes', currentRequestId));
+            const currentData = reqDoc.data() || {};
+            const stageTimestamps = currentData.stageTimestamps || {};
+
+            // Only set timestamp if this stage hasn't been stamped yet
+            if (STAGE_STEPS.includes(stage) && !stageTimestamps[stage]) {
+                stageTimestamps[stage] = new Date().toISOString();
+            }
+
+            // Write status + timestamps directly — bypass pendingRequestChanges
+            await setDoc(doc(window.db, 'quotes', currentRequestId), {
+                quoteStatus: stage,
+                stageTimestamps: stageTimestamps,
+                lastTouched: new Date().toISOString()
+            }, { merge: true });
+
             // Update the status dropdown to match
             const sel = document.getElementById('requestStatus');
             if (sel) sel.value = stage;
-            // Save immediately when clicking the tracker
-            await saveRequestChanges(false);
-            // Reload the modal view
+
+            // Reload list + modal
+            await loadRequests();
             await viewRequest(currentRequestId);
         }
 
@@ -3320,10 +3336,11 @@ window.addEventListener('message', function(e) {
                 const newStatus = changes.quoteStatus || document.getElementById('requestStatus')?.value;
                 if (newStatus) {
                     changes.quoteStatus = newStatus;
-                    // Load current stageTimestamps and update
+                    // Load current stageTimestamps from Firestore and preserve ALL existing ones
                     const reqDoc = await getDoc(doc(window.db, 'quotes', currentRequestId));
                     const currentData = reqDoc.data() || {};
-                    const stageTimestamps = currentData.stageTimestamps || {};
+                    const stageTimestamps = Object.assign({}, currentData.stageTimestamps || {});
+                    // Only stamp if this stage hasn't been stamped before
                     if (STAGE_STEPS.includes(newStatus) && !stageTimestamps[newStatus]) {
                         stageTimestamps[newStatus] = new Date().toISOString();
                     }
