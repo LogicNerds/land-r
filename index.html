@@ -2982,15 +2982,40 @@ window.addEventListener('message', function(e) {
                 ALL_STATUSES.forEach(s => counts[s] = 0);
 
                 const allRequests = [];
+                const migrationWrites = [];
+
                 snapshot.forEach((d) => {
                     const req = { id: d.id, ...d.data() };
-                    // Normalize legacy statuses
-                    if (!req.quoteStatus || req.quoteStatus === 'Follow Up' || req.quoteStatus === 'Signed') req.quoteStatus = 'New';
-                    if (req.status === 'watchlist') req.quoteStatus = 'Accepted';
+
+                    // One-time migration: write corrected quoteStatus back to Firestore
+                    // for any record still carrying legacy field values
+                    let needsMigration = false;
+                    if (req.status === 'watchlist' && req.quoteStatus !== 'Accepted') {
+                        req.quoteStatus = 'Accepted';
+                        needsMigration = true;
+                    } else if (!req.quoteStatus || req.quoteStatus === 'Follow Up' || req.quoteStatus === 'Signed') {
+                        req.quoteStatus = 'New';
+                        needsMigration = true;
+                    }
+
+                    if (needsMigration) {
+                        migrationWrites.push(
+                            setDoc(doc(db, 'quotes', d.id), {
+                                quoteStatus: req.quoteStatus,
+                                status: 'active'
+                            }, { merge: true })
+                        );
+                    }
+
                     allRequests.push(req);
                     const s = req.quoteStatus || 'New';
                     if (counts[s] !== undefined) counts[s]++;
                 });
+
+                // Fire migration writes in background — don't block UI
+                if (migrationWrites.length > 0) {
+                    Promise.all(migrationWrites).catch(e => console.warn('Migration write failed:', e));
+                }
 
                 // Update tab counts
                 ALL_STATUSES.forEach(s => {
@@ -3266,13 +3291,14 @@ window.addEventListener('message', function(e) {
         function pendingStatusChange(newStatus) {
             window.pendingRequestChanges = window.pendingRequestChanges || {};
             window.pendingRequestChanges.quoteStatus = newStatus;
+            window.statusWasChanged = true;
         }
 
         async function setStageFromTracker(stage) {
             if (!currentRequestId) return;
 
-            // Read current stageTimestamps from Firestore first
-            const reqDoc = await getDoc(doc(window.db, 'quotes', currentRequestId));
+            // Force server read — bypass local cache
+            const reqDoc = await getDoc(doc(window.db, 'quotes', currentRequestId), { source: 'server' });
             const currentData = reqDoc.data() || {};
             const stageTimestamps = currentData.stageTimestamps || {};
 
@@ -3292,9 +3318,11 @@ window.addEventListener('message', function(e) {
             const sel = document.getElementById('requestStatus');
             if (sel) sel.value = stage;
 
-            // Reload list + modal
+            // Reload the list, then reopen the modal fresh to avoid race with viewRequest's own write
             await loadRequests();
-            await viewRequest(currentRequestId);
+            const savedId = currentRequestId;
+            closeRequestModal();
+            await viewRequest(savedId);
         }
 
         function closeRequestModal() {
@@ -3318,7 +3346,8 @@ window.addEventListener('message', function(e) {
         async function saveRequestChanges(closeModal = true) {
             if (!currentRequestId) return;
             try {
-                const changes = window.pendingRequestChanges || {};
+                // Decouple from global — work on a fresh copy so mutations don't bleed back
+                const changes = Object.assign({}, window.pendingRequestChanges || {});
 
                 // Capture editable contact fields
                 const nameEl = document.getElementById('editCustomerName');
@@ -3332,12 +3361,12 @@ window.addEventListener('message', function(e) {
                 const notesEl = document.getElementById('requestInternalNotes');
                 if (notesEl) changes.internalNotes = notesEl.value;
 
-                // Handle status change + timestamp
-                const newStatus = changes.quoteStatus || document.getElementById('requestStatus')?.value;
+                // Handle status change + timestamp — only if user explicitly changed status
+                const newStatus = window.statusWasChanged ? changes.quoteStatus : null;
                 if (newStatus) {
                     changes.quoteStatus = newStatus;
-                    // Load current stageTimestamps from Firestore and preserve ALL existing ones
-                    const reqDoc = await getDoc(doc(window.db, 'quotes', currentRequestId));
+                    // Force server read — bypass local cache to get freshest stageTimestamps
+                    const reqDoc = await getDoc(doc(window.db, 'quotes', currentRequestId), { source: 'server' });
                     const currentData = reqDoc.data() || {};
                     const stageTimestamps = Object.assign({}, currentData.stageTimestamps || {});
                     // Only stamp if this stage hasn't been stamped before
@@ -3346,6 +3375,8 @@ window.addEventListener('message', function(e) {
                     }
                     changes.stageTimestamps = stageTimestamps;
                 }
+                // Reset the flag
+                window.statusWasChanged = false;
 
                 changes.lastTouched = new Date().toISOString();
 
