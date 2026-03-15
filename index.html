@@ -1635,6 +1635,11 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <label>Why Choose Us <span class="label-hint">(optional - shown as a band below your hero)</span></label>
+                                    <textarea id="whyChooseUs" rows="3" placeholder="e.g. Family-owned and operated since 2010. We show up on time, do the job right, and treat your home like our own." style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;resize:vertical;"></textarea>
+                                </div>
+
+                                <div class="form-group">
                                     <label>Text Color</label>
                                     <div class="color-picker-group">
                                         <input type="color" id="landingTextColor" value="#1f2937">
@@ -2443,6 +2448,7 @@
                     document.getElementById('primaryColorHex').value = data.primaryColor || '#667eea';
                     document.getElementById('secondaryColorHex').value = data.secondaryColor || '#764ba2';
                     document.getElementById('landingHeadline').value = data.landingHeadline || '';
+                    document.getElementById('whyChooseUs').value = data.whyChooseUs || '';
                     if (landingMessageEditor) landingMessageEditor.root.innerHTML = data.landingMessage || '';
                     if (servicesDisclaimerEditor) servicesDisclaimerEditor.root.innerHTML = data.servicesDisclaimer || '';
                     document.getElementById('landingTextColor').value = data.landingTextColor || '#1f2937';
@@ -2945,6 +2951,7 @@ window.addEventListener('message', function(e) {
                 landingHeadline: document.getElementById('landingHeadline').value,
                 landingMessage: landingMessageEditor.root.innerHTML,
                 servicesDisclaimer: servicesDisclaimerEditor.root.innerHTML,
+                whyChooseUs: document.getElementById('whyChooseUs').value,
                 landingTextColor: document.getElementById('landingTextColor').value,
                 updatedAt: new Date().toISOString()
             };
@@ -3696,6 +3703,7 @@ window.addEventListener('message', function(e) {
                         landingHeadline: businessData.landingHeadline || '',
                         landingMessage: businessData.landingMessage || '',
                         servicesDisclaimer: businessData.servicesDisclaimer || '',
+                        whyChooseUs: businessData.whyChooseUs || '',
                         landingTextColor: businessData.landingTextColor || '#1f2937'
                     },
                     services
