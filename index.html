@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Land-r — Your Hustle Deserves a Home</title>
+    <meta name="description" content="Land-r gives your small business a branded landing page, a request form, and a simple way to track every lead. $4.99/month. 7-day free trial.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --blue: #3b89d8;
+            --blue-dark: #2d6fb5;
+            --blue-light: #eaf3fc;
+            --gray: #505050;
+            --gray-light: #7a7a7a;
+            --gray-faint: #f4f4f4;
+            --ink: #1a1a1a;
+            --border: #e4e4e4;
+            --white: #ffffff;
+            --green: #1a7a4a;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'DM Sans', -apple-system, sans-serif;
+            background: var(--white);
+            color: var(--ink);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* NAV */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-logo img {
+            height: 36px;
+            width: auto;
+            display: block;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            font-size: 15px;
+            color: var(--gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: var(--ink); }
+
+        .nav-cta {
+            background: var(--blue) !important;
+            color: var(--white) !important;
+            padding: 10px 22px !important;
+            border-radius: 6px !important;
+            font-weight: 600 !important;
+            transition: background 0.2s !important;
+        }
+
+        .nav-cta:hover { background: var(--blue-dark) !important; }
+
+        /* HERO */
+        .hero {
+            padding: 140px 32px 100px;
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-weight: 400;
+            font-size: clamp(40px, 6vw, 72px);
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            color: var(--ink);
+            margin-bottom: 24px;
+            max-width: 780px;
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            color: var(--blue);
+        }
+
+        .hero-sub {
+            font-size: clamp(17px, 2vw, 20px);
+            color: var(--gray);
+            max-width: 520px;
+            margin-bottom: 40px;
+            line-height: 1.7;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background: var(--blue);
+            color: var(--white);
+            padding: 15px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background: var(--blue-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(59,137,216,0.3);
+        }
+
+        .btn-secondary {
+            display: inline-block;
+            background: transparent;
+            color: var(--ink);
+            padding: 15px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover { border-color: var(--gray); }
+
+        .hero-note {
+            font-size: 13px;
+            color: var(--gray-light);
+            margin-top: 14px;
+        }
+
+        /* DIVIDER */
+        .divider {
+            height: 1px;
+            background: var(--border);
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
+        /* SECTION SHARED */
+        .section-label {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--blue);
+            margin-bottom: 14px;
+            display: block;
+        }
+
+        /* PROBLEM */
+        .problem {
+            padding: 100px 32px;
+            max-width: 1080px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .problem h2 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-weight: 400;
+            font-size: clamp(26px, 3.5vw, 40px);
+            line-height: 1.15;
+            letter-spacing: -0.01em;
+            margin-bottom: 20px;
+        }
+
+        .problem p {
+            font-size: 17px;
+            color: var(--gray);
+            line-height: 1.75;
+            margin-bottom: 16px;
+        }
+
+        .problem p:last-child { margin-bottom: 0; }
+
+        .problem-visual {
+            background: var(--gray-faint);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+        }
+
+        .problem-visual-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-light);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .before-after {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .ba-item {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 20px;
+            font-size: 15px;
+            color: var(--ink);
+            line-height: 1.5;
+        }
+
+        .ba-item .ba-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .ba-item.before .ba-label { color: var(--gray-light); }
+        .ba-item.after .ba-label { color: var(--blue); }
+        .ba-item.after { border-color: var(--blue); }
+
+        .ba-arrow {
+            text-align: center;
+            color: var(--gray-light);
+            font-size: 18px;
+            padding: 4px 0;
+        }
+
+        /* HOW IT WORKS */
+        .how {
+            padding: 100px 32px;
+            background: var(--ink);
+        }
+
+        .how-inner {
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
+        .how .section-label { color: var(--blue); }
+
+        .how h2 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-weight: 400;
+            font-size: clamp(26px, 3.5vw, 42px);
+            line-height: 1.15;
+            letter-spacing: -0.01em;
+            color: var(--white);
+            margin-bottom: 64px;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 48px;
+        }
+
+        .step-number {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 52px;
+            color: var(--blue);
+            line-height: 1;
+            margin-bottom: 16px;
+            opacity: 0.7;
+        }
+
+        .step h3 {
+            font-size: 19px;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 10px;
+        }
+
+        .step p {
+            font-size: 15px;
+            color: rgba(255,255,255,0.5);
+            line-height: 1.7;
+        }
+
+        /* FEATURES */
+        .features {
+            padding: 100px 32px;
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
+        .features h2 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-weight: 400;
+            font-size: clamp(26px, 3.5vw, 42px);
+            line-height: 1.15;
+            letter-spacing: -0.01em;
+            margin-bottom: 12px;
+        }
+
+        .features-sub {
+            font-size: 17px;
+            color: var(--gray);
+            max-width: 480px;
+            margin-bottom: 56px;
+            line-height: 1.6;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .feature {
+            background: var(--white);
+            padding: 32px;
+            transition: background 0.2s;
+        }
+
+        .feature:hover { background: var(--blue-light); }
+
+        .feature-icon {
+            font-size: 26px;
+            margin-bottom: 14px;
+            display: block;
+        }
+
+        .feature h3 {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--ink);
+        }
+
+        .feature p {
+            font-size: 14px;
+            color: var(--gray);
+            line-height: 1.65;
+        }
+
+        /* PRICING */
+        .pricing {
+            padding: 100px 32px;
+            background: var(--gray-faint);
+        }
+
+        .pricing-inner {
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        .pricing h2 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-weight: 400;
+            font-size: clamp(26px, 3.5vw, 42px);
+            line-height: 1.15;
+            letter-spacing: -0.01em;
+            margin-bottom: 48px;
+        }
+
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .pricing-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px;
+            position: relative;
+        }
+
+        .pricing-card.featured {
+            border-color: var(--blue);
+            border-width: 2px;
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -13px;
+            left: 32px;
+            background: var(--blue);
+            color: var(--white);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 4px;
+        }
+
+        .pricing-label {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--gray-light);
+            margin-bottom: 10px;
+        }
+
+        .pricing-amount {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 54px;
+            color: var(--ink);
+            line-height: 1;
+            margin-bottom: 6px;
+            letter-spacing: -0.02em;
+        }
+
+        .pricing-amount sup {
+            font-size: 22px;
+            vertical-align: super;
+        }
+
+        .pricing-period {
+            font-size: 14px;
+            color: var(--gray-light);
+            margin-bottom: 28px;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 32px;
+        }
+
+        .pricing-features li {
+            font-size: 15px;
+            color: var(--gray);
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pricing-features li:last-child { border-bottom: none; }
+
+        .pricing-features li::before {
+            content: '✓';
+            color: var(--green);
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .pricing-card .btn-primary,
+        .pricing-card .btn-secondary {
+            width: 100%;
+            text-align: center;
+        }
+
+        .pricing-note {
+            margin-top: 20px;
+            font-size: 13px;
+            color: var(--gray-light);
+            text-align: center;
+        }
+
+        /* FROM RIVERSIDE */
+        .from {
+            padding: 100px 32px;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .from h2 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-weight: 400;
+            font-size: clamp(24px, 3vw, 36px);
+            line-height: 1.2;
+            letter-spacing: -0.01em;
+            margin-bottom: 24px;
+        }
+
+        .from p {
+            font-size: 17px;
+            color: var(--gray);
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+
+        .from-sig {
+            margin-top: 36px;
+            font-size: 15px;
+            color: var(--gray-light);
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .from-sig strong {
+            display: block;
+            color: var(--ink);
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        /* BOTTOM CTA */
+        .bottom-cta {
+            padding: 100px 32px;
+            background: var(--blue);
+            text-align: center;
+        }
+
+        .bottom-cta h2 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-weight: 400;
+            font-size: clamp(30px, 4.5vw, 56px);
+            color: var(--white);
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+        }
+
+        .bottom-cta p {
+            font-size: 18px;
+            color: rgba(255,255,255,0.75);
+            margin-bottom: 36px;
+        }
+
+        .btn-white {
+            display: inline-block;
+            background: var(--white);
+            color: var(--blue);
+            padding: 16px 36px;
+            border-radius: 6px;
+            font-size: 17px;
+            font-weight: 700;
+            font-family: 'DM Sans', sans-serif;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-white:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .bottom-note {
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+            margin-top: 14px;
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--ink);
+            padding: 36px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .footer-logo img {
+            height: 28px;
+            width: auto;
+            display: block;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-links a {
+            font-size: 14px;
+            color: rgba(255,255,255,0.35);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover { color: rgba(255,255,255,0.7); }
+
+        .footer-copy {
+            font-size: 13px;
+            color: rgba(255,255,255,0.25);
+            width: 100%;
+            margin-top: 4px;
+        }
+
+
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            nav { padding: 14px 20px; }
+            .nav-links a:not(.nav-cta) { display: none; }
+            .hero { padding: 100px 20px 60px; }
+            .problem { grid-template-columns: 1fr; gap: 40px; padding: 60px 20px; }
+            .steps { grid-template-columns: 1fr; gap: 32px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .pricing-cards { grid-template-columns: 1fr; }
+            .how { padding: 60px 20px; }
+            .features { padding: 60px 20px; }
+            .pricing { padding: 60px 20px; }
+            .from { padding: 60px 20px; }
+            .bottom-cta { padding: 60px 20px; }
+            footer { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Nav -->
+    <nav>
+        <a href="#" class="nav-logo">
+            <img src="https://raw.githubusercontent.com/LogicNerds/land-r/main/Land-r%20Assets/Land-r%20Logo.png" alt="Land-r">
+        </a>
+        <div class="nav-links">
+            <a href="#how">How it works</a>
+            <a href="#pricing">Pricing</a>
+            <a href="https://land-r.com/admin" class="nav-cta">Start Free Trial</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <h1>Your business deserves<br>a <em>real</em> online presence.</h1>
+        <p class="hero-sub">Land-r gives you a branded landing page, a request form, and a simple way to track every lead — no website, no tech skills, no hassle.</p>
+        <div class="hero-actions">
+            <a href="https://land-r.com/admin" class="btn-primary">Start 7-Day Free Trial</a>
+            <a href="#how" class="btn-secondary">See how it works</a>
+        </div>
+        <p class="hero-note">No credit card required. $4.99/month after your trial.</p>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Problem -->
+    <section class="problem">
+        <div>
+            <span class="section-label">The problem</span>
+            <h2>You're working hard. Your online presence should keep up.</h2>
+            <p>A lot of great small businesses are running entirely out of DMs and comment sections. It works — until it doesn't. Leads fall through. Requests get buried. There's no easy way to stay organized.</p>
+            <p>Land-r gives you one link to share anywhere. Customers click it, see your services, and submit a request. You get notified and track everything from a simple dashboard.</p>
+        </div>
+        <div>
+            <div class="problem-visual">
+                <div class="problem-visual-title">Before &amp; After</div>
+                <div class="before-after">
+                    <div class="ba-item before">
+                        <div class="ba-label">Before</div>
+                        Sharing your phone number in comments. Answering the same questions over and over. Losing track of who reached out.
+                    </div>
+                    <div class="ba-arrow">↓</div>
+                    <div class="ba-item after">
+                        <div class="ba-label">With Land-r</div>
+                        One link. Customers see your services, submit a request, and you manage everything from one place.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- How it works -->
+    <section class="how" id="how">
+        <div class="how-inner">
+            <span class="section-label">How it works</span>
+            <h2>Up and running<br>in under 10 minutes.</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">01</div>
+                    <h3>Set up your page</h3>
+                    <p>Add your business name, logo, colors, and the services you offer. No design experience needed.</p>
+                </div>
+                <div class="step" style="transition-delay:0.15s;">
+                    <div class="step-number">02</div>
+                    <h3>Share your link</h3>
+                    <p>Drop it in your social bio, send it in a text, post it anywhere you'd normally share your contact info.</p>
+                </div>
+                <div class="step" style="transition-delay:0.3s;">
+                    <div class="step-number">03</div>
+                    <h3>Manage your requests</h3>
+                    <p>Get notified when someone submits. Accept, schedule, and track every job from one simple dashboard.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" id="features">
+        <span class="section-label">What you get</span>
+        <h2>Everything you need.<br>Nothing you don't.</h2>
+        <p class="features-sub">If you can post on Facebook, you can run Land-r.</p>
+        <div class="features-grid">
+            <div class="feature">
+                <span class="feature-icon">🎨</span>
+                <h3>Branded Landing Page</h3>
+                <p>Your logo, your colors, your services. Customers land somewhere that looks like you.</p>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">📥</span>
+                <h3>Request Capture</h3>
+                <p>Customers pick what they need and submit their info. You get notified. No more chasing DMs.</p>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">📋</span>
+                <h3>Built-in CRM</h3>
+                <p>Every request is tracked. See who's new, who's scheduled, who's paid — all in one place.</p>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">💰</span>
+                <h3>Flexible Pricing Display</h3>
+                <p>Show prices for standard services or keep them hidden for jobs that need a custom estimate.</p>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">📱</span>
+                <h3>Works on Any Device</h3>
+                <p>Your customers are on their phones. Land-r looks great on every screen, no app required.</p>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">🔗</span>
+                <h3>One Link, Everywhere</h3>
+                <p>Embed it on a website or just share the link. Works either way.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="pricing" id="pricing">
+        <div class="pricing-inner">
+            <span class="section-label">Pricing</span>
+            <h2>Straightforward.<br>No surprises.</h2>
+            <div class="pricing-cards">
+                <div class="pricing-card">
+                    <p class="pricing-label">Monthly</p>
+                    <div class="pricing-amount"><sup>$</sup>4.99</div>
+                    <p class="pricing-period">per month, billed monthly</p>
+                    <ul class="pricing-features">
+                        <li>Branded landing page</li>
+                        <li>Unlimited requests</li>
+                        <li>Unlimited services</li>
+                        <li>Built-in request tracker</li>
+                        <li>Up to 3 team members</li>
+                        <li>7-day free trial</li>
+                    </ul>
+                    <a href="https://land-r.com/admin" class="btn-secondary">Start Free Trial</a>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">2 Months Free</div>
+                    <p class="pricing-label">Annual</p>
+                    <div class="pricing-amount"><sup>$</sup>49.99</div>
+                    <p class="pricing-period">per year — $4.17/month</p>
+                    <ul class="pricing-features">
+                        <li>Everything in Monthly</li>
+                        <li>Save $9.89 per year</li>
+                        <li>Billed once annually</li>
+                        <li>Cancel anytime</li>
+                        <li>7-day free trial</li>
+                        <li>&nbsp;</li>
+                    </ul>
+                    <a href="https://land-r.com/admin" class="btn-primary">Start Free Trial</a>
+                </div>
+            </div>
+            <p class="pricing-note">7-day free trial. No credit card required to get started.</p>
+        </div>
+    </section>
+
+    <!-- From Riverside -->
+    <section class="from">
+        <span class="section-label">Who built this</span>
+        <h2>Built in Riverside, CA.</h2>
+        <p>I'm not a funded startup. I'm someone from Riverside who saw small business owners doing real work without the tools to match. Land-r is what I wished existed — something you can set up in a lunch break that actually makes your business easier to run.</p>
+        <p>Logic Nerds builds tools for the little guys. This is one of them.</p>
+        <div class="from-sig">
+            <strong>Elijah — Founder, Logic Nerds</strong>
+            Riverside, California
+        </div>
+    </section>
+
+    <!-- Bottom CTA -->
+    <section class="bottom-cta">
+        <h2>Your page is<br>ready when you are.</h2>
+        <p>Free for 7 days. No credit card needed.</p>
+        <a href="https://land-r.com/admin" class="btn-white">Start Free Trial</a>
+        <p class="bottom-note">$4.99/month after your trial. Cancel anytime.</p>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <a href="#" class="footer-logo">
+            <img src="https://raw.githubusercontent.com/LogicNerds/land-r/main/Land-r%20Assets/Land-r%20Logo.png" alt="Land-r">
+        </a>
+        <div class="footer-links">
+            <a href="https://land-r.com/admin">Sign In</a>
+            <a href="/cdn-cgi/l/email-protection#93f6fffaf9f2fbd3fffcf4faf0fdf6e1f7e0bdfdf6e7">Contact</a>
+            <a href="https://logicnerds.net">Logic Nerds</a>
+        </div>
+        <p class="footer-copy">© 2026 Logic Nerds · Riverside, California · Land-r is a Logic Nerds product.</p>
+    </footer>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
