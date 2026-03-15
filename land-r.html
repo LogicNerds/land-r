@@ -751,6 +751,8 @@
                     }
 
                     businessDoc = slugSnapshot.docs[0];
+                    // Use the actual Firestore document ID for all subsequent queries
+                    window.businessId = slugSnapshot.docs[0].id;
                 }
 
                 window.businessData = businessDoc.data();
