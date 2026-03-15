@@ -734,10 +734,23 @@
         // ===== LOAD PAGE =====
         async function loadPage() {
             try {
-                const businessDoc = await getDoc(doc(db, 'businesses', window.businessId));
+                // Try direct UID lookup first (legacy), then fall back to slug query
+                let businessDoc = await getDoc(doc(db, 'businesses', window.businessId));
+
                 if (!businessDoc.exists()) {
-                    showLoadError('Business not found.');
-                    return;
+                    // Not a UID — try looking up by businessSlug
+                    const slugQuery = query(
+                        collection(db, 'businesses'),
+                        where('businessSlug', '==', window.businessId)
+                    );
+                    const slugSnapshot = await getDocs(slugQuery);
+
+                    if (slugSnapshot.empty) {
+                        showLoadError('Business not found.');
+                        return;
+                    }
+
+                    businessDoc = slugSnapshot.docs[0];
                 }
 
                 window.businessData = businessDoc.data();
