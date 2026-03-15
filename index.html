@@ -2103,7 +2103,7 @@
                     setTimeout(() => updateSubscriptionStatusBanner(), 100);
                 } else {
                     const trialEndsAt = new Date();
-                    trialEndsAt.setDate(trialEndsAt.getDate() + 14);
+                    trialEndsAt.setDate(trialEndsAt.getDate() + 7);
                     window.businessId = user.uid;
                     window.userRole = 'admin';
                     window.currentUserData = {
@@ -2122,7 +2122,7 @@
                         createdAt: new Date().toISOString()
                     });
                     setTimeout(() => {
-                        alert(`🎉 Welcome to Land-r!\n\nYou've started a 14-day free trial. No credit card required.\n\nTrial ends: ${trialEndsAt.toLocaleDateString()}\n\nGet started by setting up your business information and adding your services!`);
+                        alert(`🎉 Welcome to Land-r!\n\nYou've started a 7-day free trial. No credit card required.\n\nTrial ends: ${trialEndsAt.toLocaleDateString()}\n\nGet started by setting up your business information and adding your services!`);
                         updateSubscriptionStatusBanner();
                     }, 500);
                 }
@@ -2277,7 +2277,7 @@
             modal.innerHTML = `
                 <div style="background:white;padding:48px;border-radius:16px;max-width:800px;width:100%;">
                     <h2 style="font-size:32px;font-weight:700;color:#0f172a;margin-bottom:12px;text-align:center;">Choose Your Plan</h2>
-                    <p style="font-size:16px;color:#64748b;margin-bottom:32px;text-align:center;">Start your 14-day free trial. Cancel anytime.</p>
+                    <p style="font-size:16px;color:#64748b;margin-bottom:32px;text-align:center;">Start your 7-day free trial. Cancel anytime.</p>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;">
                         <div onclick="selectPlan('monthly')" style="border:2px solid #e2e8f0;border-radius:12px;padding:32px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='#667eea';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='#e2e8f0';this.style.transform='translateY(0)'">
                             <div style="font-size:14px;font-weight:600;color:#667eea;margin-bottom:8px;">MONTHLY</div>
@@ -2288,7 +2288,7 @@
                                 <li style="padding:8px 0;color:#0f172a;font-size:14px;">✓ Unlimited services</li>
                                 <li style="padding:8px 0;color:#0f172a;font-size:14px;">✓ Up to 3 team members</li>
                                 <li style="padding:8px 0;color:#0f172a;font-size:14px;">✓ Custom branding</li>
-                                <li style="padding:8px 0;color:#0f172a;font-size:14px;">✓ 14-day free trial</li>
+                                <li style="padding:8px 0;color:#0f172a;font-size:14px;">✓ 7-day free trial</li>
                             </ul>
                         </div>
                         <div onclick="selectPlan('annual')" style="border:2px solid #667eea;border-radius:12px;padding:32px;cursor:pointer;position:relative;background:linear-gradient(135deg,#f8f9ff 0%,#ffffff 100%);transition:all 0.2s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
@@ -2301,7 +2301,7 @@
                                 <li style="padding:8px 0;color:#0f172a;font-size:14px;">✓ Unlimited services</li>
                                 <li style="padding:8px 0;color:#0f172a;font-size:14px;">✓ Up to 3 team members</li>
                                 <li style="padding:8px 0;color:#0f172a;font-size:14px;">✓ Custom branding</li>
-                                <li style="padding:8px 0;color:#0f172a;font-size:14px;">✓ 14-day free trial</li>
+                                <li style="padding:8px 0;color:#0f172a;font-size:14px;">✓ 7-day free trial</li>
                             </ul>
                         </div>
                     </div>
