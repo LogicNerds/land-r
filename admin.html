@@ -2894,7 +2894,7 @@
 
         function updateLandrUrl() {
             if (!currentUser) return;
-            const landrUrl = `https://logicnerds.github.io/land-r/land-r.html?id=${window.businessId}`;
+            const landrUrl = `https://land-r.com/land-r.html?id=${window.businessId}`;
             document.getElementById('calculatorUrl').textContent = landrUrl;
 
             const embedCode = `<iframe id="myLandr" src="${landrUrl}" width="100%" height="600" frameborder="0" style="border:none;border-radius:8px;"></iframe>
@@ -2961,7 +2961,7 @@ window.addEventListener('message', function(e) {
                 setTimeout(() => {
                     const iframe = document.getElementById('calculatorIframe');
                     if (iframe && iframe.src) {
-                        iframe.src = `https://logicnerds.github.io/land-r/land-r.html?id=${window.businessId}&t=${new Date().getTime()}`;
+                        iframe.src = `https://land-r.com/land-r.html?id=${window.businessId}&t=${new Date().getTime()}`;
                     }
                 }, 1000);
             } catch (error) {
