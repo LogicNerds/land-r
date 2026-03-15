@@ -2454,6 +2454,7 @@
                     document.getElementById('landingTextColor').value = data.landingTextColor || '#1f2937';
                     document.getElementById('landingTextColorHex').value = data.landingTextColor || '#1f2937';
                     document.getElementById('sidebarBusinessName').textContent = data.businessName || 'Your Business';
+                    if (data.businessSlug) window.businessSlug = data.businessSlug;
                     if (data.logoUrl) {
                         document.getElementById('logoPreview').src = data.logoUrl;
                         document.getElementById('logoPreviewContainer').classList.remove('hidden');
@@ -2467,10 +2468,32 @@
             }
         }
 
+        function generateBusinessSlug(businessName) {
+            // Slugify the business name + 4 random digits
+            const base = businessName
+                .toLowerCase()
+                .replace(/[^a-z0-9\s]/g, '')   // remove special chars
+                .trim()
+                .replace(/\s+/g, '')             // remove spaces
+                .substring(0, 20);               // max 20 chars
+            const suffix = String(Math.floor(Math.random() * 9000) + 1000); // 4 digits
+            return base + suffix;
+        }
+
         async function saveBusinessSettings() {
             if (!currentUser) return;
+
+            const businessName = document.getElementById('businessName').value;
+
+            // Load existing business doc to check if slug already exists
+            const existingDoc = await getDoc(doc(db, 'businesses', window.businessId));
+            const existingSlug = existingDoc.exists() ? existingDoc.data().businessSlug : null;
+
+            // Generate slug only if one doesn't exist yet
+            const businessSlug = existingSlug || (businessName ? generateBusinessSlug(businessName) : null);
+
             const businessData = {
-                businessName: document.getElementById('businessName').value,
+                businessName: businessName,
                 logoUrl: document.getElementById('logoUrl').value,
                 contactEmail: document.getElementById('contactEmail').value,
                 businessPhone: document.getElementById('businessPhone').value,
@@ -2478,6 +2501,12 @@
                 secondaryColor: document.getElementById('secondaryColor').value,
                 updatedAt: new Date().toISOString()
             };
+
+            if (businessSlug) {
+                businessData.businessSlug = businessSlug;
+                window.businessSlug = businessSlug;
+            }
+
             try {
                 await setDoc(doc(db, 'businesses', window.businessId), businessData, { merge: true });
                 alert('✓ Settings saved successfully!');
@@ -2894,7 +2923,8 @@
 
         function updateLandrUrl() {
             if (!currentUser) return;
-            const landrUrl = `https://land-r.com/land-r.html?id=${window.businessId}`;
+            const idParam = window.businessSlug || window.businessId;
+            const landrUrl = `https://land-r.com/land-r.html?id=${idParam}`;
             document.getElementById('calculatorUrl').textContent = landrUrl;
 
             const embedCode = `<iframe id="myLandr" src="${landrUrl}" width="100%" height="600" frameborder="0" style="border:none;border-radius:8px;"></iframe>
@@ -2961,7 +2991,8 @@ window.addEventListener('message', function(e) {
                 setTimeout(() => {
                     const iframe = document.getElementById('calculatorIframe');
                     if (iframe && iframe.src) {
-                        iframe.src = `https://land-r.com/land-r.html?id=${window.businessId}&t=${new Date().getTime()}`;
+                        const idParam = window.businessSlug || window.businessId;
+                        iframe.src = `https://land-r.com/land-r.html?id=${idParam}&t=${new Date().getTime()}`;
                     }
                 }, 1000);
             } catch (error) {
