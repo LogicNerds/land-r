@@ -756,6 +756,21 @@
                 }
 
                 window.businessData = businessDoc.data();
+
+                // Session tracking — fire once per browser session per business
+                const sessionKey = `landr_visited_${window.businessId}`;
+                if (!sessionStorage.getItem(sessionKey)) {
+                    try {
+                        await addDoc(collection(db, 'visits'), {
+                            businessId: window.businessId,
+                            createdAt: new Date().toISOString()
+                        });
+                        sessionStorage.setItem(sessionKey, '1');
+                    } catch (e) {
+                        console.warn('Visit tracking failed (non-critical):', e);
+                    }
+                }
+
                 applyBranding();
 
                 // Load active services sorted by order
