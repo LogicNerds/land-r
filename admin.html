@@ -1113,6 +1113,66 @@
             align-items: center;
         }
 
+        /* Numbers Cards */
+        .numbers-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .numbers-card-profit {
+            border-color: var(--success);
+            border-width: 2px;
+        }
+
+        .numbers-card-label {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        .numbers-card-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .numbers-card-sub {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .numbers-filter-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .numbers-filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .numbers-filter-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
         /* Hidden */
         .hidden {
             display: none;
@@ -1366,6 +1426,10 @@
                         <span class="nav-icon">📋</span>
                         My Requests <span id="requestsBadge" class="nav-badge hidden">0</span>
                     </div>
+                    <div class="nav-item nav-mobile-hide" onclick="showSection('numbers')">
+                        <span class="nav-icon">📊</span>
+                        My Numbers
+                    </div>
                 </nav>
                 <div style="flex: 1;"></div>
                 <div class="nav-item nav-logout" onclick="logout()" style="margin: 0 0 24px 0; color: var(--danger);">
@@ -1596,6 +1660,70 @@
 
                     <div class="card">
                         <div id="requestsList" class="requests-table"></div>
+                    </div>
+                </div>
+
+                <!-- ===================== MY NUMBERS ===================== -->
+                <div id="numbersSection" class="hidden">
+                    <div class="top-bar">
+                        <div>
+                            <h1 class="page-title">My Numbers</h1>
+                            <p class="page-subtitle">See how your Land-r is performing</p>
+                        </div>
+                        <button class="btn btn-secondary" onclick="downloadNumbersCSV()">⬇ Download My Numbers</button>
+                    </div>
+
+                    <!-- Date Filter -->
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px;flex-wrap:wrap;">
+                        <span style="font-size:14px;font-weight:600;color:var(--text-secondary);">Showing:</span>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;" id="dateFilterBtns">
+                            <button class="numbers-filter-btn active" onclick="setNumbersFilter('today', this)">Today</button>
+                            <button class="numbers-filter-btn" onclick="setNumbersFilter('thisweek', this)">This Week</button>
+                            <button class="numbers-filter-btn" onclick="setNumbersFilter('last7', this)">Last 7 Days</button>
+                            <button class="numbers-filter-btn" onclick="setNumbersFilter('thismonth', this)">This Month</button>
+                            <button class="numbers-filter-btn" onclick="setNumbersFilter('lastmonth', this)">Last Month</button>
+                        </div>
+                    </div>
+
+                    <!-- Metric Cards -->
+                    <div id="numbersGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:32px;">
+                        <div class="numbers-card">
+                            <div class="numbers-card-label">Page Views</div>
+                            <div class="numbers-card-value" id="metricViews">—</div>
+                            <div class="numbers-card-sub">People who visited your Land-r</div>
+                        </div>
+                        <div class="numbers-card">
+                            <div class="numbers-card-label">Requests</div>
+                            <div class="numbers-card-value" id="metricRequests">—</div>
+                            <div class="numbers-card-sub">People who sent a request</div>
+                        </div>
+                        <div class="numbers-card">
+                            <div class="numbers-card-label">Request Rate</div>
+                            <div class="numbers-card-value" id="metricRate">—</div>
+                            <div class="numbers-card-sub" id="metricRateSub">Out of visitors who sent a request</div>
+                        </div>
+                        <div class="numbers-card">
+                            <div class="numbers-card-label">Jobs</div>
+                            <div class="numbers-card-value" id="metricJobs">—</div>
+                            <div class="numbers-card-sub">Fulfilled or paid requests</div>
+                        </div>
+                        <div class="numbers-card">
+                            <div class="numbers-card-label">Revenue</div>
+                            <div class="numbers-card-value" id="metricRevenue">—</div>
+                            <div class="numbers-card-sub">Total from fulfilled jobs</div>
+                        </div>
+                        <div class="numbers-card numbers-card-profit">
+                            <div class="numbers-card-label">Profit</div>
+                            <div class="numbers-card-value" id="metricProfit">—</div>
+                            <div class="numbers-card-sub">Revenue minus your costs</div>
+                        </div>
+                    </div>
+
+                    <!-- Empty state -->
+                    <div id="numbersEmpty" class="hidden" style="text-align:center;padding:48px;color:var(--text-secondary);">
+                        <div style="font-size:40px;margin-bottom:12px;">📊</div>
+                        <p style="font-size:16px;font-weight:500;color:var(--text-primary);margin-bottom:6px;">Nothing yet for this period</p>
+                        <p style="font-size:14px;">Try a different date range or share your Land-r link to start getting visits.</p>
                     </div>
                 </div>
 
@@ -2412,6 +2540,7 @@
             document.getElementById('servicesSection').classList.add('hidden');
             document.getElementById('requestsSection').classList.add('hidden');
             document.getElementById('landrSection').classList.add('hidden');
+            document.getElementById('numbersSection').classList.add('hidden');
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
 
             if (section === 'settings') {
@@ -2428,6 +2557,10 @@
                 document.getElementById('requestsSection').classList.remove('hidden');
                 document.querySelectorAll('.nav-item')[3].classList.add('active');
                 loadRequests();
+            } else if (section === 'numbers') {
+                document.getElementById('numbersSection').classList.remove('hidden');
+                document.querySelectorAll('.nav-item')[4].classList.add('active');
+                loadNumbers();
             }
         }
 
@@ -3794,6 +3927,173 @@ window.addEventListener('message', function(e) {
         function showPopupInstallGuide() { document.getElementById('popupInstallModal').classList.remove('hidden'); }
         function closePopupInstallGuide() { document.getElementById('popupInstallModal').classList.add('hidden'); }
 
+        // ===================== MY NUMBERS =====================
+
+        window.currentNumbersFilter = 'last7';
+
+        function getDateRange(filter) {
+            const now = new Date();
+            const start = new Date();
+            const end = new Date();
+
+            switch(filter) {
+                case 'today':
+                    start.setHours(0,0,0,0);
+                    end.setHours(23,59,59,999);
+                    break;
+                case 'thisweek':
+                    const day = now.getDay();
+                    start.setDate(now.getDate() - day);
+                    start.setHours(0,0,0,0);
+                    end.setHours(23,59,59,999);
+                    break;
+                case 'last7':
+                    start.setDate(now.getDate() - 6);
+                    start.setHours(0,0,0,0);
+                    end.setHours(23,59,59,999);
+                    break;
+                case 'thismonth':
+                    start.setDate(1);
+                    start.setHours(0,0,0,0);
+                    end.setHours(23,59,59,999);
+                    break;
+                case 'lastmonth':
+                    start.setMonth(now.getMonth() - 1, 1);
+                    start.setHours(0,0,0,0);
+                    end.setMonth(now.getMonth(), 0);
+                    end.setHours(23,59,59,999);
+                    break;
+            }
+            return { start, end };
+        }
+
+        function setNumbersFilter(filter, btn) {
+            window.currentNumbersFilter = filter;
+            document.querySelectorAll('.numbers-filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            loadNumbers();
+        }
+
+        async function loadNumbers() {
+            if (!currentUser) return;
+
+            const { start, end } = getDateRange(window.currentNumbersFilter);
+
+            try {
+                // Fetch visits in range
+                const visitsSnap = await getDocs(query(
+                    collection(db, 'visits'),
+                    where('businessId', '==', window.businessId)
+                ));
+                let views = 0;
+                visitsSnap.forEach(d => {
+                    const date = new Date(d.data().createdAt);
+                    if (date >= start && date <= end) views++;
+                });
+
+                // Fetch requests in range
+                const requestsSnap = await getDocs(query(
+                    collection(db, 'quotes'),
+                    where('businessId', '==', window.businessId)
+                ));
+
+                let requestCount = 0;
+                let jobCount = 0;
+                let totalRevenue = 0;
+                let totalProfit = 0;
+                window.numbersFilteredRequests = [];
+
+                requestsSnap.forEach(d => {
+                    const req = { id: d.id, ...d.data() };
+                    const date = new Date(req.createdAt);
+                    if (date < start || date > end) return;
+
+                    requestCount++;
+                    window.numbersFilteredRequests.push(req);
+
+                    const status = req.quoteStatus || 'New';
+                    if (status === 'Fulfilled' || status === 'Paid') {
+                        jobCount++;
+                        const estimate = req.totalEstimate || 0;
+                        totalRevenue += estimate;
+
+                        // Calculate profit from line items
+                        if (req.services && req.services.length > 0) {
+                            req.services.forEach(service => {
+                                const lineTotal = service.priceType === 'perUnit'
+                                    ? service.basePrice * service.quantity
+                                    : service.basePrice;
+                                const lineCost = service.cost != null
+                                    ? (service.priceType === 'perUnit' ? service.cost * service.quantity : service.cost)
+                                    : 0;
+                                totalProfit += (lineTotal - lineCost);
+                            });
+                        }
+                    }
+                });
+
+                // Show/hide empty state
+                const hasData = views > 0 || requestCount > 0;
+                document.getElementById('numbersEmpty').classList.toggle('hidden', hasData);
+                document.getElementById('numbersGrid').style.display = hasData ? 'grid' : 'none';
+
+                if (!hasData) return;
+
+                // Request rate
+                const rate = views > 0 ? ((requestCount / views) * 100).toFixed(0) : 0;
+                const rateInX = views > 0 && requestCount > 0
+                    ? `1 in ${Math.round(views / requestCount)} visitors sent a request`
+                    : 'No requests yet';
+
+                // Update cards
+                document.getElementById('metricViews').textContent = views.toLocaleString();
+                document.getElementById('metricRequests').textContent = requestCount.toLocaleString();
+                document.getElementById('metricRate').textContent = rate + '%';
+                document.getElementById('metricRateSub').textContent = rateInX;
+                document.getElementById('metricJobs').textContent = jobCount.toLocaleString();
+                document.getElementById('metricRevenue').textContent = '$' + totalRevenue.toFixed(2);
+                document.getElementById('metricProfit').textContent = '$' + totalProfit.toFixed(2);
+
+            } catch (error) {
+                console.error('Error loading numbers:', error);
+            }
+        }
+
+        function downloadNumbersCSV() {
+            const requests = window.numbersFilteredRequests || [];
+            if (requests.length === 0) {
+                alert('No requests to export for this period.');
+                return;
+            }
+
+            const headers = ['Request Number', 'Customer Name', 'Phone', 'Email', 'Submitted', 'Status', 'Total'];
+            const rows = [headers.join(',')];
+
+            requests.forEach(req => {
+                const status = req.quoteStatus || 'New';
+                rows.push([
+                    `"${req.quoteNumber || ''}"`,
+                    `"${(req.customerName || '').replace(/"/g, '""')}"`,
+                    `"${(req.customerPhone || '').replace(/"/g, '""')}"`,
+                    `"${(req.customerEmail || '').replace(/"/g, '""')}"`,
+                    `"${req.createdAt ? new Date(req.createdAt).toLocaleString() : ''}"`,
+                    `"${status}"`,
+                    `"$${(req.totalEstimate || 0).toFixed(2)}"`
+                ].join(','));
+            });
+
+            const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const date = new Date().toISOString().split('T')[0];
+            a.href = url;
+            a.download = `my-numbers-${date}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
         // ===================== EXPORT =====================
 
         function showExportModal() {
@@ -3940,6 +4240,9 @@ window.addEventListener('message', function(e) {
         window.showPopupInstallGuide = showPopupInstallGuide;
         window.closePopupInstallGuide = closePopupInstallGuide;
         window.showExportModal = showExportModal;
+        window.setNumbersFilter = setNumbersFilter;
+        window.loadNumbers = loadNumbers;
+        window.downloadNumbersCSV = downloadNumbersCSV;
         window.closeExportModal = closeExportModal;
         window.runExportCSV = runExportCSV;
 
