@@ -1222,68 +1222,76 @@
         }
 
         @media (max-width: 768px) {
+            /* Fix 2 - body padding accounts for nav (70px) + disclaimer bar (35px) = 105px */
             body {
-                padding-bottom: 70px;
+                padding-bottom: 105px;
             }
 
+            /* Fix 3 - single declaration, no duplicate */
             .sidebar {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                height: auto;
-                border-right: none;
-                border-top: 1px solid var(--border);
-                padding: 0;
-                z-index: 1000;
-                background: var(--bg-card);
-                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+                position: fixed !important;
+                bottom: 35px !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 60px !important;
+                z-index: 1000 !important;
+                border-right: none !important;
+                border-top: 1px solid var(--border) !important;
+                padding: 0 !important;
+                background: var(--bg-card) !important;
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.1) !important;
+                /* Fix 5 - contain children */
+                overflow: hidden !important;
             }
 
             .sidebar-header {
-                display: none;
+                display: none !important;
             }
 
-            .main-content {
-                margin-left: 0;
-                padding: 16px;
+            /* Fix 6 - nav row layout */
+            .sidebar nav {
+                display: flex !important;
+                flex-direction: row !important;
+                justify-content: stretch !important;
+                align-items: stretch !important;
+                padding: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                overflow: hidden !important;
             }
 
-            .page-title {
-                font-size: 22px;
+            .nav-mobile-hide {
+                display: none !important;
             }
 
-            .request-row {
-                grid-template-columns: 1fr 1fr;
+            /* Fix 6 - prevent text overflow on small screens */
+            .nav-mobile-show {
+                display: flex !important;
+                flex: 1 1 50% !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                width: 50% !important;
+                overflow: hidden !important;
+                white-space: nowrap !important;
+                text-overflow: ellipsis !important;
+                padding: 0 4px !important;
+                font-size: 12px !important;
             }
 
-            .request-row > div:nth-child(3),
-            .request-row > div:nth-child(5) {
-                display: none;
+            .nav-logout {
+                display: none !important;
             }
 
-            .request-row-header {
-                display: none;
+            .sidebar > div[style*="flex: 1"] {
+                display: none !important;
             }
 
-            .modal-content {
-                width: 95%;
-                max-height: 95vh;
-            }
-
-            .stage-tracker {
-                gap: 0;
-            }
-
-            .stage-step {
-                min-width: 70px;
-            }
-        }
-
-        /* Mobile disclaimer bar */
-        @media (max-width: 768px) {
+            /* Fix 1 - disclaimer bar single clean declaration */
             #disclaimerDrawer {
                 left: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
                 padding: 8px 16px !important;
                 font-size: 10px !important;
                 text-align: center !important;
@@ -1330,43 +1338,45 @@
                 display: block !important;
             }
 
-            .sidebar {
-                position: fixed !important;
-                bottom: 35px !important;
+            /* Fix 4 - appFooter full width on mobile */
+            #appFooter {
                 left: 0 !important;
-                width: 100% !important;
-                height: 70px !important;
-                z-index: 1000 !important;
-            }
-
-            .sidebar nav {
-                display: flex !important;
-                flex-direction: row !important;
-                justify-content: stretch !important;
-                align-items: center !important;
-                padding: 0 !important;
-                width: 100% !important;
-            }
-
-            .nav-mobile-hide {
                 display: none !important;
             }
 
-            .nav-mobile-show {
-                display: flex !important;
-                flex: 1 1 50% !important;
-                flex-direction: column !important;
-                align-items: center !important;
-                justify-content: center !important;
-                width: 50% !important;
+            .main-content {
+                margin-left: 0;
+                padding: 16px;
             }
 
-            .nav-logout {
-                display: none !important;
+            .page-title {
+                font-size: 22px;
             }
 
-            .sidebar > div[style*="flex: 1"] {
-                display: none !important;
+            .request-row {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .request-row > div:nth-child(3),
+            .request-row > div:nth-child(5) {
+                display: none;
+            }
+
+            .request-row-header {
+                display: none;
+            }
+
+            .modal-content {
+                width: 95%;
+                max-height: 95vh;
+            }
+
+            .stage-tracker {
+                gap: 0;
+            }
+
+            .stage-step {
+                min-width: 70px;
             }
         }
     </style>
