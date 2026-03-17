@@ -643,6 +643,11 @@
 </head>
 <body>
 
+    <!-- Promo Banner -->
+    <div id="promoBanner" style="display:none; background:#3b89d8; color:white; text-align:center; padding:12px 20px; font-size:14px; font-weight:500; position:relative; z-index:200;">
+        🎉 Free for Riverside &amp; surrounding area businesses — <a href="https://land-r.com/admin?promo=true" style="color:white; font-weight:700; text-decoration:underline;">Click here to get started for free</a>
+    </div>
+
     <!-- Nav -->
     <nav>
         <a href="#" class="nav-logo">
@@ -804,7 +809,8 @@
     <section class="from">
         <span class="section-label">Who built this</span>
         <h2>Built in Riverside, CA.</h2>
-        <p><i>"Most software companies aren't interested in the person who details cars out of their driveway, bakes out of their home kitchen, hauls junk, cleans homes, etc. I built Land-r for the people doing the work that builds our community."</i></p>
+        <p>I'm not a funded startup. I'm someone from Riverside who saw small business owners doing real work without the tools to match. Land-r is what I wished existed — something you can set up in a lunch break that actually makes your business easier to run.</p>
+        <p>Logic Nerds builds tools for the little guys. This is one of them.</p>
         <div class="from-sig">
             <strong>Elijah — Founder, Logic Nerds</strong>
             Riverside, California
@@ -832,7 +838,17 @@
         <p class="footer-copy">© 2026 Logic Nerds · Riverside, California · Land-r is a Logic Nerds product.</p>
     </footer>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script>
+        // =====================================================================
+        // PROMO BANNER FLAG — set to true to show the promo banner
+        // Set to false to hide it when promo is over
+        const SHOW_PROMO_BANNER = true;
+        // =====================================================================
+
+        if (SHOW_PROMO_BANNER) {
+            document.getElementById('promoBanner').style.display = 'block';
+        }
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) entry.target.classList.add('visible');
