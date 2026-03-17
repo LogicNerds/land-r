@@ -1464,10 +1464,18 @@
                 display: none;
             }
 
-            /* Modals */
+            /* Modals - constrain to visible viewport above nav */
+            .modal {
+                align-items: flex-start !important;
+                padding: 20px 0 117px !important; /* 72px nav + 35px disclaimer + 10px breathing room */
+                overflow-y: auto !important;
+            }
+
             .modal-content {
-                width: 95%;
-                max-height: 90vh;
+                width: 95% !important;
+                max-height: none !important;
+                max-width: 100% !important;
+                flex-shrink: 0 !important;
             }
 
             /* Stage tracker */
