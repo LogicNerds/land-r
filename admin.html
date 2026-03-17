@@ -539,7 +539,9 @@
             max-width: 800px;
             width: 90%;
             max-height: 90vh;
-            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
         .modal-header {
@@ -573,6 +575,9 @@
 
         .modal-body {
             padding: 24px;
+            overflow-y: auto;
+            flex: 1;
+            -webkit-overflow-scrolling: touch;
         }
 
         .modal-footer {
@@ -581,6 +586,7 @@
             display: flex;
             gap: 12px;
             justify-content: flex-end;
+            flex-shrink: 0;
         }
 
         .modal-section {
@@ -1458,22 +1464,10 @@
                 display: none;
             }
 
-            /* Modals - footer always visible */
+            /* Modals */
             .modal-content {
                 width: 95%;
                 max-height: 90vh;
-                display: flex;
-                flex-direction: column;
-            }
-
-            .modal-body {
-                overflow-y: auto;
-                flex: 1;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            .modal-footer {
-                flex-shrink: 0;
             }
 
             /* Stage tracker */
