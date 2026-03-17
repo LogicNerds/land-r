@@ -2312,6 +2312,12 @@
             appId: "1:979036829063:web:c587dd1664322dceaacf22"
         };
 
+        // =====================================================================
+        // PROMO FLAG — set to true to give all new signups a free account
+        // Set to false to return to standard 7-day trial
+        const FREE_PROMO_ACTIVE = true;
+        // =====================================================================
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
@@ -2360,29 +2366,58 @@
                     }
                     setTimeout(() => updateSubscriptionStatusBanner(), 100);
                 } else {
-                    const trialEndsAt = new Date();
-                    trialEndsAt.setDate(trialEndsAt.getDate() + 7);
                     window.businessId = user.uid;
                     window.userRole = 'admin';
-                    window.currentUserData = {
-                        email: user.email,
-                        role: 'admin',
-                        businessId: user.uid,
-                        accountType: 'trial',
-                        subscriptionStatus: 'trial',
-                        trialEndsAt: trialEndsAt.toISOString(),
-                        createdAt: new Date().toISOString()
-                    };
-                    await setDoc(doc(db, 'users', user.uid), window.currentUserData);
-                    await setDoc(doc(db, 'businesses', user.uid), {
-                        ownerId: user.uid,
-                        userCount: 1,
-                        createdAt: new Date().toISOString()
-                    });
-                    setTimeout(() => {
-                        alert(`🎉 Welcome to Land-r!\n\nYou've started a 7-day free trial. No credit card required.\n\nTrial ends: ${trialEndsAt.toLocaleDateString()}\n\nGet started by setting up your business information and adding your services!`);
-                        updateSubscriptionStatusBanner();
-                    }, 500);
+
+                    // Check if promo parameter is in URL and promo is active
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const hasPromo = FREE_PROMO_ACTIVE && urlParams.get('promo') === 'true';
+
+                    if (hasPromo) {
+                        // Promo: free account for life
+                        window.currentUserData = {
+                            email: user.email,
+                            role: 'admin',
+                            businessId: user.uid,
+                            accountType: 'free',
+                            createdAt: new Date().toISOString()
+                        };
+                        await setDoc(doc(db, 'users', user.uid), window.currentUserData);
+                        await setDoc(doc(db, 'businesses', user.uid), {
+                            ownerId: user.uid,
+                            userCount: 1,
+                            createdAt: new Date().toISOString()
+                        });
+                        // Clean the promo param from URL
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                        setTimeout(() => {
+                            alert(`🎉 Welcome to Land-r!\n\nYou have free access — no credit card, no trial, no expiration.\n\nGet started by setting up your business information and adding your services!`);
+                            updateSubscriptionStatusBanner();
+                        }, 500);
+                    } else {
+                        // Standard: 7-day trial
+                        const trialEndsAt = new Date();
+                        trialEndsAt.setDate(trialEndsAt.getDate() + 7);
+                        window.currentUserData = {
+                            email: user.email,
+                            role: 'admin',
+                            businessId: user.uid,
+                            accountType: 'trial',
+                            subscriptionStatus: 'trial',
+                            trialEndsAt: trialEndsAt.toISOString(),
+                            createdAt: new Date().toISOString()
+                        };
+                        await setDoc(doc(db, 'users', user.uid), window.currentUserData);
+                        await setDoc(doc(db, 'businesses', user.uid), {
+                            ownerId: user.uid,
+                            userCount: 1,
+                            createdAt: new Date().toISOString()
+                        });
+                        setTimeout(() => {
+                            alert(`🎉 Welcome to Land-r!\n\nYou've started a 7-day free trial. No credit card required.\n\nTrial ends: ${trialEndsAt.toLocaleDateString()}\n\nGet started by setting up your business information and adding your services!`);
+                            updateSubscriptionStatusBanner();
+                        }, 500);
+                    }
                 }
                 document.getElementById('authSection').classList.add('hidden');
                 document.getElementById('adminPanel').classList.remove('hidden');
