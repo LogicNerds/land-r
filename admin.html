@@ -879,6 +879,21 @@
             background: var(--bg-card);
         }
 
+        @media (max-width: 768px) {
+            .team-members-row {
+                grid-template-columns: 1fr 80px !important;
+                gap: 8px !important;
+            }
+
+            .team-members-row > div:nth-child(3) {
+                display: none !important;
+            }
+
+            .team-members-row > div:nth-child(4) {
+                grid-column: 1 / -1;
+            }
+        }
+
         .team-members-row:hover {
             background: var(--bg-main);
         }
@@ -1241,7 +1256,7 @@
                 top: 0 !important;
                 left: 0 !important;
                 right: 0 !important;
-                bottom: 95px !important; /* 60px nav + 35px disclaimer */
+                bottom: 107px !important; /* 72px nav + 35px disclaimer */
                 margin: 0 !important;
                 padding: 16px !important;
                 overflow-y: auto !important;
@@ -1255,7 +1270,7 @@
                 left: 0 !important;
                 right: 0 !important;
                 width: 100% !important;
-                height: 60px !important;
+                height: 72px !important;
                 z-index: 1000 !important;
                 border-right: none !important;
                 border-top: 1px solid var(--border) !important;
@@ -1378,6 +1393,15 @@
                 font-size: 22px;
             }
 
+            /* Collapse all multi-column layouts on mobile */
+            .form-row {
+                grid-template-columns: 1fr !important;
+            }
+
+            .card {
+                padding: 16px !important;
+            }
+
             /* Request rows */
             .request-row {
                 grid-template-columns: 1fr 1fr;
@@ -1392,10 +1416,22 @@
                 display: none;
             }
 
-            /* Modals */
+            /* Modals - footer always visible */
             .modal-content {
                 width: 95%;
-                max-height: 85vh;
+                max-height: 90vh;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .modal-body {
+                overflow-y: auto;
+                flex: 1;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .modal-footer {
+                flex-shrink: 0;
             }
 
             /* Stage tracker */
