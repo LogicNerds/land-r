@@ -209,10 +209,22 @@
         .card-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 20px;
             padding-bottom: 16px;
             border-bottom: 1px solid var(--border);
+            gap: 16px;
+        }
+
+        .card-header > div {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-header > a,
+        .card-header > button {
+            flex-shrink: 0;
+            white-space: nowrap;
         }
 
         .card-title {
@@ -890,7 +902,11 @@
             }
 
             .team-members-row > div:nth-child(4) {
-                grid-column: 1 / -1;
+                display: none !important;
+            }
+
+            #inviteTeamBtn {
+                display: none !important;
             }
         }
 
@@ -1186,6 +1202,32 @@
             background: var(--primary);
             border-color: var(--primary);
             color: white;
+        }
+
+        /* Mobile Desktop Banner */
+        .mobile-desktop-banner {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-desktop-banner {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                background: #eff6ff;
+                border: 1px solid #bfdbfe;
+                border-radius: 8px;
+                padding: 10px 14px;
+                margin-bottom: 20px;
+                font-size: 13px;
+                color: #1e40af;
+                line-height: 1.4;
+            }
+
+            .mobile-desktop-banner .banner-icon {
+                font-size: 16px;
+                flex-shrink: 0;
+            }
         }
 
         /* Hidden */
@@ -1525,6 +1567,10 @@
                         <button id="mobileLogoutBtn" onclick="logout()" style="display: none; padding: 8px 16px; background: var(--danger); color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer;">Logout</button>
                     </div>
 
+                    <div class="mobile-desktop-banner">
+                        <span class="banner-icon">💻</span>
+                        <span>Log in at <strong>land-r.com/admin</strong> on desktop to manage your Land-r page, Offerings, and Users.</span>
+                    </div>
                     <!-- Trial/Subscription Status Banner -->
                     <div id="subscriptionStatusBanner" style="margin-bottom: 24px;"></div>
 
@@ -1707,6 +1753,10 @@
                         <button class="btn btn-secondary" onclick="showExportModal()">⬇ Export Requests</button>
                     </div>
 
+                    <div class="mobile-desktop-banner">
+                        <span class="banner-icon">💻</span>
+                        <span>Log in at <strong>land-r.com/admin</strong> on desktop to manage your Land-r page, Offerings, and Users.</span>
+                    </div>
                     <!-- Request Status Tabs -->
                     <div class="requests-tabs">
                         <div class="requests-tab active" onclick="showRequestsTab('New', this)">
@@ -1747,6 +1797,10 @@
                         <button class="btn btn-secondary" onclick="downloadNumbersCSV()">⬇ Download My Numbers</button>
                     </div>
 
+                    <div class="mobile-desktop-banner">
+                        <span class="banner-icon">💻</span>
+                        <span>Log in at <strong>land-r.com/admin</strong> on desktop to manage your Land-r page, Offerings, and Users.</span>
+                    </div>
                     <!-- Date Filter -->
                     <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px;flex-wrap:wrap;">
                         <span style="font-size:14px;font-weight:600;color:var(--text-secondary);">Showing:</span>
