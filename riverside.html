@@ -38,7 +38,7 @@
 
         .page {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 420px 1fr;
             min-height: 100vh;
         }
 
@@ -283,6 +283,58 @@
 
         .btn-goto:hover { background: var(--primary-dark); }
 
+        /* ===== MOBILE PROMO MODAL ===== */
+        .mobile-promo-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .mobile-promo-modal.visible {
+            display: flex;
+        }
+
+        .mobile-promo-inner {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 20px;
+            max-width: 380px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .mobile-promo-inner img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .btn-get-landr {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-get-landr:hover { background: var(--primary-dark); }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .page {
@@ -361,6 +413,15 @@
              alt="Land-r for Riverside businesses">
     </div>
 
+</div>
+
+<!-- Mobile Promo Modal -->
+<div id="mobilePromoModal" class="mobile-promo-modal">
+    <div class="mobile-promo-inner">
+        <img src="https://raw.githubusercontent.com/LogicNerds/land-r/main/Land-r%20Assets/landr-login-promo.png"
+             alt="Land-r for Riverside businesses">
+        <button class="btn-get-landr" onclick="closePromoModal()">Get Land-r Free →</button>
+    </div>
 </div>
 
 <!-- Firebase -->
@@ -501,6 +562,17 @@
     window.doLogin = doLogin;
     window.doSignup = doSignup;
     window.doForgotPassword = doForgotPassword;
+
+    // Show promo modal on mobile on first load
+    function closePromoModal() {
+        document.getElementById('mobilePromoModal').classList.remove('visible');
+    }
+
+    window.closePromoModal = closePromoModal;
+
+    if (window.innerWidth <= 768) {
+        document.getElementById('mobilePromoModal').classList.add('visible');
+    }
 </script>
 
 </body>
