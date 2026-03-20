@@ -221,10 +221,14 @@
         /* ===== RIGHT — IMAGE ===== */
         .image-side {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             background: var(--white);
             padding: 48px 40px;
+            /* Align image top with the heading on the left.
+               Left side has 48px top padding + logo (40px) + logo margin-bottom (32px)
+               + promo badge (~37px) + badge margin-bottom (24px) = ~181px before heading */
+            padding-top: 181px;
         }
 
         .image-side img {
