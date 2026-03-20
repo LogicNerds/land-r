@@ -233,7 +233,6 @@
 
         .image-side img {
             width: 100%;
-            max-width: 460px;
             height: auto;
             display: block;
             border-radius: 12px;
@@ -305,18 +304,22 @@
         .mobile-promo-inner {
             background: var(--white);
             border-radius: 16px;
-            padding: 20px;
-            max-width: 380px;
+            padding: 0;
+            max-width: 420px;
             width: 100%;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
         }
 
         .mobile-promo-inner img {
             width: 100%;
             height: auto;
-            border-radius: 8px;
             display: block;
-            margin-bottom: 16px;
+            margin-bottom: 0;
+        }
+
+        .mobile-promo-btn-wrap {
+            padding: 16px;
         }
 
         .btn-get-landr {
@@ -420,7 +423,9 @@
     <div class="mobile-promo-inner">
         <img src="https://raw.githubusercontent.com/LogicNerds/land-r/main/Land-r%20Assets/landr-login-promo.png"
              alt="Land-r for Riverside businesses">
-        <button class="btn-get-landr" onclick="closePromoModal()">Get Land-r Free →</button>
+        <div class="mobile-promo-btn-wrap">
+            <button class="btn-get-landr" onclick="closePromoModal()">Get Land-r Free →</button>
+        </div>
     </div>
 </div>
 
