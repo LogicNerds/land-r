@@ -562,6 +562,27 @@
         /* ===== HIDDEN ===== */
         .hidden { display: none !important; }
 
+        /* ===== SOCIALS ===== */
+        .hero-socials {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .social-icon-link img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .social-icon-link:hover img {
+            opacity: 0.75;
+            transform: translateY(-2px);
+        }
+
         /* ===== FADE IN ===== */
         .fade-in {
             animation: fadeIn 0.4s ease forwards;
@@ -599,6 +620,7 @@
                 <h1 id="heroHeadline">We're Ready to Help</h1>
                 <div id="heroMessage" class="hero-message"></div>
                 <div id="heroContact" class="hero-contact"></div>
+                <div id="heroSocials" class="hero-socials hidden"></div>
             </div>
         </div>
 
@@ -649,6 +671,13 @@
                 </div>
 
                 <div id="formError" class="error-msg"></div>
+                <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;">
+                    <input type="checkbox" id="emailOptIn" checked
+                        style="width:18px;height:18px;accent-color:var(--primary);cursor:pointer;flex-shrink:0;margin-top:2px;">
+                    <label for="emailOptIn" id="optInLabel" style="font-size:14px;color:var(--text-light);cursor:pointer;line-height:1.5;">
+                        I'd like to receive future offers and updates from this business.
+                    </label>
+                </div>
                 <button id="submitBtn" class="submit-btn" onclick="submitRequest()">Submit My Request</button>
             </div>
 
@@ -851,6 +880,35 @@
 
             // Footer
             if (d.businessName) document.getElementById('footerName').textContent = `© ${new Date().getFullYear()} ${d.businessName}`;
+
+            // Opt-in label with business name
+            const optInLabel = document.getElementById('optInLabel');
+            if (optInLabel && d.businessName) {
+                optInLabel.textContent = `I'd like to receive future offers and updates from ${d.businessName}.`;
+            }
+
+            // Socials
+            const SOCIALS_CONFIG = [
+                { key: 'instagram', prefix: 'https://instagram.com/',        icon: 'Instagram-logo.png' },
+                { key: 'facebook',  prefix: 'https://facebook.com/',         icon: 'facebook-logo.png' },
+                { key: 'x',         prefix: 'https://x.com/',                icon: 'x-logo.png' },
+                { key: 'tiktok',    prefix: 'https://tiktok.com/@',          icon: 'tiktok-logo.png' },
+                { key: 'youtube',   prefix: 'https://youtube.com/@',         icon: 'youtube-logo.png' },
+                { key: 'yelp',      prefix: 'https://yelp.com/biz/',         icon: 'yelp-logo.png' },
+                { key: 'nextdoor',  prefix: 'https://nextdoor.com/pages/',   icon: 'nextdoor-logo.png' },
+            ];
+            const ICON_BASE = 'https://raw.githubusercontent.com/LogicNerds/land-r/main/Land-r%20Assets/';
+            const socials = d.socials || {};
+            const socialsEl = document.getElementById('heroSocials');
+            const socialLinks = SOCIALS_CONFIG
+                .filter(s => socials[s.key] && socials[s.key].trim())
+                .map(s => `<a href="${s.prefix}${encodeURIComponent(socials[s.key].replace(/^@/, ''))}" target="_blank" rel="noopener" class="social-icon-link">
+                    <img src="${ICON_BASE}${s.icon}" alt="${s.key}">
+                </a>`).join('');
+            if (socialLinks) {
+                socialsEl.innerHTML = socialLinks;
+                socialsEl.classList.remove('hidden');
+            }
         }
 
         // ===== RENDER SERVICES =====
@@ -985,6 +1043,7 @@
                 customerEmail: email,
                 customerPhone: phone,
                 notes: notes,
+                emailOptIn: document.getElementById('emailOptIn')?.checked ?? true,
                 services: Array.from(window.selectedServices.values()).map(({ quantity, service }) => ({
                     serviceId: service.id,
                     serviceName: service.name,
