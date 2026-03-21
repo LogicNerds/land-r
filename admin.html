@@ -3957,12 +3957,22 @@ window.addEventListener('message', function(e) {
         }
 
         async function removeTeamMember(userId, email) {
-            if (!confirm(`Remove ${email} from your team?`)) return;
+            if (!confirm(`Remove ${email} from your team?\n\nThis will permanently delete their account and they will no longer be able to log in.`)) return;
             try {
-                await deleteDoc(doc(db, 'users', userId));
-                const businessDoc = await getDoc(doc(db, 'businesses', window.businessId));
-                const userCount = businessDoc.data()?.userCount || 2;
-                await setDoc(doc(db, 'businesses', window.businessId), { userCount: Math.max(1, userCount - 1) }, { merge: true });
+                const response = await fetch('https://us-central1-quickquote-aaf57.cloudfunctions.net/deleteTeamMember', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        requestingUserId: window.currentUser.uid,
+                        targetUserId: userId,
+                        businessId: window.businessId
+                    })
+                });
+                const data = await response.json();
+                if (data.error) {
+                    alert('Error removing team member: ' + data.error);
+                    return;
+                }
                 alert('✓ Team member removed');
                 await loadTeamMembers();
             } catch (error) {
