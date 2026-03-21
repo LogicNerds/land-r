@@ -2349,7 +2349,7 @@
                     <button onclick="closeWelcomeOpenGuide()" style="padding:12px 24px;background:transparent;color:var(--primary);border:2px solid var(--primary);border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">📖 Quick Setup Guide</button>
                     <button onclick="closeWelcomeOpenWizard()" style="padding:12px 24px;background:var(--primary);color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">✨ Setup Wizard</button>
                 </div>
-                <button onclick="document.getElementById('welcomeModal').classList.add('hidden')" style="margin-top:16px;background:none;border:none;color:var(--text-secondary);font-size:13px;cursor:pointer;text-decoration:underline;">I'll set up on my own</button>
+                <button onclick="dismissWelcomeModal()" style="margin-top:16px;background:none;border:none;color:var(--text-secondary);font-size:13px;cursor:pointer;text-decoration:underline;">I'll set up on my own</button>
             </div>
         </div>
     </div>
@@ -2479,6 +2479,10 @@
                         hideAccessBlockedOverlay();
                     }
                     setTimeout(() => updateSubscriptionStatusBanner(), 100);
+                    // Show welcome modal if this is a new business owner who hasn't completed first login
+                    if (window.userRole === 'admin' && userDoc.data().firstLoginComplete === false) {
+                        setTimeout(() => showWelcomeModal(), 600);
+                    }
                 } else {
                     window.businessId = user.uid;
                     window.userRole = 'admin';
@@ -2494,6 +2498,7 @@
                             role: 'admin',
                             businessId: user.uid,
                             accountType: 'free',
+                            firstLoginComplete: false,
                             createdAt: new Date().toISOString()
                         };
                         await setDoc(doc(db, 'users', user.uid), window.currentUserData);
@@ -2519,6 +2524,7 @@
                             accountType: 'trial',
                             subscriptionStatus: 'trial',
                             trialEndsAt: trialEndsAt.toISOString(),
+                            firstLoginComplete: false,
                             createdAt: new Date().toISOString()
                         };
                         await setDoc(doc(db, 'users', user.uid), window.currentUserData);
@@ -4675,8 +4681,16 @@ window.addEventListener('message', function(e) {
             document.getElementById('welcomeModal').classList.remove('hidden');
         }
 
+        async function dismissWelcomeModal() {
+            document.getElementById('welcomeModal').classList.add('hidden');
+            try {
+                await setDoc(doc(db, 'users', window.currentUser.uid), { firstLoginComplete: true }, { merge: true });
+            } catch(e) { console.error('dismissWelcomeModal flag write failed:', e); }
+        }
+
         function closeWelcomeOpenGuide() {
             document.getElementById('welcomeModal').classList.add('hidden');
+            dismissWelcomeModal();
             showSetupGuide();
         }
 
@@ -5011,6 +5025,7 @@ window.addEventListener('message', function(e) {
         window.downloadQRCode = downloadQRCode;
         window.goToTriageStatus = goToTriageStatus;
         window.showWelcomeModal = showWelcomeModal;
+        window.dismissWelcomeModal = dismissWelcomeModal;
         window.closeWelcomeOpenGuide = closeWelcomeOpenGuide;
         window.closeWelcomeOpenWizard = closeWelcomeOpenWizard;
         window.showSetupWizard = showSetupWizard;
