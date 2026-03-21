@@ -452,10 +452,13 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // If already logged in, redirect to admin
-    onAuthStateChanged(auth, (user) => {
+    // If already logged in, redirect to admin (only if user doc exists — don't race with signup)
+    onAuthStateChanged(auth, async (user) => {
         if (user) {
-            window.location.href = 'https://land-r.com/admin';
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            if (userDoc.exists()) {
+                window.location.href = 'https://land-r.com/admin';
+            }
         }
     });
 
