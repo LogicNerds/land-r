@@ -445,7 +445,7 @@
         projectId: "quickquote-aaf57",
         storageBucket: "quickquote-aaf57.firebasestorage.app",
         messagingSenderId: "979036829063",
-        appId: "1:979036829063:web:c587dd1664322dceaacf22"
+        appId: "1:979036829063:web:c587dd1664322dceaacf22",
     };
 
     const app = initializeApp(firebaseConfig);
@@ -506,6 +506,7 @@
                     businessId: user.uid,
                     accountType: 'free',
                     promoSource: 'riverside',
+                    firstLoginComplete: false,
                     createdAt: new Date().toISOString()
                 });
             } else {
@@ -519,6 +520,7 @@
                     accountType: 'trial',
                     subscriptionStatus: 'trial',
                     trialEndsAt: trialEndsAt.toISOString(),
+                    firstLoginComplete: false,
                     createdAt: new Date().toISOString()
                 });
             }
