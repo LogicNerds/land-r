@@ -12,6 +12,8 @@
     <!-- Quill Rich Text Editor -->
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <!-- QR Code Generator -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -1652,6 +1654,26 @@
                         <button class="btn btn-success" onclick="saveBusinessSettings()">Save Settings</button>
                     </div>
 
+                    <!-- QR Code Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h3 class="card-title">Your QR Code</h3>
+                                <p class="card-description">Share or print this to send customers directly to your Land-r page</p>
+                            </div>
+                            <button class="btn btn-secondary" onclick="downloadQRCode()">⬇ Download PNG</button>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:32px;flex-wrap:wrap;">
+                            <div id="qrCodeContainer" style="width:160px;height:160px;background:#f8fafc;border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                                <span style="font-size:12px;color:var(--text-secondary);">Loading...</span>
+                            </div>
+                            <div style="flex:1;min-width:200px;">
+                                <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Print this on business cards, flyers, or anywhere customers can scan it to go straight to your Land-r page.</p>
+                                <p style="font-size:13px;color:var(--text-secondary);margin-top:8px;">Your QR code is automatically generated from your Land-r URL and updates if your URL changes.</p>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Team Members Section -->
                     <div class="card" id="teamMembersCard">
                         <div class="card-header">
@@ -1908,6 +1930,20 @@
                                 <button class="btn btn-success" onclick="saveLandrPage()">Save Changes</button>
                             </div>
 
+                            <!-- Socials Card -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <div>
+                                        <h3 class="card-title">Social Links</h3>
+                                        <p class="card-description">Check a platform and enter your handle to show its icon on your Land-r page</p>
+                                    </div>
+                                </div>
+                                <div id="socialsList" style="display:flex;flex-direction:column;gap:16px;">
+                                    <!-- rendered by JS -->
+                                </div>
+                                <button class="btn btn-success" onclick="saveLandrPage()" style="margin-top:20px;">Save Changes</button>
+                            </div>
+
                             <div class="card">
                                 <div class="card-header">
                                     <div>
@@ -1918,6 +1954,7 @@
 
                                 <div class="form-group">
                                     <label>Land-r URL</label>
+                                    <p class="label-hint" style="margin-bottom: 8px;">Share this link on social media, in texts, or anywhere online.</p>
                                     <div class="url-display" id="calculatorUrl" style="margin-bottom: 10px;">Loading...</div>
                                     <div class="url-actions">
                                         <button class="btn btn-primary btn-sm" onclick="copyUrl()">Copy Link</button>
@@ -1927,13 +1964,14 @@
 
                                 <div class="form-group">
                                     <label>Embed Code (iFrame)</label>
+                                    <p class="label-hint" style="margin-bottom: 8px;">Use this to embed your Land-r page directly into an existing website.</p>
                                     <div class="url-display" id="embedCode" style="font-size: 11px; line-height: 1.6; margin-bottom: 10px;">Loading...</div>
                                     <button class="btn btn-primary btn-sm" onclick="copyEmbedCode()">Copy iFrame Code</button>
                                 </div>
 
                                 <div class="form-group">
                                     <label>Pop-up Widget Code</label>
-                                    <p class="label-hint" style="margin-bottom: 8px;">Floating button in bottom-right corner (like a chatbot)</p>
+                                    <p class="label-hint" style="margin-bottom: 8px;">Use this to add a floating pop-up button to the lower right corner of your existing website.</p>
                                     <div class="url-display" id="popupCode" style="font-size: 11px; line-height: 1.6; margin-bottom: 10px;">Loading...</div>
                                     <div style="display: flex; gap: 8px; align-items: center;">
                                         <button class="btn btn-primary btn-sm" onclick="copyPopupCode()">Copy Pop-up Code</button>
@@ -2423,6 +2461,7 @@
                 document.getElementById('adminPanel').classList.remove('hidden');
                 await loadBusinessData();
                 await loadTeamMembers();
+                await checkTriageAlerts();
             } else {
                 window.currentUser = null;
                 window.currentUserData = null;
@@ -2757,10 +2796,17 @@
                         document.getElementById('logoPreview').src = data.logoUrl;
                         document.getElementById('logoPreviewContainer').classList.remove('hidden');
                     }
+                    // Socials
+                    renderSocialsList(data.socials || {});
                 }
                 await loadServices();
                 await loadRequests();
                 updateLandrUrl();
+                // Generate QR after URL is known
+                setTimeout(() => {
+                    const idParam = window.businessSlug || window.businessId;
+                    if (idParam) generateQRCode(`https://land-r.com/land-r.html?id=${idParam}`);
+                }, 300);
             } catch (error) {
                 console.error('Error loading data:', error);
             }
@@ -3217,6 +3263,182 @@
             else { unitInput.style.display = 'none'; unitInput.value = ''; }
         }
 
+        // ===================== SOCIALS =====================
+
+        const SOCIALS_CONFIG = [
+            { key: 'instagram',  label: 'Instagram',  placeholder: 'yourhandle',      prefix: 'https://instagram.com/',       icon: 'Instagram-logo.png' },
+            { key: 'facebook',   label: 'Facebook',   placeholder: 'yourpagename',    prefix: 'https://facebook.com/',        icon: 'facebook-logo.png' },
+            { key: 'x',          label: 'X',          placeholder: 'yourhandle',      prefix: 'https://x.com/',               icon: 'x-logo.png' },
+            { key: 'tiktok',     label: 'TikTok',     placeholder: '@yourhandle',     prefix: 'https://tiktok.com/@',         icon: 'tiktok-logo.png' },
+            { key: 'youtube',    label: 'YouTube',    placeholder: '@yourchannel',    prefix: 'https://youtube.com/@',        icon: 'youtube-logo.png' },
+            { key: 'yelp',       label: 'Yelp',       placeholder: 'your-business',   prefix: 'https://yelp.com/biz/',        icon: 'yelp-logo.png' },
+            { key: 'nextdoor',   label: 'Nextdoor',   placeholder: 'your-neighborhood', prefix: 'https://nextdoor.com/pages/', icon: 'nextdoor-logo.png' },
+        ];
+
+        const ICON_BASE = 'https://raw.githubusercontent.com/LogicNerds/land-r/main/Land-r%20Assets/';
+
+        function renderSocialsList(savedSocials) {
+            const container = document.getElementById('socialsList');
+            if (!container) return;
+            container.innerHTML = '';
+            SOCIALS_CONFIG.forEach(s => {
+                const val = savedSocials?.[s.key] || '';
+                const checked = !!val;
+                const row = document.createElement('div');
+                row.style.cssText = 'display:flex;align-items:center;gap:12px;';
+                row.innerHTML = `
+                    <input type="checkbox" id="social-chk-${s.key}" ${checked ? 'checked' : ''}
+                        onchange="toggleSocialInput('${s.key}')"
+                        style="width:18px;height:18px;accent-color:var(--primary);cursor:pointer;flex-shrink:0;">
+                    <img src="${ICON_BASE}${s.icon}" alt="${s.label}" style="width:24px;height:24px;object-fit:contain;flex-shrink:0;">
+                    <label for="social-chk-${s.key}" style="font-size:14px;font-weight:500;min-width:80px;cursor:pointer;">${s.label}</label>
+                    <input type="text" id="social-input-${s.key}" placeholder="${s.placeholder}"
+                        value="${val}"
+                        style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;display:${checked ? 'block' : 'none'};">
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function toggleSocialInput(key) {
+            const chk = document.getElementById(`social-chk-${key}`);
+            const inp = document.getElementById(`social-input-${key}`);
+            if (!chk || !inp) return;
+            inp.style.display = chk.checked ? 'block' : 'none';
+            if (!chk.checked) inp.value = '';
+        }
+
+        function collectSocials() {
+            const result = {};
+            SOCIALS_CONFIG.forEach(s => {
+                const chk = document.getElementById(`social-chk-${s.key}`);
+                const inp = document.getElementById(`social-input-${s.key}`);
+                if (chk?.checked && inp?.value.trim()) {
+                    result[s.key] = inp.value.trim();
+                }
+            });
+            return result;
+        }
+
+        // ===================== QR CODE =====================
+
+        let qrInstance = null;
+
+        function generateQRCode(url) {
+            const container = document.getElementById('qrCodeContainer');
+            if (!container || !url) return;
+            container.innerHTML = '';
+            qrInstance = new QRCode(container, {
+                text: url,
+                width: 160,
+                height: 160,
+                colorDark: '#0f172a',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.M
+            });
+        }
+
+        function downloadQRCode() {
+            const container = document.getElementById('qrCodeContainer');
+            if (!container) return;
+            const img = container.querySelector('img');
+            const canvas = container.querySelector('canvas');
+            let dataUrl;
+            if (canvas) {
+                dataUrl = canvas.toDataURL('image/png');
+            } else if (img) {
+                dataUrl = img.src;
+            } else {
+                alert('QR code not ready yet.');
+                return;
+            }
+            const a = document.createElement('a');
+            a.href = dataUrl;
+            a.download = 'land-r-qr-code.png';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // ===================== TRIAGE MODAL =====================
+
+        async function checkTriageAlerts() {
+            if (!currentUser || !window.businessId) return;
+            // Only show once per login session
+            if (sessionStorage.getItem('triage_shown_' + window.businessId)) return;
+
+            const WATCH_STATUSES = ['New', 'Accepted', 'Scheduled', 'Fulfilled'];
+            const TWO_DAYS_AGO = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
+
+            try {
+                const snapshot = await getDocs(query(collection(db, 'quotes'), where('businessId', '==', window.businessId)));
+                const staleCounts = {};
+                WATCH_STATUSES.forEach(s => staleCounts[s] = 0);
+
+                snapshot.forEach(d => {
+                    const req = d.data();
+                    let status = req.quoteStatus || 'New';
+                    if (!WATCH_STATUSES.includes(status)) return;
+                    const lastActivity = req.lastTouched ? new Date(req.lastTouched) : new Date(req.createdAt);
+                    if (lastActivity < TWO_DAYS_AGO) {
+                        staleCounts[status]++;
+                    }
+                });
+
+                const staleItems = WATCH_STATUSES.filter(s => staleCounts[s] > 0);
+                if (staleItems.length === 0) return;
+
+                sessionStorage.setItem('triage_shown_' + window.businessId, '1');
+
+                // Build modal
+                const modal = document.createElement('div');
+                modal.id = 'triageModal';
+                modal.style.cssText = `position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:10002;display:flex;align-items:center;justify-content:center;padding:20px;`;
+
+                const bullets = staleItems.map(s => {
+                    const count = staleCounts[s];
+                    const label = `${count} ${s} Request${count !== 1 ? 's' : ''}`;
+                    return `<li style="margin-bottom:12px;">
+                        <a href="#" onclick="goToTriageStatus('${s}');return false;"
+                            style="color:var(--primary);font-size:15px;font-weight:600;text-decoration:none;">
+                            ${label}
+                        </a>
+                        <span style="font-size:13px;color:var(--text-secondary);margin-left:6px;">— no activity in 2+ days</span>
+                    </li>`;
+                }).join('');
+
+                modal.innerHTML = `
+                    <div style="background:white;border-radius:16px;max-width:500px;width:100%;padding:40px;box-shadow:0 20px 60px rgba(0,0,0,0.2);text-align:center;">
+                        <div style="font-size:36px;margin-bottom:16px;">⏰</div>
+                        <h2 style="font-size:22px;font-weight:700;color:var(--text-primary);margin-bottom:8px;">Heads up — these may need attention</h2>
+                        <p style="font-size:14px;color:var(--text-secondary);margin-bottom:24px;">The following requests haven't had any activity in 2 or more days:</p>
+                        <ul style="list-style:none;padding:0;margin:0 0 28px;text-align:left;">
+                            ${bullets}
+                        </ul>
+                        <button onclick="document.getElementById('triageModal').remove()"
+                            style="background:var(--primary);color:white;border:none;padding:12px 32px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;width:100%;">
+                            Got It
+                        </button>
+                    </div>`;
+                document.body.appendChild(modal);
+
+            } catch (e) {
+                console.error('Triage check failed:', e);
+            }
+        }
+
+        function goToTriageStatus(status) {
+            document.getElementById('triageModal')?.remove();
+            showSection('requests');
+            // Find the tab button matching this status and click it
+            const tabs = document.querySelectorAll('.requests-tab');
+            tabs.forEach(tab => {
+                if (tab.textContent.trim().startsWith(status)) {
+                    tab.click();
+                }
+            });
+        }
+
         // ===================== LAND-R PAGE =====================
 
         function updateLandrUrl() {
@@ -3281,6 +3503,7 @@ window.addEventListener('message', function(e) {
                 servicesDisclaimer: servicesDisclaimerEditor.root.innerHTML,
                 whyChooseUs: document.getElementById('whyChooseUs').value,
                 landingTextColor: document.getElementById('landingTextColor').value,
+                socials: collectSocials(),
                 updatedAt: new Date().toISOString()
             };
             try {
@@ -3516,6 +3739,11 @@ window.addEventListener('message', function(e) {
                                         <input type="email" id="editCustomerEmail" value="${req.customerEmail || ''}" placeholder="customer@email.com"
                                             style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;">
                                         <button class="btn btn-primary btn-sm" onclick="emailCustomer(document.getElementById('editCustomerEmail').value, '${req.quoteNumber}')">✉</button>
+                                    </div>
+                                    <div style="margin-top:6px;">
+                                        ${req.emailOptIn === true
+                                            ? `<span style="font-size:12px;font-weight:600;color:#10b981;background:#d1fae5;padding:2px 8px;border-radius:4px;">✓ Email opt-in</span>`
+                                            : `<span style="font-size:12px;font-weight:600;color:#64748b;background:#f1f5f9;padding:2px 8px;border-radius:4px;">✗ No opt-in</span>`}
                                     </div>
                                 </div>
                                 <div class="form-group" style="margin-bottom:0;">
@@ -4420,6 +4648,9 @@ window.addEventListener('message', function(e) {
         window.downloadNumbersCSV = downloadNumbersCSV;
         window.closeExportModal = closeExportModal;
         window.runExportCSV = runExportCSV;
+        window.toggleSocialInput = toggleSocialInput;
+        window.downloadQRCode = downloadQRCode;
+        window.goToTriageStatus = goToTriageStatus;
 
         window.storageRef = ref;
         window.uploadBytesResumable = uploadBytesResumable;
