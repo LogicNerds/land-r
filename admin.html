@@ -1243,6 +1243,18 @@
             display: none;
         }
 
+        /* Wizard step dots */
+        .wizard-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border);
+            transition: background 0.2s;
+        }
+        .wizard-dot.active {
+            background: var(--primary);
+        }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .sidebar {
@@ -1585,6 +1597,8 @@
                                 <p class="card-description">This information will be displayed on your Land-r page</p>
                             </div>
                             <a href="#" onclick="showSetupGuide(); return false;" style="color: var(--primary); text-decoration: none; font-size: 14px; font-weight: 500;">📖 Quick Setup Guide</a>
+                            <span style="color: var(--border); margin: 0 4px;">|</span>
+                            <a href="#" onclick="showSetupWizard(); return false;" style="color: var(--primary); text-decoration: none; font-size: 14px; font-weight: 500;">✨ Setup Wizard</a>
                         </div>
 
                         <div class="form-group">
@@ -2306,6 +2320,68 @@
         </div>
     </div>
 
+    <!-- ===================== WELCOME MODAL ===================== -->
+    <div id="welcomeModal" class="modal hidden" style="z-index:10003;">
+        <div class="modal-content" style="max-width:520px;">
+            <div class="modal-body" style="padding:40px;text-align:center;">
+                <div style="font-size:48px;margin-bottom:16px;">🎉</div>
+                <h2 style="font-size:24px;font-weight:700;color:var(--text-primary);margin-bottom:8px;">Welcome to Land-r!</h2>
+                <p style="font-size:15px;color:var(--text-secondary);margin-bottom:28px;line-height:1.6;">You're a few minutes away from your personalized Land-r!</p>
+                <ul style="list-style:none;padding:0;margin:0 0 32px;text-align:left;display:flex;flex-direction:column;gap:14px;">
+                    <li style="display:flex;align-items:flex-start;gap:12px;">
+                        <span style="font-size:20px;flex-shrink:0;">🏢</span>
+                        <span style="font-size:14px;color:var(--text-primary);line-height:1.5;"><strong>Add your business info</strong> — your name, logo, and contact details</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:12px;">
+                        <span style="font-size:20px;flex-shrink:0;">✨</span>
+                        <span style="font-size:14px;color:var(--text-primary);line-height:1.5;"><strong>Customize your page</strong> — write a headline and welcome message your customers will see</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:12px;">
+                        <span style="font-size:20px;flex-shrink:0;">📋</span>
+                        <span style="font-size:14px;color:var(--text-primary);line-height:1.5;"><strong>Add your services</strong> — the offerings customers can select and request</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:12px;">
+                        <span style="font-size:20px;flex-shrink:0;">🔗</span>
+                        <span style="font-size:14px;color:var(--text-primary);line-height:1.5;"><strong>Share your link</strong> — post it anywhere and start getting requests</span>
+                    </li>
+                </ul>
+                <div style="display:flex;gap:12px;justify-content:center;">
+                    <button onclick="closeWelcomeOpenGuide()" style="padding:12px 24px;background:transparent;color:var(--primary);border:2px solid var(--primary);border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">📖 Quick Setup Guide</button>
+                    <button onclick="closeWelcomeOpenWizard()" style="padding:12px 24px;background:var(--primary);color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">✨ Setup Wizard</button>
+                </div>
+                <button onclick="document.getElementById('welcomeModal').classList.add('hidden')" style="margin-top:16px;background:none;border:none;color:var(--text-secondary);font-size:13px;cursor:pointer;text-decoration:underline;">I'll set up on my own</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== SETUP WIZARD MODAL ===================== -->
+    <div id="setupWizardModal" class="modal hidden" style="z-index:10003;align-items:flex-start;padding:40px 20px 120px;">
+        <div class="modal-content" style="max-width:560px;">
+            <div class="modal-header">
+                <div>
+                    <h2 style="font-size:20px;">✨ Setup Wizard</h2>
+                    <div id="wizardStepLabel" style="font-size:13px;color:var(--text-secondary);margin-top:2px;">Step 1 of 4</div>
+                </div>
+                <button class="modal-close" onclick="closeWizard()">×</button>
+            </div>
+            <!-- Step dots -->
+            <div style="display:flex;gap:8px;justify-content:center;padding:16px 24px 0;">
+                <div class="wizard-dot active" id="wdot-1"></div>
+                <div class="wizard-dot" id="wdot-2"></div>
+                <div class="wizard-dot" id="wdot-3"></div>
+                <div class="wizard-dot" id="wdot-4"></div>
+            </div>
+            <div class="modal-body" id="wizardBody" style="padding:24px 32px;"></div>
+            <div class="modal-footer" style="justify-content:space-between;">
+                <button class="btn btn-secondary" id="wizardBackBtn" onclick="wizardBack()" style="display:none;">← Back</button>
+                <div style="display:flex;gap:12px;margin-left:auto;">
+                    <button class="btn btn-primary" id="wizardNextBtn" onclick="wizardNext()">Next →</button>
+                    <button class="btn btn-success hidden" id="wizardFinishBtn" onclick="wizardFinish()">Finish Setup ✓</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <div id="appFooter" style="position: fixed; bottom: 0; left: var(--sidebar-width); right: 0; background: var(--bg-card); border-top: 1px solid var(--border); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--text-secondary); z-index: 100;">
         <div>© 2026 Logic Nerds. All rights reserved.</div>
@@ -2429,8 +2505,8 @@
                         // Clean the promo param from URL
                         window.history.replaceState({}, document.title, window.location.pathname);
                         setTimeout(() => {
-                            alert(`🎉 Welcome to Land-r!\n\nYou have free access — no credit card, no trial, no expiration.\n\nGet started by setting up your business information and adding your services!`);
                             updateSubscriptionStatusBanner();
+                            showWelcomeModal();
                         }, 500);
                     } else {
                         // Standard: 7-day trial
@@ -2452,8 +2528,8 @@
                             createdAt: new Date().toISOString()
                         });
                         setTimeout(() => {
-                            alert(`🎉 Welcome to Land-r!\n\nYou've started a 7-day free trial. No credit card required.\n\nTrial ends: ${trialEndsAt.toLocaleDateString()}\n\nGet started by setting up your business information and adding your services!`);
                             updateSubscriptionStatusBanner();
+                            showWelcomeModal();
                         }, 500);
                     }
                 }
@@ -2764,6 +2840,16 @@
             } else if (section === 'numbers') {
                 document.getElementById('numbersSection').classList.remove('hidden');
                 document.querySelectorAll('.nav-item')[4].classList.add('active');
+                // Re-sync the active button with the current filter state then load
+                const activeBtn = document.querySelector(`#dateFilterBtns .numbers-filter-btn.active`);
+                const filterToUse = window.currentNumbersFilter || 'today';
+                document.querySelectorAll('.numbers-filter-btn').forEach(b => b.classList.remove('active'));
+                // Find and activate the correct button
+                document.querySelectorAll('.numbers-filter-btn').forEach(b => {
+                    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(`'${filterToUse}'`)) {
+                        b.classList.add('active');
+                    }
+                });
                 loadNumbers();
             }
         }
@@ -4332,7 +4418,7 @@ window.addEventListener('message', function(e) {
 
         // ===================== MY NUMBERS =====================
 
-        window.currentNumbersFilter = 'last7';
+        window.currentNumbersFilter = 'today';
 
         function getDateRange(filter) {
             const now = new Date();
@@ -4344,12 +4430,13 @@ window.addEventListener('message', function(e) {
                     start.setHours(0,0,0,0);
                     end.setHours(23,59,59,999);
                     break;
-                case 'thisweek':
+                case 'thisweek': {
                     const day = now.getDay();
                     start.setDate(now.getDate() - day);
                     start.setHours(0,0,0,0);
                     end.setHours(23,59,59,999);
                     break;
+                }
                 case 'last7':
                     start.setDate(now.getDate() - 6);
                     start.setHours(0,0,0,0);
@@ -4582,6 +4669,278 @@ window.addEventListener('message', function(e) {
             }
         }
 
+        // ===================== WELCOME MODAL =====================
+
+        function showWelcomeModal() {
+            document.getElementById('welcomeModal').classList.remove('hidden');
+        }
+
+        function closeWelcomeOpenGuide() {
+            document.getElementById('welcomeModal').classList.add('hidden');
+            showSetupGuide();
+        }
+
+        function closeWelcomeOpenWizard() {
+            document.getElementById('welcomeModal').classList.add('hidden');
+            showSetupWizard();
+        }
+
+        // ===================== SETUP WIZARD =====================
+
+        let wizardStep = 1;
+        const WIZARD_TOTAL = 4;
+        let wizardServiceAdded = false;
+
+        const WIZARD_STEPS = {
+            1: {
+                label: 'Step 1 of 4 — Your Business',
+                render: () => `
+                    <h3 style="font-size:18px;font-weight:600;margin-bottom:6px;">Tell us about your business</h3>
+                    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:24px;">This information appears on your Land-r page.</p>
+                    <div class="form-group">
+                        <label>Business Name *</label>
+                        <input type="text" id="wiz-businessName" placeholder="Acme Cleaning Co." value="${document.getElementById('businessName')?.value || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Email</label>
+                        <input type="email" id="wiz-contactEmail" placeholder="requests@yourbusiness.com" value="${document.getElementById('contactEmail')?.value || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="text" id="wiz-businessPhone" placeholder="(555) 123-4567" value="${document.getElementById('businessPhone')?.value || ''}">
+                    </div>`,
+                save: async () => {
+                    const name = document.getElementById('wiz-businessName').value.trim();
+                    if (!name) { alert('Please enter your business name.'); return false; }
+                    const existingDoc = await getDoc(doc(db, 'businesses', window.businessId));
+                    const existingSlug = existingDoc.exists() ? existingDoc.data().businessSlug : null;
+                    const businessSlug = existingSlug || generateBusinessSlug(name);
+                    const data = {
+                        businessName: name,
+                        contactEmail: document.getElementById('wiz-contactEmail').value.trim(),
+                        businessPhone: document.getElementById('wiz-businessPhone').value.trim(),
+                        businessSlug,
+                        updatedAt: new Date().toISOString()
+                    };
+                    await setDoc(doc(db, 'businesses', window.businessId), data, { merge: true });
+                    document.getElementById('businessName').value = name;
+                    document.getElementById('contactEmail').value = data.contactEmail;
+                    document.getElementById('businessPhone').value = data.businessPhone;
+                    document.getElementById('sidebarBusinessName').textContent = name;
+                    window.businessSlug = businessSlug;
+                    updateLandrUrl();
+                    return true;
+                }
+            },
+            2: {
+                label: 'Step 2 of 4 — Your Brand',
+                render: () => `
+                    <h3 style="font-size:18px;font-weight:600;margin-bottom:6px;">Make it yours</h3>
+                    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:24px;">Add a logo and pick your brand colors.</p>
+                    <div class="form-group">
+                        <label>Logo URL <span class="label-hint">(paste a link to your logo image)</span></label>
+                        <input type="url" id="wiz-logoUrl" placeholder="https://example.com/logo.png" value="${document.getElementById('logoUrl')?.value || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label>Primary Color</label>
+                        <div class="color-picker-group">
+                            <input type="color" id="wiz-primaryColor" value="${document.getElementById('primaryColor')?.value || '#667eea'}">
+                            <span style="font-size:14px;color:var(--text-secondary);">Main accent color on your page</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Secondary Color</label>
+                        <div class="color-picker-group">
+                            <input type="color" id="wiz-secondaryColor" value="${document.getElementById('secondaryColor')?.value || '#764ba2'}">
+                            <span style="font-size:14px;color:var(--text-secondary);">Used for gradients and accents</span>
+                        </div>
+                    </div>`,
+                save: async () => {
+                    const data = {
+                        logoUrl: document.getElementById('wiz-logoUrl').value.trim(),
+                        primaryColor: document.getElementById('wiz-primaryColor').value,
+                        secondaryColor: document.getElementById('wiz-secondaryColor').value,
+                        updatedAt: new Date().toISOString()
+                    };
+                    await setDoc(doc(db, 'businesses', window.businessId), data, { merge: true });
+                    document.getElementById('logoUrl').value = data.logoUrl;
+                    document.getElementById('primaryColor').value = data.primaryColor;
+                    document.getElementById('secondaryColor').value = data.secondaryColor;
+                    document.getElementById('primaryColorHex').value = data.primaryColor;
+                    document.getElementById('secondaryColorHex').value = data.secondaryColor;
+                    if (data.logoUrl) {
+                        document.getElementById('logoPreview').src = data.logoUrl;
+                        document.getElementById('logoPreviewContainer').classList.remove('hidden');
+                    }
+                    return true;
+                }
+            },
+            3: {
+                label: 'Step 3 of 4 — Your Land-r Page',
+                render: () => `
+                    <h3 style="font-size:18px;font-weight:600;margin-bottom:6px;">What will customers see?</h3>
+                    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:24px;">This is the first thing visitors read when they land on your page.</p>
+                    <div class="form-group">
+                        <label>Headline <span class="label-hint">(optional)</span></label>
+                        <input type="text" id="wiz-headline" placeholder="Get Your Custom Quote Today" value="${document.getElementById('landingHeadline')?.value || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label>Welcome Message <span class="label-hint">(optional)</span></label>
+                        <textarea id="wiz-welcomeMessage" rows="4" placeholder="Tell customers a little about your business and what they can expect..." style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;resize:vertical;">${(document.getElementById('landingHeadline') ? '' : '')}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Why Choose Us <span class="label-hint">(optional)</span></label>
+                        <textarea id="wiz-whyChooseUs" rows="3" placeholder="Family-owned and operated since 2010. We show up on time, do the job right..." style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;resize:vertical;">${document.getElementById('whyChooseUs')?.value || ''}</textarea>
+                    </div>`,
+                save: async () => {
+                    const welcomeText = document.getElementById('wiz-welcomeMessage').value.trim();
+                    const data = {
+                        landingHeadline: document.getElementById('wiz-headline').value.trim(),
+                        landingMessage: welcomeText ? `<p>${welcomeText}</p>` : '',
+                        whyChooseUs: document.getElementById('wiz-whyChooseUs').value.trim(),
+                        updatedAt: new Date().toISOString()
+                    };
+                    await setDoc(doc(db, 'businesses', window.businessId), data, { merge: true });
+                    document.getElementById('landingHeadline').value = data.landingHeadline;
+                    document.getElementById('whyChooseUs').value = data.whyChooseUs;
+                    if (landingMessageEditor) landingMessageEditor.root.innerHTML = data.landingMessage;
+                    return true;
+                }
+            },
+            4: {
+                label: 'Step 4 of 4 — Your First Service',
+                render: () => `
+                    <h3 style="font-size:18px;font-weight:600;margin-bottom:6px;">Add your first offering</h3>
+                    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:8px;">Customers will be able to select these on your Land-r page.</p>
+                    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:24px;">You can add more anytime from <strong>My Products & Services</strong>.</p>
+                    <div class="form-group">
+                        <label>Service Name *</label>
+                        <input type="text" id="wiz-serviceName" placeholder="e.g. Standard House Cleaning">
+                    </div>
+                    <div class="form-group">
+                        <label>Price ($)</label>
+                        <input type="number" id="wiz-servicePrice" placeholder="150">
+                    </div>
+                    <div class="form-group">
+                        <label>Price Type</label>
+                        <select id="wiz-priceType" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;">
+                            <option value="fixed">Fixed — one set price</option>
+                            <option value="perUnit">Per Unit — price × quantity</option>
+                            <option value="custom">Custom — show "Request Quote"</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Description <span class="label-hint">(optional)</span></label>
+                        <textarea id="wiz-serviceDesc" rows="2" placeholder="Brief description of what's included..." style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;resize:vertical;"></textarea>
+                    </div>
+                    <a href="#" id="wizardSkipLink" onclick="wizardSkipService(); return false;" style="font-size:13px;color:var(--text-secondary);text-decoration:underline;">Skip for now — I'll add services later</a>`,
+                save: async () => {
+                    const name = document.getElementById('wiz-serviceName').value.trim();
+                    if (!name) return 'skip';
+                    const price = document.getElementById('wiz-servicePrice').value;
+                    const priceType = document.getElementById('wiz-priceType').value;
+                    if (!price && priceType !== 'custom') { alert('Please enter a price, or choose "Custom" as the price type.'); return false; }
+                    await addDoc(collection(db, 'services'), {
+                        businessId: window.businessId,
+                        name,
+                        description: document.getElementById('wiz-serviceDesc').value.trim(),
+                        basePrice: price ? parseFloat(price) : 0,
+                        priceType,
+                        unitType: null,
+                        showPrice: true,
+                        active: true,
+                        createdAt: new Date().toISOString()
+                    });
+                    wizardServiceAdded = true;
+                    return true;
+                }
+            }
+        };
+
+        function showSetupWizard() {
+            wizardStep = 1;
+            wizardServiceAdded = false;
+            document.getElementById('setupWizardModal').classList.remove('hidden');
+            renderWizardStep();
+        }
+
+        function closeWizard() {
+            document.getElementById('setupWizardModal').classList.add('hidden');
+        }
+
+        function renderWizardStep() {
+            const step = WIZARD_STEPS[wizardStep];
+            document.getElementById('wizardStepLabel').textContent = step.label;
+            document.getElementById('wizardBody').innerHTML = step.render();
+
+            // Dots
+            for (let i = 1; i <= WIZARD_TOTAL; i++) {
+                document.getElementById(`wdot-${i}`)?.classList.toggle('active', i <= wizardStep);
+            }
+
+            // Back button
+            document.getElementById('wizardBackBtn').style.display = wizardStep > 1 ? 'inline-flex' : 'none';
+
+            // Next vs Finish
+            const isLast = wizardStep === WIZARD_TOTAL;
+            document.getElementById('wizardNextBtn').classList.toggle('hidden', isLast);
+            document.getElementById('wizardFinishBtn').classList.toggle('hidden', !isLast);
+        }
+
+        async function wizardNext() {
+            const btn = document.getElementById('wizardNextBtn');
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+            try {
+                const result = await WIZARD_STEPS[wizardStep].save();
+                if (result === false) { btn.disabled = false; btn.textContent = 'Next →'; return; }
+                wizardStep++;
+                renderWizardStep();
+            } catch (e) {
+                alert('Error saving: ' + e.message);
+            }
+            btn.disabled = false;
+            btn.textContent = 'Next →';
+        }
+
+        function wizardBack() {
+            if (wizardStep > 1) { wizardStep--; renderWizardStep(); }
+        }
+
+        async function wizardFinish() {
+            const btn = document.getElementById('wizardFinishBtn');
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+            try {
+                const result = await WIZARD_STEPS[wizardStep].save();
+                if (result === false) { btn.disabled = false; btn.textContent = 'Finish Setup ✓'; return; }
+                // Mark firstLoginComplete on user doc
+                await setDoc(doc(db, 'users', window.currentUser.uid), { firstLoginComplete: true }, { merge: true });
+                closeWizard();
+                // Reload data to reflect all changes
+                await loadBusinessData();
+                if (wizardServiceAdded) await loadServices();
+                const msg = wizardServiceAdded
+                    ? '✓ Setup complete! Your Land-r is ready to share.'
+                    : '✓ Setup complete! You can add services anytime from My Products & Services.';
+                alert(msg);
+            } catch (e) {
+                alert('Error saving: ' + e.message);
+            }
+            btn.disabled = false;
+            btn.textContent = 'Finish Setup ✓';
+        }
+
+        async function wizardSkipService() {
+            // Mark firstLoginComplete and close without saving the service
+            try {
+                await setDoc(doc(db, 'users', window.currentUser.uid), { firstLoginComplete: true }, { merge: true });
+            } catch(e) {}
+            closeWizard();
+            await loadBusinessData();
+            alert('No problem! You can add services anytime from My Products & Services.');
+        }
+
         // ===================== GLOBAL WINDOW BINDINGS =====================
 
         window.showSection = showSection;
@@ -4651,6 +5010,15 @@ window.addEventListener('message', function(e) {
         window.toggleSocialInput = toggleSocialInput;
         window.downloadQRCode = downloadQRCode;
         window.goToTriageStatus = goToTriageStatus;
+        window.showWelcomeModal = showWelcomeModal;
+        window.closeWelcomeOpenGuide = closeWelcomeOpenGuide;
+        window.closeWelcomeOpenWizard = closeWelcomeOpenWizard;
+        window.showSetupWizard = showSetupWizard;
+        window.closeWizard = closeWizard;
+        window.wizardNext = wizardNext;
+        window.wizardBack = wizardBack;
+        window.wizardFinish = wizardFinish;
+        window.wizardSkipService = wizardSkipService;
 
         window.storageRef = ref;
         window.uploadBytesResumable = uploadBytesResumable;
