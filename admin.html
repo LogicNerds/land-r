@@ -1858,7 +1858,7 @@
                     <!-- 2x2 Section Grid -->
                     <div id="numbersGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:32px;">
 
-                        <!-- YOUR REACH -->
+                        <!-- YOUR REACH (top left) -->
                         <div class="card" style="margin-bottom:0;">
                             <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--primary);margin-bottom:16px;">Your Reach</div>
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
@@ -1880,7 +1880,37 @@
                             </div>
                         </div>
 
-                        <!-- PERFORMANCE -->
+                        <!-- MONEY ON THE TABLE (top right) -->
+                        <div class="card" style="margin-bottom:0;background:#fffbeb;border:2px solid #f59e0b;">
+                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+                                <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#b45309;">Money on the Table</div>
+                            </div>
+                            <div style="font-size:13px;font-weight:600;color:#92400e;margin-bottom:16px;">⚡ Always live — not filtered by date</div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                                <div class="numbers-card" style="background:#fff8e1;border-color:#fde68a;">
+                                    <div class="numbers-card-label" style="color:#92400e;">Open Requests</div>
+                                    <div class="numbers-card-value" id="metricOpen">—</div>
+                                    <div class="numbers-card-sub">New + Accepted + Scheduled</div>
+                                </div>
+                                <div class="numbers-card" style="background:#fff8e1;border-color:#fde68a;">
+                                    <div class="numbers-card-label" style="color:#92400e;">Potential Value</div>
+                                    <div class="numbers-card-value" id="metricOpenValue">—</div>
+                                    <div class="numbers-card-sub">Est. revenue if all fulfilled</div>
+                                </div>
+                                <div class="numbers-card" style="background:#fff8e1;border-color:#fde68a;">
+                                    <div class="numbers-card-label" style="color:#92400e;">Oldest Open</div>
+                                    <div class="numbers-card-value" id="metricOldestOpen" style="font-size:16px;">—</div>
+                                    <div class="numbers-card-sub">Days since oldest new request</div>
+                                </div>
+                                <div class="numbers-card" style="background:#fff8e1;border-color:#fde68a;">
+                                    <div class="numbers-card-label" style="color:#92400e;">Gone Cold</div>
+                                    <div class="numbers-card-value" id="metricGoneCold">—</div>
+                                    <div class="numbers-card-sub">No activity in 7+ days</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PERFORMANCE (bottom left) -->
                         <div class="card" style="margin-bottom:0;">
                             <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--primary);margin-bottom:16px;">Performance</div>
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
@@ -1912,7 +1942,7 @@
                             </div>
                         </div>
 
-                        <!-- REVENUE -->
+                        <!-- REVENUE (bottom right) -->
                         <div class="card" style="margin-bottom:0;">
                             <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--primary);margin-bottom:16px;">Revenue</div>
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
@@ -1935,34 +1965,6 @@
                                     <div class="numbers-card-label">Most Requested</div>
                                     <div class="numbers-card-value" id="metricTopService" style="font-size:16px;line-height:1.3;">—</div>
                                     <div class="numbers-card-sub">Top service this period</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- MONEY ON THE TABLE -->
-                        <div class="card" style="margin-bottom:0;">
-                            <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--primary);margin-bottom:4px;">Money on the Table</div>
-                            <div style="font-size:12px;color:var(--text-secondary);margin-bottom:16px;">Live — not filtered by date</div>
-                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-                                <div class="numbers-card">
-                                    <div class="numbers-card-label">Open Requests</div>
-                                    <div class="numbers-card-value" id="metricOpen">—</div>
-                                    <div class="numbers-card-sub">New + Accepted + Scheduled</div>
-                                </div>
-                                <div class="numbers-card">
-                                    <div class="numbers-card-label">Potential Value</div>
-                                    <div class="numbers-card-value" id="metricOpenValue">—</div>
-                                    <div class="numbers-card-sub">Est. revenue if all fulfilled</div>
-                                </div>
-                                <div class="numbers-card">
-                                    <div class="numbers-card-label">Oldest Open</div>
-                                    <div class="numbers-card-value" id="metricOldestOpen" style="font-size:16px;">—</div>
-                                    <div class="numbers-card-sub">Days since oldest new request</div>
-                                </div>
-                                <div class="numbers-card">
-                                    <div class="numbers-card-label">Gone Cold</div>
-                                    <div class="numbers-card-value" id="metricGoneCold">—</div>
-                                    <div class="numbers-card-sub">No activity in 7+ days</div>
                                 </div>
                             </div>
                         </div>
@@ -4006,11 +4008,17 @@ window.addEventListener('message', function(e) {
                                     <div style="font-size:14px;color:var(--text-primary);">${new Date(req.createdAt).toLocaleString()}</div>
                                 </div>
                                 <div>
-                                    <label style="font-size:13px;color:var(--text-secondary);font-weight:500;">Status</label>
-                                    <select id="requestStatus" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;margin-top:4px;" onchange="pendingStatusChange(this.value)">
-                                        ${statusOptions}
-                                    </select>
-                                </div>
+                                                    <label style="font-size:13px;color:var(--text-secondary);font-weight:500;">Status</label>
+                                                    <select id="requestStatus" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;margin-top:4px;" onchange="pendingStatusChange(this.value)">
+                                                        ${statusOptions}
+                                                    </select>
+                                                </div>
+                                                <div style="margin-top:12px;">
+                                                    <label style="font-size:13px;color:var(--text-secondary);font-weight:500;">Fulfillment Date <span style="font-weight:400;font-size:12px;color:var(--text-secondary);">(planned date of service)</span></label>
+                                                    <input type="date" id="fulfillmentDate" value="${req.fulfillmentDate || ''}"
+                                                        onchange="window.pendingRequestChanges = window.pendingRequestChanges || {}; window.pendingRequestChanges.fulfillmentDate = this.value;"
+                                                        style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;margin-top:4px;">
+                                                </div>
                             </div>
                         </div>
                     </div>
@@ -4129,28 +4137,68 @@ window.addEventListener('message', function(e) {
         async function setStageFromTracker(stage) {
             if (!currentRequestId) return;
 
-            // Force server read — bypass local cache
             const reqDoc = await getDoc(doc(window.db, 'quotes', currentRequestId), { source: 'server' });
             const currentData = reqDoc.data() || {};
-            const stageTimestamps = currentData.stageTimestamps || {};
+            const stageTimestamps = Object.assign({}, currentData.stageTimestamps || {});
 
-            // Only set timestamp if this stage hasn't been stamped yet
-            if (STAGE_STEPS.includes(stage) && !stageTimestamps[stage]) {
-                stageTimestamps[stage] = new Date().toISOString();
+            if (stage === 'Fulfilled' || stage === 'Paid') {
+                const storedFulfillmentDate = currentData.fulfillmentDate;
+                const fulfillmentDateEl = document.getElementById('fulfillmentDate');
+                const pendingDate = fulfillmentDateEl ? fulfillmentDateEl.value : null;
+                const effectiveDate = pendingDate || storedFulfillmentDate;
+
+                if (effectiveDate) {
+                    const today = new Date().toISOString().slice(0, 10);
+                    if (effectiveDate !== today) {
+                        const formatted = new Date(effectiveDate + 'T12:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                        const useToday = confirm(`Your fulfillment date is set to ${formatted}.\n\nWould you like to update it to today?`);
+                        if (useToday) {
+                            stageTimestamps[stage] = new Date().toISOString();
+                            await setDoc(doc(window.db, 'quotes', currentRequestId), {
+                                quoteStatus: stage,
+                                stageTimestamps,
+                                fulfillmentDate: today,
+                                lastTouched: new Date().toISOString()
+                            }, { merge: true });
+                        } else {
+                            stageTimestamps[stage] = new Date(effectiveDate + 'T12:00:00').toISOString();
+                            await setDoc(doc(window.db, 'quotes', currentRequestId), {
+                                quoteStatus: stage,
+                                stageTimestamps,
+                                lastTouched: new Date().toISOString()
+                            }, { merge: true });
+                        }
+                    } else {
+                        stageTimestamps[stage] = new Date().toISOString();
+                        await setDoc(doc(window.db, 'quotes', currentRequestId), {
+                            quoteStatus: stage,
+                            stageTimestamps,
+                            lastTouched: new Date().toISOString()
+                        }, { merge: true });
+                    }
+                } else {
+                    // No date — stamp silently
+                    if (!stageTimestamps[stage]) stageTimestamps[stage] = new Date().toISOString();
+                    await setDoc(doc(window.db, 'quotes', currentRequestId), {
+                        quoteStatus: stage,
+                        stageTimestamps,
+                        lastTouched: new Date().toISOString()
+                    }, { merge: true });
+                }
+            } else {
+                if (STAGE_STEPS.includes(stage) && !stageTimestamps[stage]) {
+                    stageTimestamps[stage] = new Date().toISOString();
+                }
+                await setDoc(doc(window.db, 'quotes', currentRequestId), {
+                    quoteStatus: stage,
+                    stageTimestamps,
+                    lastTouched: new Date().toISOString()
+                }, { merge: true });
             }
 
-            // Write status + timestamps directly — bypass pendingRequestChanges
-            await setDoc(doc(window.db, 'quotes', currentRequestId), {
-                quoteStatus: stage,
-                stageTimestamps: stageTimestamps,
-                lastTouched: new Date().toISOString()
-            }, { merge: true });
-
-            // Update the status dropdown to match
             const sel = document.getElementById('requestStatus');
             if (sel) sel.value = stage;
 
-            // Reload the list, then reopen the modal fresh to avoid race with viewRequest's own write
             await loadRequests();
             const savedId = currentRequestId;
             closeRequestModal();
@@ -4178,7 +4226,6 @@ window.addEventListener('message', function(e) {
         async function saveRequestChanges(closeModal = true) {
             if (!currentRequestId) return;
             try {
-                // Decouple from global — work on a fresh copy so mutations don't bleed back
                 const changes = Object.assign({}, window.pendingRequestChanges || {});
 
                 // Capture editable contact fields
@@ -4189,27 +4236,57 @@ window.addEventListener('message', function(e) {
                 if (emailEl) changes.customerEmail = emailEl.value.trim();
                 if (phoneEl) changes.customerPhone = phoneEl.value.trim();
 
-                // Capture notes from textarea
+                // Capture notes
                 const notesEl = document.getElementById('requestInternalNotes');
                 if (notesEl) changes.internalNotes = notesEl.value;
 
-                // Handle status change + timestamp — only if user explicitly changed status
+                // Capture fulfillment date
+                const fulfillmentDateEl = document.getElementById('fulfillmentDate');
+                if (fulfillmentDateEl) changes.fulfillmentDate = fulfillmentDateEl.value || null;
+
+                // Handle status change + fulfillment date check
                 const newStatus = window.statusWasChanged ? changes.quoteStatus : null;
                 if (newStatus) {
                     changes.quoteStatus = newStatus;
-                    // Force server read — bypass local cache to get freshest stageTimestamps
+
                     const reqDoc = await getDoc(doc(window.db, 'quotes', currentRequestId), { source: 'server' });
                     const currentData = reqDoc.data() || {};
                     const stageTimestamps = Object.assign({}, currentData.stageTimestamps || {});
-                    // Only stamp if this stage hasn't been stamped before
-                    if (STAGE_STEPS.includes(newStatus) && !stageTimestamps[newStatus]) {
-                        stageTimestamps[newStatus] = new Date().toISOString();
+
+                    if (newStatus === 'Fulfilled' || newStatus === 'Paid') {
+                        const storedFulfillmentDate = changes.fulfillmentDate || currentData.fulfillmentDate;
+
+                        if (storedFulfillmentDate) {
+                            const today = new Date().toISOString().slice(0, 10);
+                            if (storedFulfillmentDate !== today) {
+                                // Show the fulfillment date mismatch popup
+                                const formatted = new Date(storedFulfillmentDate + 'T12:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                                const useToday = confirm(`Your fulfillment date is set to ${formatted}.\n\nWould you like to update it to today?`);
+                                if (useToday) {
+                                    changes.fulfillmentDate = today;
+                                    stageTimestamps[newStatus] = new Date().toISOString();
+                                } else {
+                                    // Stamp with the stored date at noon
+                                    stageTimestamps[newStatus] = new Date(storedFulfillmentDate + 'T12:00:00').toISOString();
+                                }
+                            } else {
+                                // Date matches today — stamp normally
+                                stageTimestamps[newStatus] = new Date().toISOString();
+                            }
+                        } else {
+                            // No fulfillment date set — stamp silently with now
+                            if (!stageTimestamps[newStatus]) stageTimestamps[newStatus] = new Date().toISOString();
+                        }
+                    } else {
+                        if (STAGE_STEPS.includes(newStatus) && !stageTimestamps[newStatus]) {
+                            stageTimestamps[newStatus] = new Date().toISOString();
+                        }
                     }
+
                     changes.stageTimestamps = stageTimestamps;
                 }
-                // Reset the flag
-                window.statusWasChanged = false;
 
+                window.statusWasChanged = false;
                 changes.lastTouched = new Date().toISOString();
 
                 await setDoc(doc(window.db, 'quotes', currentRequestId), changes, { merge: true });
