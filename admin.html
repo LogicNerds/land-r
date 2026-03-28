@@ -2693,6 +2693,12 @@
                 await loadBusinessData();
                 await loadTeamMembers();
                 await checkTriageAlerts();
+                // Check for ?wizard=true URL param — open wizard directly for any user
+                const wizardParams = new URLSearchParams(window.location.search);
+                if (wizardParams.get('wizard') === 'true') {
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    setTimeout(() => showSetupWizard(), 600);
+                }
             } else {
                 window.currentUser = null;
                 window.currentUserData = null;
@@ -5134,10 +5140,20 @@ window.addEventListener('message', function(e) {
 
         const WIZARD_STEPS = {
             1: {
-                label: 'Step 1 of 4 — Your Business',
+                label: 'Step 1 of 4 — About You & Your Business',
                 render: () => `
-                    <h3 style="font-size:18px;font-weight:600;margin-bottom:6px;">Tell us about your business</h3>
-                    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:24px;">This information appears on your Land-r page.</p>
+                    <h3 style="font-size:18px;font-weight:600;margin-bottom:6px;">Let's start with you</h3>
+                    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:24px;">Your name and business info will help us personalize your Land-r.</p>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>First Name *</label>
+                            <input type="text" id="wiz-firstName" placeholder="Jane" value="${window.currentUserData?.firstName || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name *</label>
+                            <input type="text" id="wiz-lastName" placeholder="Smith" value="${window.currentUserData?.lastName || ''}">
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label>Business Name *</label>
                         <input type="text" id="wiz-businessName" placeholder="Acme Cleaning Co." value="${document.getElementById('businessName')?.value || ''}">
@@ -5151,22 +5167,29 @@ window.addEventListener('message', function(e) {
                         <input type="text" id="wiz-businessPhone" placeholder="(555) 123-4567" value="${document.getElementById('businessPhone')?.value || ''}">
                     </div>`,
                 save: async () => {
-                    const name = document.getElementById('wiz-businessName').value.trim();
-                    if (!name) { alert('Please enter your business name.'); return false; }
+                    const firstName = document.getElementById('wiz-firstName').value.trim();
+                    const lastName  = document.getElementById('wiz-lastName').value.trim();
+                    const name      = document.getElementById('wiz-businessName').value.trim();
+                    if (!firstName) { alert('Please enter your first name.'); return false; }
+                    if (!lastName)  { alert('Please enter your last name.'); return false; }
+                    if (!name)      { alert('Please enter your business name.'); return false; }
                     const existingDoc = await getDoc(doc(db, 'businesses', window.businessId));
                     const existingSlug = existingDoc.exists() ? existingDoc.data().businessSlug : null;
                     const businessSlug = existingSlug || generateBusinessSlug(name);
-                    const data = {
+                    const bizData = {
                         businessName: name,
                         contactEmail: document.getElementById('wiz-contactEmail').value.trim(),
                         businessPhone: document.getElementById('wiz-businessPhone').value.trim(),
                         businessSlug,
                         updatedAt: new Date().toISOString()
                     };
-                    await setDoc(doc(db, 'businesses', window.businessId), data, { merge: true });
+                    await setDoc(doc(db, 'businesses', window.businessId), bizData, { merge: true });
+                    // Save name to user doc
+                    await setDoc(doc(db, 'users', window.currentUser.uid), { firstName, lastName }, { merge: true });
+                    if (window.currentUserData) { window.currentUserData.firstName = firstName; window.currentUserData.lastName = lastName; }
                     document.getElementById('businessName').value = name;
-                    document.getElementById('contactEmail').value = data.contactEmail;
-                    document.getElementById('businessPhone').value = data.businessPhone;
+                    document.getElementById('contactEmail').value = bizData.contactEmail;
+                    document.getElementById('businessPhone').value = bizData.businessPhone;
                     document.getElementById('sidebarBusinessName').textContent = name;
                     window.businessSlug = businessSlug;
                     updateLandrUrl();
@@ -5179,8 +5202,15 @@ window.addEventListener('message', function(e) {
                     <h3 style="font-size:18px;font-weight:600;margin-bottom:6px;">Make it yours</h3>
                     <p style="font-size:14px;color:var(--text-secondary);margin-bottom:24px;">Add a logo and pick your brand colors.</p>
                     <div class="form-group">
-                        <label>Logo URL <span class="label-hint">(paste a link to your logo image)</span></label>
+                        <label>Logo</label>
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                            <input type="file" id="wiz-logoFile" accept="image/*" style="display:none;" onchange="wizardHandleLogoUpload(event)">
+                            <button type="button" class="btn btn-secondary" onclick="document.getElementById('wiz-logoFile').click()">⬆ Upload Logo</button>
+                            <span style="font-size:13px;color:var(--text-secondary);">or paste a URL below</span>
+                        </div>
                         <input type="url" id="wiz-logoUrl" placeholder="https://example.com/logo.png" value="${document.getElementById('logoUrl')?.value || ''}">
+                        <div id="wiz-logo-progress" style="display:none;margin-top:8px;font-size:12px;color:var(--text-secondary);font-style:italic;"></div>
+                        <p style="font-size:12px;color:var(--text-secondary);margin-top:8px;font-style:italic;">Don't have a logo yet? No problem — you can add it anytime from My Business.</p>
                     </div>
                     <div class="form-group">
                         <label>Primary Color</label>
@@ -5220,14 +5250,15 @@ window.addEventListener('message', function(e) {
                 label: 'Step 3 of 4 — Your Land-r Page',
                 render: () => `
                     <h3 style="font-size:18px;font-weight:600;margin-bottom:6px;">What will customers see?</h3>
-                    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:24px;">This is the first thing visitors read when they land on your page.</p>
+                    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:8px;">This is the first thing visitors read when they land on your page.</p>
+                    <p style="font-size:13px;color:var(--primary);background:#eff6ff;border-radius:6px;padding:10px 14px;margin-bottom:20px;">✦ Don't worry about getting this perfect — everything here can be changed anytime from My Land-r.</p>
                     <div class="form-group">
                         <label>Headline <span class="label-hint">(optional)</span></label>
                         <input type="text" id="wiz-headline" placeholder="Get Your Custom Quote Today" value="${document.getElementById('landingHeadline')?.value || ''}">
                     </div>
                     <div class="form-group">
                         <label>Welcome Message <span class="label-hint">(optional)</span></label>
-                        <textarea id="wiz-welcomeMessage" rows="4" placeholder="Tell customers a little about your business and what they can expect..." style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;resize:vertical;">${(document.getElementById('landingHeadline') ? '' : '')}</textarea>
+                        <textarea id="wiz-welcomeMessage" rows="4" placeholder="Tell customers a little about your business and what they can expect..." style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;resize:vertical;"></textarea>
                     </div>
                     <div class="form-group">
                         <label>Why Choose Us <span class="label-hint">(optional)</span></label>
@@ -5303,6 +5334,31 @@ window.addEventListener('message', function(e) {
             wizardServiceAdded = false;
             document.getElementById('setupWizardModal').classList.remove('hidden');
             renderWizardStep();
+        }
+
+        async function wizardHandleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (!file.type.startsWith('image/')) { alert('Please upload an image file.'); return; }
+            if (file.size > 2 * 1024 * 1024) { alert('File size must be less than 2MB.'); return; }
+            const progress = document.getElementById('wiz-logo-progress');
+            if (progress) { progress.style.display = 'block'; progress.textContent = 'Uploading...'; }
+            try {
+                const storageRef = ref(storage, `logos/${currentUser.uid}/${file.name}`);
+                const uploadTask = uploadBytesResumable(storageRef, file);
+                uploadTask.on('state_changed',
+                    snap => { if (progress) progress.textContent = `Uploading... ${Math.round((snap.bytesTransferred/snap.totalBytes)*100)}%`; },
+                    err => { if (progress) progress.textContent = 'Upload failed: ' + err.message; },
+                    async () => {
+                        const url = await getDownloadURL(uploadTask.snapshot.ref);
+                        const urlInput = document.getElementById('wiz-logoUrl');
+                        if (urlInput) urlInput.value = url;
+                        if (progress) { progress.textContent = '✓ Logo uploaded!'; }
+                    }
+                );
+            } catch(e) {
+                if (progress) progress.textContent = 'Upload error: ' + e.message;
+            }
         }
 
         function closeWizard() {
@@ -5465,6 +5521,7 @@ window.addEventListener('message', function(e) {
         window.wizardBack = wizardBack;
         window.wizardFinish = wizardFinish;
         window.wizardSkipService = wizardSkipService;
+        window.wizardHandleLogoUpload = wizardHandleLogoUpload;
 
         window.storageRef = ref;
         window.uploadBytesResumable = uploadBytesResumable;
