@@ -1298,106 +1298,200 @@
             }
         }
 
-        @media (max-width: 768px) {
-            /* Body fills viewport, no scrolling on body itself */
-            html, body {
-                height: 100%;
-                overflow: hidden;
-            }
+        /* ── MOBILE HAMBURGER HEADER ── */
+        .mobile-header {
+            display: none;
+        }
 
-            /* Dashboard fills full viewport */
-            .dashboard {
-                height: 100vh;
+        /* ── MOBILE DRAWER ── */
+        .mobile-drawer-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 1100;
+        }
+        .mobile-drawer-overlay.open { display: block; }
+
+        .mobile-drawer {
+            position: fixed;
+            top: 0; left: 0; bottom: 0;
+            width: 260px;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border);
+            z-index: 1200;
+            transform: translateX(-100%);
+            transition: transform 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .mobile-drawer.open { transform: translateX(0); }
+
+        .mobile-drawer-header {
+            padding: 20px 20px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .mobile-drawer-logo {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .mobile-drawer-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0;
+            line-height: 1;
+        }
+        .mobile-drawer-nav {
+            flex: 1;
+            padding: 12px 0;
+        }
+        .mobile-drawer-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: all 0.15s;
+        }
+        .mobile-drawer-item:hover,
+        .mobile-drawer-item.active {
+            background: var(--bg-main);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+        .mobile-drawer-icon { font-size: 18px; }
+        .mobile-drawer-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+        }
+        .mobile-drawer-logout {
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            border: 1px solid var(--danger);
+            border-radius: 6px;
+            color: var(--danger);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .mobile-drawer-logout:hover { background: #fee2e2; }
+
+        /* ── MY LAND-R ACCORDION (mobile only, defined here, applied in media query) ── */
+        .landr-accordion-section {}
+        .landr-accordion-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            cursor: pointer;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            user-select: none;
+        }
+        .landr-accordion-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .landr-accordion-icon {
+            font-size: 20px;
+            color: var(--primary);
+            font-weight: 300;
+            line-height: 1;
+            transition: transform 0.2s;
+        }
+        .landr-accordion-section.open .landr-accordion-icon {
+            transform: rotate(45deg);
+        }
+        .landr-accordion-body {
+            display: none;
+            padding: 16px;
+        }
+        .landr-accordion-section.open .landr-accordion-body {
+            display: block;
+        }
+
+        /* ── MOBILE SERVICES LIST ── */
+        .mobile-service-row {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+
+            /* ── CORE LAYOUT ── */
+            html, body { height: 100%; overflow: hidden; }
+
+            .mobile-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 16px;
+                height: 56px;
+                background: var(--bg-card);
+                border-bottom: 1px solid var(--border);
+                position: fixed;
+                top: 0; left: 0; right: 0;
+                z-index: 1000;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            }
+            .mobile-header-logo {
+                height: 28px;
+                width: auto;
+            }
+            .mobile-hamburger {
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 8px;
                 display: flex;
                 flex-direction: column;
+                gap: 5px;
+            }
+            .mobile-hamburger span {
+                display: block;
+                width: 22px;
+                height: 2px;
+                background: var(--text-secondary);
+                border-radius: 2px;
             }
 
-            /* Main content scrolls within its own container */
+            /* Hide desktop sidebar entirely on mobile */
+            .sidebar { display: none !important; }
+
+            /* Main content fills below fixed header */
             .main-content {
                 position: fixed !important;
-                top: 0 !important;
+                top: 56px !important;
                 left: 0 !important;
                 right: 0 !important;
-                bottom: 107px !important; /* 72px nav + 35px disclaimer */
+                bottom: 35px !important;
                 margin: 0 !important;
                 padding: 16px !important;
                 overflow-y: auto !important;
                 -webkit-overflow-scrolling: touch !important;
             }
 
-            /* Bottom nav - fixed, full width, visible height */
-            .sidebar {
-                position: fixed !important;
-                bottom: 35px !important;
-                left: 0 !important;
-                right: 0 !important;
-                width: 100% !important;
-                height: 72px !important;
-                z-index: 1000 !important;
-                border-right: none !important;
-                border-top: 1px solid var(--border) !important;
-                padding: 0 !important;
-                background: var(--bg-card) !important;
-                box-shadow: 0 -2px 10px rgba(0,0,0,0.1) !important;
-                overflow: hidden !important;
-            }
+            /* Desktop footer hidden */
+            #appFooter { display: none !important; }
 
-            .sidebar-header {
-                display: none !important;
-            }
-
-            .sidebar > div[style*="flex: 1"] {
-                display: none !important;
-            }
-
-            /* Nav row - two equal tabs filling the bar */
-            .sidebar nav {
-                display: flex !important;
-                flex-direction: row !important;
-                align-items: stretch !important;
-                padding: 0 !important;
-                width: 100% !important;
-                height: 100% !important;
-                overflow: hidden !important;
-            }
-
-            .nav-mobile-hide {
-                display: none !important;
-            }
-
-            .nav-mobile-show {
-                display: flex !important;
-                flex: 1 !important;
-                flex-direction: column !important;
-                align-items: center !important;
-                justify-content: center !important;
-                padding: 0 8px !important;
-                font-size: 12px !important;
-                font-weight: 600 !important;
-                overflow: hidden !important;
-                white-space: nowrap !important;
-                border-right: 1px solid var(--border) !important;
-                gap: 2px !important;
-            }
-
-            .nav-mobile-show:last-of-type {
-                border-right: none !important;
-            }
-
-            .nav-icon {
-                font-size: 18px !important;
-            }
-
-            .nav-logout {
-                display: none !important;
-            }
-
-            /* Disclaimer bar - fixed at very bottom */
+            /* ── DISCLAIMER BAR ── */
             #disclaimerDrawer {
                 position: fixed !important;
-                left: 0 !important;
-                right: 0 !important;
-                bottom: 0 !important;
+                left: 0 !important; right: 0 !important; bottom: 0 !important;
                 height: 35px !important;
                 max-height: 35px !important;
                 padding: 0 16px !important;
@@ -1407,84 +1501,76 @@
                 align-items: center !important;
                 justify-content: center !important;
                 z-index: 1001 !important;
-                box-shadow: none !important;
                 border-top: 1px solid var(--border) !important;
-                overflow: hidden !important;
-                cursor: pointer !important;
                 background: var(--bg-card) !important;
+                cursor: pointer !important;
+                overflow: hidden !important;
             }
-
-            #disclaimerDrawer > div {
-                display: none !important;
-            }
-
-            #disclaimerDrawer.hidden::before {
-                content: '© 2026 Logic Nerds • ';
-                color: var(--text-secondary);
-            }
-
-            #disclaimerDrawer.hidden::after {
-                content: 'Tap for Disclaimer';
-                color: var(--primary);
-                text-decoration: underline;
-            }
-
+            #disclaimerDrawer > div { display: none !important; }
+            #disclaimerDrawer.hidden::before { content: '© 2026 Logic Nerds • '; color: var(--text-secondary); }
+            #disclaimerDrawer.hidden::after { content: 'Tap for Disclaimer'; color: var(--primary); text-decoration: underline; }
             #disclaimerDrawer:not(.hidden) {
                 max-height: 70vh !important;
                 height: auto !important;
                 padding: 16px !important;
                 overflow-y: auto !important;
             }
-
             #disclaimerDrawer:not(.hidden)::before,
-            #disclaimerDrawer:not(.hidden)::after {
-                content: none !important;
+            #disclaimerDrawer:not(.hidden)::after { content: none !important; }
+            #disclaimerDrawer:not(.hidden) > div { display: block !important; }
+
+            /* ── TYPOGRAPHY & CARDS ── */
+            .page-title { font-size: 22px; }
+            .card { padding: 16px !important; }
+            .form-row { grid-template-columns: 1fr !important; }
+
+            /* ── MY BUSINESS — fix card header layout ── */
+            .card-header-setup {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 10px !important;
+            }
+            .card-header-setup .setup-links {
+                display: flex;
+                gap: 12px;
+                align-items: center;
+                order: -1; /* links go ABOVE the description */
             }
 
-            #disclaimerDrawer:not(.hidden) > div {
-                display: block !important;
-            }
+            /* ── MY PRODUCTS — hide desktop table, show mobile list ── */
+            .services-table { display: none !important; }
+            #addServiceDesktop { display: none !important; }
+            #bulkAddToggle { display: none !important; }
+            .mobile-service-row { display: flex !important; }
+            #mobileAddServiceBtn { display: flex !important; }
 
-            /* Hide desktop footer on mobile */
-            #appFooter {
-                display: none !important;
-            }
+            /* ── MY LAND-R — hide desktop grid/preview, show accordion ── */
+            .landr-page-grid { display: block !important; }
+            .landr-page-preview { display: none !important; }
+            .landr-desktop-only { display: none !important; }
+            .landr-accordion-section { display: block !important; }
 
-            /* Typography */
-            .page-title {
-                font-size: 22px;
-            }
+            /* Hide the desktop cards inside landr settings on mobile */
+            .landr-page-settings > .card { display: none !important; }
+            /* Show accordion wrapper instead */
+            #landrMobileAccordion { display: block !important; }
 
-            /* Collapse all multi-column layouts on mobile */
-            .form-row {
-                grid-template-columns: 1fr !important;
-            }
+            /* ── MY NUMBERS — single column, hide download ── */
+            #numbersGrid { grid-template-columns: 1fr !important; }
+            #numbersDownloadBtn { display: none !important; }
 
-            .card {
-                padding: 16px !important;
-            }
-
-            /* Request rows */
-            .request-row {
-                grid-template-columns: 1fr 1fr;
-            }
-
+            /* ── REQUESTS ── */
+            .request-row { grid-template-columns: 1fr 1fr; }
             .request-row > div:nth-child(3),
-            .request-row > div:nth-child(5) {
-                display: none;
-            }
+            .request-row > div:nth-child(5) { display: none; }
+            .request-row-header { display: none; }
 
-            .request-row-header {
-                display: none;
-            }
-
-            /* Modals - constrain to visible viewport above nav */
+            /* ── MODALS ── */
             .modal {
                 align-items: flex-start !important;
-                padding: 20px 0 117px !important; /* 72px nav + 35px disclaimer + 10px breathing room */
+                padding: 20px 0 60px !important;
                 overflow-y: auto !important;
             }
-
             .modal-content {
                 width: 95% !important;
                 max-height: none !important;
@@ -1492,20 +1578,58 @@
                 flex-shrink: 0 !important;
             }
 
-            /* Stage tracker */
-            .stage-tracker {
-                gap: 0;
-            }
+            /* ── STAGE TRACKER ── */
+            .stage-tracker { gap: 0; }
+            .stage-step { min-width: 70px; }
 
-            .stage-step {
-                min-width: 70px;
-            }
+            /* ── MOBILE BANNERS ── */
+            .mobile-desktop-banner { display: none !important; }
         }
     </style>
 </head>
 <body>
     <!-- Auth Section -->
     <div id="authSection" class="auth-container">
+
+    <!-- ── MOBILE HEADER (hidden on desktop) ── -->
+    <div class="mobile-header" id="mobileHeader" style="display:none;">
+        <img src="https://raw.githubusercontent.com/LogicNerds/land-r/main/Land-r%20Assets/Land-r%20Logo.png" alt="Land-r" class="mobile-header-logo">
+        <button class="mobile-hamburger" onclick="openMobileDrawer()" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+
+    <!-- ── MOBILE DRAWER OVERLAY ── -->
+    <div class="mobile-drawer-overlay" id="mobileDrawerOverlay" onclick="closeMobileDrawer()"></div>
+
+    <!-- ── MOBILE DRAWER ── -->
+    <div class="mobile-drawer" id="mobileDrawer">
+        <div class="mobile-drawer-header">
+            <div class="mobile-drawer-logo">Land-r</div>
+            <button class="mobile-drawer-close" onclick="closeMobileDrawer()">×</button>
+        </div>
+        <nav class="mobile-drawer-nav">
+            <div class="mobile-drawer-item active" id="mdNav-settings" onclick="mobileNav('settings')">
+                <span class="mobile-drawer-icon">⚙</span> My Business
+            </div>
+            <div class="mobile-drawer-item" id="mdNav-services" onclick="mobileNav('services')">
+                <span class="mobile-drawer-icon">◆</span> My Products & Services
+            </div>
+            <div class="mobile-drawer-item" id="mdNav-landr" onclick="mobileNav('landr')">
+                <span class="mobile-drawer-icon">◉</span> My Land-r
+            </div>
+            <div class="mobile-drawer-item" id="mdNav-requests" onclick="mobileNav('requests')">
+                <span class="mobile-drawer-icon">📋</span> My Requests
+                <span id="mobileRequestsBadge" class="nav-badge hidden" style="margin-left:4px;">0</span>
+            </div>
+            <div class="mobile-drawer-item" id="mdNav-numbers" onclick="mobileNav('numbers')">
+                <span class="mobile-drawer-icon">📊</span> My Numbers
+            </div>
+        </nav>
+        <div class="mobile-drawer-footer">
+            <button class="mobile-drawer-logout" onclick="logout()">→ Logout</button>
+        </div>
+    </div>
         <img src="https://raw.githubusercontent.com/LogicNerds/land-r/main/Land-r%20Assets/Land-r%20Logo.png" alt="Land-r" style="width: 100%; max-width: 240px; height: auto; margin: 0 auto 24px; display: block;">
 
         <!-- Invitation Banner (hidden by default) -->
@@ -1591,14 +1715,16 @@
                     <div id="subscriptionStatusBanner" style="margin-bottom: 24px;"></div>
 
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header card-header-setup">
                             <div>
                                 <h3 class="card-title">Company Information</h3>
                                 <p class="card-description">This information will be displayed on your Land-r page</p>
                             </div>
-                            <a href="#" onclick="showSetupGuide(); return false;" style="color: var(--primary); text-decoration: none; font-size: 14px; font-weight: 500;">📖 Quick Setup Guide</a>
-                            <span style="color: var(--border); margin: 0 4px;">|</span>
-                            <a href="#" onclick="showSetupWizard(); return false;" style="color: var(--primary); text-decoration: none; font-size: 14px; font-weight: 500;">✨ Setup Wizard</a>
+                            <div class="setup-links">
+                                <a href="#" onclick="showSetupGuide(); return false;" style="color: var(--primary); text-decoration: none; font-size: 14px; font-weight: 500;">📖 Quick Setup Guide</a>
+                                <span style="color: var(--border);">|</span>
+                                <a href="#" onclick="showSetupWizard(); return false;" style="color: var(--primary); text-decoration: none; font-size: 14px; font-weight: 500;">✨ Setup Wizard</a>
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -1717,8 +1843,13 @@
                             <h1 class="page-title">My Products & Services</h1>
                             <p class="page-subtitle">Add Products or Services below to make them available on your Land-r page</p>
                         </div>
+                        <button id="mobileAddServiceBtn" class="btn btn-primary" onclick="mobileOpenAddService()" style="display:none;">＋ Add</button>
                     </div>
 
+                    <!-- Mobile service list (hidden on desktop) -->
+                    <div id="mobileServicesList" style="display:none;flex-direction:column;gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:24px;"></div>
+
+                    <div id="addServiceDesktop">
                     <div class="card">
                         <div class="card-header">
                             <div>
@@ -1770,6 +1901,7 @@
                         <div id="bulkAddContainer" class="hidden"></div>
                         <button id="bulkAddSaveBtn" class="btn btn-success hidden" onclick="saveBulkServices()" style="margin-top: 16px;">Save All Services</button>
                     </div>
+                    </div><!-- /addServiceDesktop -->
 
                     <div class="card">
                         <div class="card-header">
@@ -1835,7 +1967,7 @@
                             <h1 class="page-title">My Numbers</h1>
                             <p class="page-subtitle">See how your Land-r is performing</p>
                         </div>
-                        <button class="btn btn-secondary" onclick="downloadNumbersCSV()">⬇ Download My Numbers</button>
+                        <button class="btn btn-secondary" id="numbersDownloadBtn" onclick="downloadNumbersCSV()">⬇ Download My Numbers</button>
                     </div>
 
                     <div class="mobile-desktop-banner">
@@ -1855,36 +1987,13 @@
                         </div>
                     </div>
 
-                    <!-- 2x2 Section Grid -->
+                    <!-- 2x2 Section Grid — order: Money on Table, Your Reach, Performance, Revenue -->
+                    <!-- On mobile this becomes single column in same order via CSS -->
                     <div id="numbersGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:32px;">
 
-                        <!-- YOUR REACH (top left) -->
-                        <div class="card" style="margin-bottom:0;">
-                            <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--primary);margin-bottom:16px;">Your Reach</div>
-                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-                                <div class="numbers-card">
-                                    <div class="numbers-card-label">Page Views</div>
-                                    <div class="numbers-card-value" id="metricViews">—</div>
-                                    <div class="numbers-card-sub">Visitors to your Land-r</div>
-                                </div>
-                                <div class="numbers-card">
-                                    <div class="numbers-card-label">Requests</div>
-                                    <div class="numbers-card-value" id="metricRequests">—</div>
-                                    <div class="numbers-card-sub">People who sent a request</div>
-                                </div>
-                                <div class="numbers-card" style="grid-column:1/-1;">
-                                    <div class="numbers-card-label">Conversion Rate</div>
-                                    <div class="numbers-card-value" id="metricRate">—</div>
-                                    <div class="numbers-card-sub" id="metricRateSub">Visitors who became requests</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- MONEY ON THE TABLE (top right) -->
+                        <!-- MONEY ON THE TABLE (top left on desktop, 1st on mobile) -->
                         <div class="card" style="margin-bottom:0;background:#fffbeb;border:2px solid #f59e0b;">
-                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
-                                <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#b45309;">Money on the Table</div>
-                            </div>
+                            <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#b45309;margin-bottom:4px;">Money on the Table</div>
                             <div style="font-size:13px;font-weight:600;color:#92400e;margin-bottom:16px;">⚡ Always live — not filtered by date</div>
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
                                 <div class="numbers-card" style="background:#fff8e1;border-color:#fde68a;">
@@ -1910,7 +2019,29 @@
                             </div>
                         </div>
 
-                        <!-- PERFORMANCE (bottom left) -->
+                        <!-- YOUR REACH (top right on desktop, 2nd on mobile) -->
+                        <div class="card" style="margin-bottom:0;">
+                            <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--primary);margin-bottom:16px;">Your Reach</div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                                <div class="numbers-card">
+                                    <div class="numbers-card-label">Page Views</div>
+                                    <div class="numbers-card-value" id="metricViews">—</div>
+                                    <div class="numbers-card-sub">Visitors to your Land-r</div>
+                                </div>
+                                <div class="numbers-card">
+                                    <div class="numbers-card-label">Requests</div>
+                                    <div class="numbers-card-value" id="metricRequests">—</div>
+                                    <div class="numbers-card-sub">People who sent a request</div>
+                                </div>
+                                <div class="numbers-card" style="grid-column:1/-1;">
+                                    <div class="numbers-card-label">Conversion Rate</div>
+                                    <div class="numbers-card-value" id="metricRate">—</div>
+                                    <div class="numbers-card-sub" id="metricRateSub">Visitors who became requests</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PERFORMANCE (bottom left on desktop, 3rd on mobile) -->
                         <div class="card" style="margin-bottom:0;">
                             <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--primary);margin-bottom:16px;">Performance</div>
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
@@ -1942,7 +2073,7 @@
                             </div>
                         </div>
 
-                        <!-- REVENUE (bottom right) -->
+                        <!-- REVENUE (bottom right on desktop, 4th on mobile) -->
                         <div class="card" style="margin-bottom:0;">
                             <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--primary);margin-bottom:16px;">Revenue</div>
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
@@ -1991,6 +2122,96 @@
                     <div class="landr-page-grid">
                         <!-- Left Side - Settings -->
                         <div class="landr-page-settings">
+
+                            <!-- ── MOBILE ACCORDION (hidden on desktop) ── -->
+                            <div id="landrMobileAccordion" style="display:none;">
+
+                                <!-- Section 1: Headline & Welcome Message -->
+                                <div class="landr-accordion-section card" style="padding:0;margin-bottom:12px;">
+                                    <div class="landr-accordion-header" onclick="toggleLandrSection(this)">
+                                        <span class="landr-accordion-title">Headline & Welcome Message</span>
+                                        <span class="landr-accordion-icon">+</span>
+                                    </div>
+                                    <div class="landr-accordion-body">
+                                        <div class="form-group">
+                                            <label>Headline <span class="label-hint">(optional)</span></label>
+                                            <input type="text" id="landingHeadlineMobile" placeholder="Get Your Custom Request Today">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Welcome Message <span class="label-hint">(optional)</span></label>
+                                            <textarea id="landingMessageMobile" rows="5" placeholder="Tell customers about your services..." style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;resize:vertical;"></textarea>
+                                        </div>
+                                        <button class="btn btn-success" style="width:100%;" onclick="saveLandrMobile()">Save Changes</button>
+                                    </div>
+                                </div>
+
+                                <!-- Section 2: Disclaimers & Why Choose Us -->
+                                <div class="landr-accordion-section card" style="padding:0;margin-bottom:12px;">
+                                    <div class="landr-accordion-header" onclick="toggleLandrSection(this)">
+                                        <span class="landr-accordion-title">Disclaimers & Why Choose Us</span>
+                                        <span class="landr-accordion-icon">+</span>
+                                    </div>
+                                    <div class="landr-accordion-body">
+                                        <div class="form-group">
+                                            <label>Services Disclaimer <span class="label-hint">(optional)</span></label>
+                                            <textarea id="servicesDisclaimerMobile" rows="3" placeholder="e.g. Additional $50 charge for vans or larger vehicles" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;resize:vertical;"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Why Choose Us <span class="label-hint">(optional)</span></label>
+                                            <textarea id="whyChooseUsMobile" rows="3" placeholder="Family-owned and operated since 2010..." style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;resize:vertical;"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Text Color</label>
+                                            <div class="color-picker-group">
+                                                <input type="color" id="landingTextColorMobile" value="#1f2937">
+                                                <span style="font-size:13px;color:var(--text-secondary);">Hero text color</span>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-success" style="width:100%;" onclick="saveLandrMobile()">Save Changes</button>
+                                    </div>
+                                </div>
+
+                                <!-- Section 3: Social Links -->
+                                <div class="landr-accordion-section card" style="padding:0;margin-bottom:12px;">
+                                    <div class="landr-accordion-header" onclick="toggleLandrSection(this)">
+                                        <span class="landr-accordion-title">Social Links</span>
+                                        <span class="landr-accordion-icon">+</span>
+                                    </div>
+                                    <div class="landr-accordion-body">
+                                        <div id="socialsListMobile" style="display:flex;flex-direction:column;gap:16px;"></div>
+                                        <button class="btn btn-success" style="width:100%;margin-top:16px;" onclick="saveLandrMobile()">Save Changes</button>
+                                    </div>
+                                </div>
+
+                                <!-- Section 4: Share My Land-r -->
+                                <div class="landr-accordion-section card" style="padding:0;margin-bottom:12px;">
+                                    <div class="landr-accordion-header" onclick="toggleLandrSection(this)">
+                                        <span class="landr-accordion-title">Share My Land-r</span>
+                                        <span class="landr-accordion-icon">+</span>
+                                    </div>
+                                    <div class="landr-accordion-body">
+                                        <div class="form-group">
+                                            <label>Your Land-r Link</label>
+                                            <p class="label-hint" style="margin-bottom:8px;">Share on social media, in texts, or anywhere online.</p>
+                                            <div class="url-display" id="calculatorUrlMobile" style="margin-bottom:10px;font-size:12px;">Loading...</div>
+                                            <div style="display:flex;gap:8px;">
+                                                <button class="btn btn-primary btn-sm" onclick="copyUrlMobile()">Copy Link</button>
+                                                <button class="btn btn-secondary btn-sm" onclick="openCalculator()">Open</button>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" style="margin-top:16px;">
+                                            <label>QR Code</label>
+                                            <p class="label-hint" style="margin-bottom:8px;">Save and print to send customers straight to your page.</p>
+                                            <div id="qrCodeContainerMobile" style="width:140px;height:140px;background:#f8fafc;border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                                                <span style="font-size:11px;color:var(--text-secondary);">Loading...</span>
+                                            </div>
+                                            <button class="btn btn-secondary btn-sm" style="margin-top:10px;" onclick="downloadQRCodeMobile()">⬇ Download QR</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!-- ── END MOBILE ACCORDION ── -->
                             <div class="card">
                                 <div class="card-header">
                                     <div>
@@ -2690,6 +2911,16 @@
                 }
                 document.getElementById('authSection').classList.add('hidden');
                 document.getElementById('adminPanel').classList.remove('hidden');
+                showMobileHeader();
+                // Show mobile-only elements on mobile viewports
+                if (window.innerWidth <= 768) {
+                    const accordion = document.getElementById('landrMobileAccordion');
+                    if (accordion) accordion.style.display = 'block';
+                    const mobList = document.getElementById('mobileServicesList');
+                    if (mobList) mobList.style.display = 'flex';
+                    const addBtn = document.getElementById('mobileAddServiceBtn');
+                    if (addBtn) addBtn.style.display = 'flex';
+                }
                 await loadBusinessData();
                 await loadTeamMembers();
                 await checkTriageAlerts();
@@ -2704,6 +2935,7 @@
                 window.currentUserData = null;
                 window.businessId = null;
                 window.userRole = null;
+                hideMobileHeader();
                 document.getElementById('authSection').classList.remove('hidden');
                 document.getElementById('adminPanel').classList.add('hidden');
             }
@@ -2983,29 +3215,33 @@
             document.getElementById('landrSection').classList.add('hidden');
             document.getElementById('numbersSection').classList.add('hidden');
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.querySelectorAll('.mobile-drawer-item').forEach(item => item.classList.remove('active'));
 
             if (section === 'settings') {
                 document.getElementById('settingsSection').classList.remove('hidden');
                 document.querySelectorAll('.nav-item')[0].classList.add('active');
+                document.getElementById('mdNav-settings')?.classList.add('active');
             } else if (section === 'services') {
                 document.getElementById('servicesSection').classList.remove('hidden');
                 document.querySelectorAll('.nav-item')[1].classList.add('active');
+                document.getElementById('mdNav-services')?.classList.add('active');
                 loadServices();
             } else if (section === 'landr') {
                 document.getElementById('landrSection').classList.remove('hidden');
                 document.querySelectorAll('.nav-item')[2].classList.add('active');
+                document.getElementById('mdNav-landr')?.classList.add('active');
             } else if (section === 'requests') {
                 document.getElementById('requestsSection').classList.remove('hidden');
                 document.querySelectorAll('.nav-item')[3].classList.add('active');
+                document.getElementById('mdNav-requests')?.classList.add('active');
                 loadRequests();
             } else if (section === 'numbers') {
                 document.getElementById('numbersSection').classList.remove('hidden');
                 document.querySelectorAll('.nav-item')[4].classList.add('active');
+                document.getElementById('mdNav-numbers')?.classList.add('active');
                 // Re-sync the active button with the current filter state then load
-                const activeBtn = document.querySelector(`#dateFilterBtns .numbers-filter-btn.active`);
                 const filterToUse = window.currentNumbersFilter || 'today';
                 document.querySelectorAll('.numbers-filter-btn').forEach(b => b.classList.remove('active'));
-                // Find and activate the correct button
                 document.querySelectorAll('.numbers-filter-btn').forEach(b => {
                     if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(`'${filterToUse}'`)) {
                         b.classList.add('active');
@@ -3045,6 +3281,8 @@
                     }
                     // Socials
                     renderSocialsList(data.socials || {});
+                    // Mobile Land-r
+                    initMobileLandr(data);
                 }
                 await loadServices();
                 await loadRequests();
@@ -3296,6 +3534,7 @@
 
             if (snapshot.empty) {
                 servicesList.innerHTML = `<div class="empty-state"><div class="empty-state-icon">◆</div><h3>No products or services yet</h3><p>Add your first product or service above to get started</p></div>`;
+                renderMobileServicesList([]);
                 return;
             }
 
@@ -3375,6 +3614,8 @@
 
             servicesList.innerHTML = html;
             initializeDragAndDrop();
+            // Mobile list
+            renderMobileServicesList(services);
         }
 
         async function toggleServiceShowPrice(serviceId, showPrice) {
@@ -3527,8 +3768,8 @@
 
         const ICON_BASE = 'https://raw.githubusercontent.com/LogicNerds/land-r/main/Land-r%20Assets/';
 
-        function renderSocialsList(savedSocials) {
-            const container = document.getElementById('socialsList');
+        function renderSocialsList(savedSocials, containerId) {
+            const container = document.getElementById(containerId || 'socialsList');
             if (!container) return;
             container.innerHTML = '';
             SOCIALS_CONFIG.forEach(s => {
@@ -3558,11 +3799,14 @@
             if (!chk.checked) inp.value = '';
         }
 
-        function collectSocials() {
+        function collectSocials(containerId) {
             const result = {};
             SOCIALS_CONFIG.forEach(s => {
-                const chk = document.getElementById(`social-chk-${s.key}`);
-                const inp = document.getElementById(`social-input-${s.key}`);
+                const suffix = containerId ? `-${containerId.replace('socialsList','')}` : '';
+                const chkId = containerId ? `social-chk-${s.key}-${containerId}` : `social-chk-${s.key}`;
+                const inpId = containerId ? `social-input-${s.key}-${containerId}` : `social-input-${s.key}`;
+                const chk = document.getElementById(chkId) || document.getElementById(`social-chk-${s.key}`);
+                const inp = document.getElementById(inpId) || document.getElementById(`social-input-${s.key}`);
                 if (chk?.checked && inp?.value.trim()) {
                     result[s.key] = inp.value.trim();
                 }
@@ -3696,6 +3940,9 @@
             const idParam = window.businessSlug || window.businessId;
             const landrUrl = `https://land-r.com/land-r.html?id=${idParam}`;
             document.getElementById('calculatorUrl').textContent = landrUrl;
+            // Mobile
+            const mobUrl = document.getElementById('calculatorUrlMobile');
+            if (mobUrl) mobUrl.textContent = landrUrl;
 
             const embedCode = `<iframe id="myLandr" src="${landrUrl}" width="100%" height="600" frameborder="0" style="border:none;border-radius:8px;"></iframe>
 <scr` + `ipt>
@@ -3859,6 +4106,8 @@ window.addEventListener('message', function(e) {
                 } else {
                     badge.classList.add('hidden');
                 }
+                // Sync mobile drawer badge
+                syncMobileRequestsBadge(counts['New']);
 
                 // Filter for active tab
                 const filtered = allRequests.filter(r => (r.quoteStatus || 'New') === window.currentRequestsTab);
@@ -5438,6 +5687,198 @@ window.addEventListener('message', function(e) {
             alert('No problem! You can add services anytime from My Products & Services.');
         }
 
+        // ===================== MOBILE NAV =====================
+
+        function openMobileDrawer() {
+            document.getElementById('mobileDrawer').classList.add('open');
+            document.getElementById('mobileDrawerOverlay').classList.add('open');
+        }
+        function closeMobileDrawer() {
+            document.getElementById('mobileDrawer').classList.remove('open');
+            document.getElementById('mobileDrawerOverlay').classList.remove('open');
+        }
+        function mobileNav(section) {
+            closeMobileDrawer();
+            showSection(section);
+            // Update drawer active state
+            document.querySelectorAll('.mobile-drawer-item').forEach(el => el.classList.remove('active'));
+            document.getElementById('mdNav-' + section)?.classList.add('active');
+        }
+
+        // Show mobile header when logged in, hide when logged out
+        function showMobileHeader() {
+            const h = document.getElementById('mobileHeader');
+            if (h) h.style.display = '';
+        }
+        function hideMobileHeader() {
+            const h = document.getElementById('mobileHeader');
+            if (h) h.style.display = 'none';
+        }
+
+        // Sync requests badge to mobile drawer
+        function syncMobileRequestsBadge(count) {
+            const badge = document.getElementById('mobileRequestsBadge');
+            if (!badge) return;
+            if (count > 0) { badge.textContent = count; badge.classList.remove('hidden'); }
+            else { badge.classList.add('hidden'); }
+        }
+
+        // ===================== MOBILE MY LAND-R =====================
+
+        function toggleLandrSection(headerEl) {
+            const section = headerEl.closest('.landr-accordion-section');
+            section.classList.toggle('open');
+        }
+
+        function initMobileLandr(data) {
+            // Populate mobile fields from business data
+            const headline = document.getElementById('landingHeadlineMobile');
+            const msg      = document.getElementById('landingMessageMobile');
+            const disc     = document.getElementById('servicesDisclaimerMobile');
+            const why      = document.getElementById('whyChooseUsMobile');
+            const color    = document.getElementById('landingTextColorMobile');
+            if (headline) headline.value = data.landingHeadline || '';
+            if (msg)      msg.value      = data.landingMessage ? data.landingMessage.replace(/<[^>]*>/g,'') : '';
+            if (disc)     disc.value     = data.servicesDisclaimer ? data.servicesDisclaimer.replace(/<[^>]*>/g,'') : '';
+            if (why)      why.value      = data.whyChooseUs || '';
+            if (color)    color.value    = data.landingTextColor || '#1f2937';
+            // Mobile socials
+            renderSocialsList(data.socials || {}, 'socialsListMobile');
+            // Mobile URL
+            const idParam = window.businessSlug || window.businessId;
+            const url = `https://land-r.com/land-r.html?id=${idParam}`;
+            const urlEl = document.getElementById('calculatorUrlMobile');
+            if (urlEl) urlEl.textContent = url;
+            // Mobile QR
+            const qrMob = document.getElementById('qrCodeContainerMobile');
+            if (qrMob && url) {
+                qrMob.innerHTML = '';
+                new QRCode(qrMob, { text: url, width: 140, height: 140, colorDark: '#0f172a', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
+            }
+        }
+
+        async function saveLandrMobile() {
+            if (!currentUser) return;
+            const headline = document.getElementById('landingHeadlineMobile')?.value.trim() || '';
+            const msgText  = document.getElementById('landingMessageMobile')?.value.trim() || '';
+            const discText = document.getElementById('servicesDisclaimerMobile')?.value.trim() || '';
+            const why      = document.getElementById('whyChooseUsMobile')?.value.trim() || '';
+            const color    = document.getElementById('landingTextColorMobile')?.value || '#1f2937';
+            const data = {
+                landingHeadline:    headline,
+                landingMessage:     msgText ? `<p>${msgText}</p>` : '',
+                servicesDisclaimer: discText ? `<p>${discText}</p>` : '',
+                whyChooseUs:        why,
+                landingTextColor:   color,
+                socials:            collectSocials('socialsListMobile'),
+                updatedAt:          new Date().toISOString()
+            };
+            try {
+                await setDoc(doc(db, 'businesses', window.businessId), data, { merge: true });
+                // Sync to desktop fields
+                document.getElementById('landingHeadline').value = headline;
+                document.getElementById('whyChooseUs').value = why;
+                document.getElementById('landingTextColor').value = color;
+                document.getElementById('landingTextColorHex').value = color;
+                if (landingMessageEditor) landingMessageEditor.root.innerHTML = data.landingMessage;
+                if (servicesDisclaimerEditor) servicesDisclaimerEditor.root.innerHTML = data.servicesDisclaimer;
+                alert('✓ Changes saved!');
+            } catch(e) {
+                alert('Error saving: ' + e.message);
+            }
+        }
+
+        function copyUrlMobile() {
+            const el = document.getElementById('calculatorUrlMobile');
+            if (el) { navigator.clipboard.writeText(el.textContent); alert('✓ Link copied!'); }
+        }
+
+        function downloadQRCodeMobile() {
+            const container = document.getElementById('qrCodeContainerMobile');
+            if (!container) return;
+            const canvas = container.querySelector('canvas');
+            const img    = container.querySelector('img');
+            const dataUrl = canvas ? canvas.toDataURL('image/png') : img?.src;
+            if (!dataUrl) { alert('QR code not ready yet.'); return; }
+            const a = document.createElement('a');
+            a.href = dataUrl; a.download = 'land-r-qr-code.png';
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        }
+
+        // ===================== MOBILE MY PRODUCTS & SERVICES =====================
+
+        function renderMobileServicesList(services) {
+            const container = document.getElementById('mobileServicesList');
+            if (!container) return;
+            if (!services || services.length === 0) {
+                container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-secondary);font-size:14px;background:var(--bg-card);">No services yet. Tap + Add to get started.</div>';
+                return;
+            }
+            container.innerHTML = '';
+            const sorted = [...services].sort((a,b) => {
+                const oa = a.order !== undefined ? a.order : 999999;
+                const ob = b.order !== undefined ? b.order : 999999;
+                return oa !== ob ? oa - ob : new Date(a.createdAt) - new Date(b.createdAt);
+            });
+            sorted.forEach(svc => {
+                const row = document.createElement('div');
+                row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--bg-card);';
+                const isActive = svc.active !== false;
+                const priceLabel = svc.priceType === 'custom' ? 'Quote' : `$${parseFloat(svc.basePrice||0).toFixed(2)}`;
+                row.innerHTML = `
+                    <input type="checkbox" ${isActive?'checked':''} style="width:20px;height:20px;accent-color:var(--primary);flex-shrink:0;"
+                        onchange="toggleServiceActive('${svc.id}', this.checked)">
+                    <div style="flex:1;min-width:0;cursor:pointer;" onclick="editService('${svc.id}')">
+                        <div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${svc.name}</div>
+                        <div style="font-size:12px;color:var(--text-secondary);">${priceLabel}${svc.priceType==='perUnit'?' / '+(svc.unitType||'unit'):''}</div>
+                    </div>
+                    <svg style="width:16px;height:16px;color:var(--text-secondary);flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>`;
+                container.appendChild(row);
+            });
+        }
+
+        function mobileOpenAddService() {
+            // Clear the edit modal fields and set it to "add" mode
+            editingServiceId = null;
+            document.getElementById('editServiceName').value = '';
+            document.getElementById('editServiceDescription').value = '';
+            document.getElementById('editServicePrice').value = '';
+            document.getElementById('editServiceCost').value = '';
+            document.getElementById('editPriceType').value = 'fixed';
+            document.getElementById('editUnitType').value = '';
+            document.getElementById('editShowPrice').checked = true;
+            toggleEditUnitTypeField();
+            // Change modal title and save button behaviour
+            document.querySelector('#editServiceModal .modal-header h2').textContent = 'Add Service';
+            document.querySelector('#editServiceModal .modal-footer .btn-primary').textContent = 'Add Service';
+            document.querySelector('#editServiceModal .modal-footer .btn-primary').onclick = mobileAddServiceFromModal;
+            document.getElementById('editServiceModal').classList.remove('hidden');
+        }
+
+        async function mobileAddServiceFromModal() {
+            const name = document.getElementById('editServiceName').value.trim();
+            const priceType = document.getElementById('editPriceType').value;
+            const price = document.getElementById('editServicePrice').value;
+            if (!name || (!price && priceType !== 'custom')) { alert('Please enter a name and price.'); return; }
+            const serviceData = {
+                businessId: window.businessId,
+                name,
+                description: document.getElementById('editServiceDescription').value.trim(),
+                basePrice: price ? parseFloat(price) : 0,
+                cost: document.getElementById('editServiceCost').value !== '' ? parseFloat(document.getElementById('editServiceCost').value) : null,
+                priceType,
+                unitType: document.getElementById('editUnitType').value.trim() || null,
+                showPrice: document.getElementById('editShowPrice').checked,
+                active: true,
+                createdAt: new Date().toISOString()
+            };
+            try {
+                await addDoc(collection(db, 'services'), serviceData);
+                closeEditServiceModal();
+                await loadServices();
+            } catch(e) { alert('Error: ' + e.message); }
+        }
+
         // ===================== GLOBAL WINDOW BINDINGS =====================
 
         window.showSection = showSection;
@@ -5511,6 +5952,15 @@ window.addEventListener('message', function(e) {
         window.toggleSocialInput = toggleSocialInput;
         window.downloadQRCode = downloadQRCode;
         window.goToTriageStatus = goToTriageStatus;
+        window.openMobileDrawer = openMobileDrawer;
+        window.closeMobileDrawer = closeMobileDrawer;
+        window.mobileNav = mobileNav;
+        window.toggleLandrSection = toggleLandrSection;
+        window.saveLandrMobile = saveLandrMobile;
+        window.copyUrlMobile = copyUrlMobile;
+        window.downloadQRCodeMobile = downloadQRCodeMobile;
+        window.mobileOpenAddService = mobileOpenAddService;
+        window.mobileAddServiceFromModal = mobileAddServiceFromModal;
         window.showWelcomeModal = showWelcomeModal;
         window.dismissWelcomeModal = dismissWelcomeModal;
         window.closeWelcomeOpenGuide = closeWelcomeOpenGuide;
