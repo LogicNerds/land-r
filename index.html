@@ -3,852 +3,477 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Land-r — Your Hustle Deserves a Home</title>
-    <meta name="description" content="Land-r gives your small business a branded landing page, a request form, and a simple way to track every lead. $4.99/month. 7-day free trial.">
+    <title>Land-r — A Place for Your Business to Land</title>
+    <meta name="description" content="Land-r gives your service business a place to land — and shows you exactly where your money is so you can go get it. Free to get started.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --blue: #3b89d8;
-            --blue-dark: #2d6fb5;
-            --blue-light: #eaf3fc;
-            --gray: #505050;
-            --gray-light: #7a7a7a;
-            --gray-faint: #f4f4f4;
-            --ink: #1a1a1a;
-            --border: #e4e4e4;
-            --white: #ffffff;
-            --green: #1a7a4a;
+            --blue: #3b89d8; --blue-dark: #2d6fb5; --blue-light: #eaf3fc; --blue-mid: #dbeafe;
+            --amber: #b45309; --amber-bg: #fffbeb; --amber-border: #f59e0b;
+            --gray: #505050; --gray-light: #7a7a7a; --gray-faint: #f8fafc;
+            --ink: #1a1a1a; --border: #e4e4e4; --white: #ffffff;
+            --green: #1a7a4a; --green-bg: #d1fae5;
         }
-
         html { scroll-behavior: smooth; }
-
-        body {
-            font-family: 'DM Sans', -apple-system, sans-serif;
-            background: var(--white);
-            color: var(--ink);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
+        body { font-family: 'DM Sans', -apple-system, sans-serif; background: var(--white); color: var(--ink); line-height: 1.6; overflow-x: hidden; }
 
         /* NAV */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 16px 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .nav-logo img {
-            height: 36px;
-            width: auto;
-            display: block;
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 32px;
-        }
-
-        .nav-links a {
-            font-size: 15px;
-            color: var(--gray);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
+        nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); }
+        .nav-logo img { height: 36px; width: auto; display: block; }
+        .nav-links { display: flex; align-items: center; gap: 32px; }
+        .nav-links a { font-size: 15px; color: var(--gray); text-decoration: none; font-weight: 500; transition: color 0.2s; }
         .nav-links a:hover { color: var(--ink); }
-
-        .nav-cta {
-            background: var(--blue) !important;
-            color: var(--white) !important;
-            padding: 10px 22px !important;
-            border-radius: 6px !important;
-            font-weight: 600 !important;
-            transition: background 0.2s !important;
-        }
-
+        .nav-cta { background: var(--blue) !important; color: var(--white) !important; padding: 10px 22px !important; border-radius: 6px !important; font-weight: 600 !important; transition: background 0.2s !important; }
         .nav-cta:hover { background: var(--blue-dark) !important; }
+        @media (max-width: 600px) { nav { padding: 14px 20px; } .nav-links a:not(.nav-cta) { display: none; } }
 
         /* HERO */
-        .hero {
-            padding: 140px 32px 100px;
-            max-width: 1080px;
-            margin: 0 auto;
+        .hero { padding: 120px 32px 80px; max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+        @media (max-width: 860px) {
+            .hero { grid-template-columns: 1fr; padding: 100px 24px 60px; gap: 48px; }
+            .hero-content { order: 1; }
+            .hero-visual { order: 2; }
         }
-
-        .hero h1 {
-            font-family: 'DM Serif Display', Georgia, serif;
-            font-weight: 400;
-            font-size: clamp(40px, 6vw, 72px);
-            line-height: 1.1;
-            letter-spacing: -0.02em;
-            color: var(--ink);
-            margin-bottom: 24px;
-            max-width: 780px;
-        }
-
-        .hero h1 em {
-            font-style: italic;
-            color: var(--blue);
-        }
-
-        .hero-sub {
-            font-size: clamp(17px, 2vw, 20px);
-            color: var(--gray);
-            max-width: 520px;
-            margin-bottom: 40px;
-            line-height: 1.7;
-        }
-
-        .hero-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 14px;
-            align-items: center;
-        }
-
-        .btn-primary {
-            display: inline-block;
-            background: var(--blue);
-            color: var(--white);
-            padding: 15px 30px;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 600;
-            font-family: 'DM Sans', sans-serif;
-            text-decoration: none;
-            transition: all 0.2s;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-primary:hover {
-            background: var(--blue-dark);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(59,137,216,0.3);
-        }
-
-        .btn-secondary {
-            display: inline-block;
-            background: transparent;
-            color: var(--ink);
-            padding: 15px 30px;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 600;
-            font-family: 'DM Sans', sans-serif;
-            text-decoration: none;
-            transition: all 0.2s;
-            border: 2px solid var(--border);
-        }
-
+        .hero h1 { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: clamp(38px, 5vw, 64px); line-height: 1.1; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 20px; }
+        .hero h1 em { font-style: italic; color: var(--blue); }
+        .hero-sub { font-size: clamp(16px, 2vw, 19px); color: var(--gray); margin-bottom: 36px; line-height: 1.7; max-width: 480px; }
+        .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+        .btn-primary { display: inline-block; background: var(--blue); color: var(--white); padding: 15px 30px; border-radius: 6px; font-size: 16px; font-weight: 600; font-family: 'DM Sans', sans-serif; text-decoration: none; transition: all 0.2s; border: none; cursor: pointer; }
+        .btn-primary:hover { background: var(--blue-dark); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(59,137,216,0.3); }
+        .btn-secondary { display: inline-block; background: transparent; color: var(--ink); padding: 15px 30px; border-radius: 6px; font-size: 16px; font-weight: 600; font-family: 'DM Sans', sans-serif; text-decoration: none; transition: all 0.2s; border: 2px solid var(--border); }
         .btn-secondary:hover { border-color: var(--gray); }
 
-        .hero-note {
-            font-size: 13px;
-            color: var(--gray-light);
-            margin-top: 14px;
-        }
+        /* MOCK CARD */
+        .mock-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 8px 40px rgba(0,0,0,0.10); }
+        .mock-card-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); margin-bottom: 4px; }
+        .mock-card-title { font-size: 13px; font-weight: 600; color: var(--amber); margin-bottom: 16px; }
+        .mock-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+        .mock-metric { background: #fff8e1; border: 1px solid #fde68a; border-radius: 10px; padding: 12px 14px; }
+        .mock-metric-label { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); margin-bottom: 6px; }
+        .mock-metric-value { font-size: 24px; font-weight: 800; color: var(--ink); line-height: 1; margin-bottom: 2px; }
+        .mock-metric-sub { font-size: 10px; color: var(--gray-light); }
+        .mock-requests { border-top: 1px solid var(--border); padding-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+        .mock-request-row { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--gray); gap: 8px; }
+        .mock-request-name { font-weight: 600; color: var(--ink); flex-shrink: 0; }
+        .mock-status { padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+        .s-new { background: var(--blue-mid); color: #1e40af; }
+        .s-acc { background: var(--green-bg); color: var(--green); }
+        .s-paid { background: var(--green-bg); color: var(--green); }
 
         /* DIVIDER */
-        .divider {
-            height: 1px;
-            background: var(--border);
-            max-width: 1080px;
-            margin: 0 auto;
-        }
+        .divider { height: 1px; background: var(--border); max-width: 1080px; margin: 0 auto; }
 
-        /* SECTION SHARED */
-        .section-label {
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--blue);
-            margin-bottom: 14px;
-            display: block;
-        }
+        /* SECTION LABEL */
+        .section-label { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blue); margin-bottom: 14px; display: block; }
 
         /* PROBLEM */
-        .problem {
-            padding: 100px 32px;
-            max-width: 1080px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 80px;
-            align-items: center;
-        }
-
-        .problem h2 {
-            font-family: 'DM Serif Display', Georgia, serif;
-            font-weight: 400;
-            font-size: clamp(26px, 3.5vw, 40px);
-            line-height: 1.15;
-            letter-spacing: -0.01em;
-            margin-bottom: 20px;
-        }
-
-        .problem p {
-            font-size: 17px;
-            color: var(--gray);
-            line-height: 1.75;
-            margin-bottom: 16px;
-        }
-
+        .problem { padding: 90px 32px; max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+        @media (max-width: 760px) { .problem { grid-template-columns: 1fr; padding: 60px 24px; gap: 40px; } }
+        .problem h2 { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: clamp(26px, 3.5vw, 40px); line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 20px; }
+        .problem p { color: var(--gray); margin-bottom: 16px; font-size: 16px; line-height: 1.8; }
         .problem p:last-child { margin-bottom: 0; }
+        /* MOCK REQUESTS TABLE */
+        .mock-status-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+        .mock-tab { font-size: 13px; font-weight: 500; padding: 8px 14px; border-radius: 8px; color: var(--gray); background: var(--white); border: 1px solid var(--border); }
+        .mock-tab.active { background: var(--blue); color: white; border-color: var(--blue); }
+        .mock-tab-count { font-size: 12px; opacity: 0.85; }
+        .mock-req-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); border-radius: 8px; overflow: hidden; }
+        .mock-req-header { display: grid; grid-template-columns: 1.4fr 1fr 1.6fr 80px 90px 90px; gap: 12px; align-items: center; padding: 10px 14px; background: var(--gray-faint); font-size: 11px; font-weight: 600; color: var(--gray-light); text-transform: uppercase; letter-spacing: 0.5px; }
+        .mock-req-row { display: grid; grid-template-columns: 1.4fr 1fr 1.6fr 80px 90px 90px; gap: 12px; align-items: center; padding: 13px 14px; background: var(--white); font-size: 13px; }
+        .mock-rq-num { color: var(--blue); font-weight: 600; font-size: 12px; }
+        .mock-rq-bold { font-weight: 600; color: var(--ink); }
+        .mock-rq-muted { color: var(--gray-light); }
+        @media (max-width: 860px) { .hide-sm { display: none; } .mock-req-header { grid-template-columns: 1.4fr 1fr 90px; } .mock-req-row { grid-template-columns: 1.4fr 1fr 90px; } }
 
-        .problem-visual {
-            background: var(--gray-faint);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 32px;
-        }
+        /* HOW */
+        .how { background: var(--gray-faint); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 90px 32px; }
+        .how-inner { max-width: 1080px; margin: 0 auto; }
+        .how h2 { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: clamp(28px, 3.5vw, 44px); line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 56px; }
+        .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+        @media (max-width: 760px) { .steps { grid-template-columns: 1fr; gap: 32px; } }
+        .step { opacity: 0; transform: translateY(16px); transition: all 0.5s ease; }
+        .step.visible { opacity: 1; transform: translateY(0); }
+        .step-number { font-family: 'DM Serif Display', Georgia, serif; font-size: 48px; color: var(--blue); opacity: 0.2; line-height: 1; margin-bottom: 12px; }
+        .step h3 { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+        .step p { font-size: 15px; color: var(--gray); line-height: 1.7; }
 
-        .problem-visual-title {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--gray-light);
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-        }
+        /* OUTCOMES */
+        .outcomes { padding: 90px 32px; max-width: 1080px; margin: 0 auto; }
+        .outcomes-header { margin-bottom: 52px; }
+        .outcomes-header h2 { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: clamp(28px, 3.5vw, 44px); line-height: 1.15; letter-spacing: -0.01em; max-width: 600px; }
+        .outcomes-header p { font-size: 17px; color: var(--gray); margin-top: 16px; max-width: 500px; line-height: 1.7; }
+        .outcomes-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        @media (max-width: 760px) { .outcomes-grid { grid-template-columns: 1fr; } }
+        .outcome-card { border: 1px solid var(--border); border-radius: 14px; padding: 28px 30px; opacity: 0; transform: translateY(12px); transition: all 0.45s ease; }
+        .outcome-card.visible { opacity: 1; transform: translateY(0); }
+        .outcome-card:hover { border-color: var(--blue); box-shadow: 0 4px 24px rgba(59,137,216,0.08); }
+        .outcome-icon { font-size: 28px; margin-bottom: 14px; display: block; }
+        .outcome-card h3 { font-size: 17px; font-weight: 600; margin-bottom: 10px; }
+        .outcome-card p { font-size: 14px; color: var(--gray); line-height: 1.7; }
+        .outcome-result { display: inline-block; margin-top: 14px; font-size: 13px; font-weight: 600; color: var(--blue); }
 
-        .before-after {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+        /* MOTT SECTION */
+        .mott-section { background: var(--amber-bg); border-top: 1px solid var(--amber-border); border-bottom: 1px solid var(--amber-border); padding: 90px 32px; }
+        .mott-inner { max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+        @media (max-width: 860px) { .mott-inner { grid-template-columns: 1fr; gap: 40px; } }
+        .mott-section .section-label { color: var(--amber); }
+        .mott-section h2 { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: clamp(28px, 3.5vw, 44px); line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 20px; }
+        .mott-section p { font-size: 16px; color: var(--gray); line-height: 1.8; margin-bottom: 16px; }
+        .mott-section p:last-of-type { margin-bottom: 0; }
+        .mott-visual { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .mott-tile { background: var(--white); border: 1px solid #fde68a; border-radius: 12px; padding: 18px 20px; box-shadow: 0 2px 12px rgba(245,158,11,0.08); }
+        .mott-tile-label { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); margin-bottom: 8px; }
+        .mott-tile-value { font-size: 32px; font-weight: 800; color: var(--ink); line-height: 1; margin-bottom: 4px; }
+        .mott-tile-sub { font-size: 11px; color: var(--gray-light); }
 
-        .ba-item {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px 20px;
-            font-size: 15px;
-            color: var(--ink);
-            line-height: 1.5;
-        }
+        /* WHAT YOU GET */
+        .what-you-get { padding: 90px 32px; max-width: 1080px; margin: 0 auto; }
+        .what-you-get h2 { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: clamp(28px, 3.5vw, 44px); line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 40px; }
+        .what-list { list-style: none; padding: 0; max-width: 560px; }
+        .what-list li { font-size: 16px; color: var(--ink); padding: 12px 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 14px; }
+        .what-list li:last-child { border-bottom: none; }
+        .what-list li::before { content: '✓'; color: var(--green); font-weight: 700; font-size: 15px; flex-shrink: 0; }
 
-        .ba-item .ba-label {
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            margin-bottom: 6px;
-        }
-
-        .ba-item.before .ba-label { color: var(--gray-light); }
-        .ba-item.after .ba-label { color: var(--blue); }
-        .ba-item.after { border-color: var(--blue); }
-
-        .ba-arrow {
-            text-align: center;
-            color: var(--gray-light);
-            font-size: 18px;
-            padding: 4px 0;
-        }
-
-        /* HOW IT WORKS */
-        .how {
-            padding: 100px 32px;
-            background: var(--ink);
-        }
-
-        .how-inner {
-            max-width: 1080px;
-            margin: 0 auto;
-        }
-
-        .how .section-label { color: var(--blue); }
-
-        .how h2 {
-            font-family: 'DM Serif Display', Georgia, serif;
-            font-weight: 400;
-            font-size: clamp(26px, 3.5vw, 42px);
-            line-height: 1.15;
-            letter-spacing: -0.01em;
-            color: var(--white);
-            margin-bottom: 64px;
-        }
-
-        .steps {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 48px;
-        }
-
-        .step-number {
-            font-family: 'DM Serif Display', Georgia, serif;
-            font-size: 52px;
-            color: var(--blue);
-            line-height: 1;
-            margin-bottom: 16px;
-            opacity: 0.7;
-        }
-
-        .step h3 {
-            font-size: 19px;
-            font-weight: 600;
-            color: var(--white);
-            margin-bottom: 10px;
-        }
-
-        .step p {
-            font-size: 15px;
-            color: rgba(255,255,255,0.5);
-            line-height: 1.7;
-        }
-
-        /* FEATURES */
-        .features {
-            padding: 100px 32px;
-            max-width: 1080px;
-            margin: 0 auto;
-        }
-
-        .features h2 {
-            font-family: 'DM Serif Display', Georgia, serif;
-            font-weight: 400;
-            font-size: clamp(26px, 3.5vw, 42px);
-            line-height: 1.15;
-            letter-spacing: -0.01em;
-            margin-bottom: 12px;
-        }
-
-        .features-sub {
-            font-size: 17px;
-            color: var(--gray);
-            max-width: 480px;
-            margin-bottom: 56px;
-            line-height: 1.6;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1px;
-            background: var(--border);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .feature {
-            background: var(--white);
-            padding: 32px;
-            transition: background 0.2s;
-        }
-
-        .feature:hover { background: var(--blue-light); }
-
-        .feature-icon {
-            font-size: 26px;
-            margin-bottom: 14px;
-            display: block;
-        }
-
-        .feature h3 {
-            font-size: 17px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--ink);
-        }
-
-        .feature p {
-            font-size: 14px;
-            color: var(--gray);
-            line-height: 1.65;
-        }
-
-        /* PRICING */
-        .pricing {
-            padding: 100px 32px;
-            background: var(--gray-faint);
-        }
-
-        .pricing-inner {
-            max-width: 860px;
-            margin: 0 auto;
-        }
-
-        .pricing h2 {
-            font-family: 'DM Serif Display', Georgia, serif;
-            font-weight: 400;
-            font-size: clamp(26px, 3.5vw, 42px);
-            line-height: 1.15;
-            letter-spacing: -0.01em;
-            margin-bottom: 48px;
-        }
-
-        .pricing-cards {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .pricing-card {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 40px;
-            position: relative;
-        }
-
-        .pricing-card.featured {
-            border-color: var(--blue);
-            border-width: 2px;
-        }
-
-        .pricing-badge {
-            position: absolute;
-            top: -13px;
-            left: 32px;
-            background: var(--blue);
-            color: var(--white);
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            padding: 4px 12px;
-            border-radius: 4px;
-        }
-
-        .pricing-label {
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--gray-light);
-            margin-bottom: 10px;
-        }
-
-        .pricing-amount {
-            font-family: 'DM Serif Display', Georgia, serif;
-            font-size: 54px;
-            color: var(--ink);
-            line-height: 1;
-            margin-bottom: 6px;
-            letter-spacing: -0.02em;
-        }
-
-        .pricing-amount sup {
-            font-size: 22px;
-            vertical-align: super;
-        }
-
-        .pricing-period {
-            font-size: 14px;
-            color: var(--gray-light);
-            margin-bottom: 28px;
-        }
-
-        .pricing-features {
-            list-style: none;
-            margin-bottom: 32px;
-        }
-
-        .pricing-features li {
-            font-size: 15px;
-            color: var(--gray);
-            padding: 8px 0;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .pricing-features li:last-child { border-bottom: none; }
-
-        .pricing-features li::before {
-            content: '✓';
-            color: var(--green);
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-
-        .pricing-card .btn-primary,
-        .pricing-card .btn-secondary {
-            width: 100%;
-            text-align: center;
-        }
-
-        .pricing-note {
-            margin-top: 20px;
-            font-size: 13px;
-            color: var(--gray-light);
-            text-align: center;
-        }
-
-        /* FROM RIVERSIDE */
-        .from {
-            padding: 100px 32px;
-            max-width: 720px;
-            margin: 0 auto;
-        }
-
-        .from h2 {
-            font-family: 'DM Serif Display', Georgia, serif;
-            font-weight: 400;
-            font-size: clamp(24px, 3vw, 36px);
-            line-height: 1.2;
-            letter-spacing: -0.01em;
-            margin-bottom: 24px;
-        }
-
-        .from p {
-            font-size: 17px;
-            color: var(--gray);
-            line-height: 1.8;
-            margin-bottom: 16px;
-        }
-
-        .from-sig {
-            margin-top: 36px;
-            font-size: 15px;
-            color: var(--gray-light);
-            padding-top: 24px;
-            border-top: 1px solid var(--border);
-        }
-
-        .from-sig strong {
-            display: block;
-            color: var(--ink);
-            font-size: 16px;
-            margin-bottom: 2px;
-        }
+        /* FROM */
+        .from { background: var(--ink); color: white; padding: 90px 32px; text-align: center; }
+        .from-inner { max-width: 640px; margin: 0 auto; }
+        .from .section-label { color: rgba(255,255,255,0.4); }
+        .from h2 { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: clamp(26px, 3.5vw, 40px); line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 24px; color: white; }
+        .from p { font-size: 17px; color: rgba(255,255,255,0.8); line-height: 1.9; font-style: italic; margin-bottom: 0; }
+        .from-sig { margin-top: 36px; font-size: 15px; color: rgba(255,255,255,0.9); font-weight: 600; font-style: normal; }
+        .from-sig span { display: block; font-size: 13px; color: rgba(255,255,255,0.5); font-weight: 400; margin-top: 4px; }
 
         /* BOTTOM CTA */
-        .bottom-cta {
-            padding: 100px 32px;
-            background: var(--blue);
-            text-align: center;
-        }
-
-        .bottom-cta h2 {
-            font-family: 'DM Serif Display', Georgia, serif;
-            font-weight: 400;
-            font-size: clamp(30px, 4.5vw, 56px);
-            color: var(--white);
-            line-height: 1.1;
-            letter-spacing: -0.02em;
-            margin-bottom: 16px;
-        }
-
-        .bottom-cta p {
-            font-size: 18px;
-            color: rgba(255,255,255,0.75);
-            margin-bottom: 36px;
-        }
-
-        .btn-white {
-            display: inline-block;
-            background: var(--white);
-            color: var(--blue);
-            padding: 16px 36px;
-            border-radius: 6px;
-            font-size: 17px;
-            font-weight: 700;
-            font-family: 'DM Sans', sans-serif;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-
-        .btn-white:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-        }
-
-        .bottom-note {
-            font-size: 13px;
-            color: rgba(255,255,255,0.5);
-            margin-top: 14px;
-        }
+        .bottom-cta { background: var(--blue); padding: 90px 32px; text-align: center; color: white; }
+        .bottom-cta h2 { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: clamp(30px, 4vw, 52px); line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 16px; color: white; }
+        .bottom-cta p { font-size: 18px; color: rgba(255,255,255,0.85); margin-bottom: 36px; }
+        .btn-white { display: inline-block; background: white; color: var(--blue); padding: 16px 36px; border-radius: 6px; font-size: 17px; font-weight: 700; text-decoration: none; transition: all 0.2s; }
+        .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
 
         /* FOOTER */
-        footer {
-            background: var(--ink);
-            padding: 36px 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        .footer-logo img {
-            height: 28px;
-            width: auto;
-            display: block;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 24px;
-        }
-
-        .footer-links a {
-            font-size: 14px;
-            color: rgba(255,255,255,0.35);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .footer-links a:hover { color: rgba(255,255,255,0.7); }
-
-        .footer-copy {
-            font-size: 13px;
-            color: rgba(255,255,255,0.25);
-            width: 100%;
-            margin-top: 4px;
-        }
-
-
-
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            nav { padding: 14px 20px; }
-            .nav-links a:not(.nav-cta) { display: none; }
-            .hero { padding: 100px 20px 60px; }
-            .problem { grid-template-columns: 1fr; gap: 40px; padding: 60px 20px; }
-            .steps { grid-template-columns: 1fr; gap: 32px; }
-            .features-grid { grid-template-columns: 1fr; }
-            .pricing-cards { grid-template-columns: 1fr; }
-            .how { padding: 60px 20px; }
-            .features { padding: 60px 20px; }
-            .pricing { padding: 60px 20px; }
-            .from { padding: 60px 20px; }
-            .bottom-cta { padding: 60px 20px; }
-            footer { flex-direction: column; align-items: flex-start; }
-        }
+        footer { background: #0f172a; padding: 40px 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+        footer img { height: 28px; width: auto; filter: brightness(0) invert(1); opacity: 0.7; }
+        .footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+        .footer-links a { font-size: 14px; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.2s; }
+        .footer-links a:hover { color: white; }
+        .footer-copy { font-size: 12px; color: rgba(255,255,255,0.3); width: 100%; }
     </style>
 </head>
 <body>
 
-    <!-- Nav -->
-    <nav>
-        <a href="#" class="nav-logo">
-            <img src="https://raw.githubusercontent.com/LogicNerds/land-r/main/Land-r%20Assets/Land-r%20Logo.png" alt="Land-r">
-        </a>
-        <div class="nav-links">
-            <a href="#how">How it works</a>
-            <a href="#pricing">Pricing</a>
-            <a href="https://land-r.com/admin" class="nav-cta">Start Free Trial</a>
-        </div>
-    </nav>
-
-    <!-- Promo Banner -->
-    <div id="promoBanner" style="display:block; background:#3b89d8; color:white; text-align:center; padding:16px 20px; font-size:14px; font-weight:500; margin-top:69px;">
-        🎉 Free for Riverside &amp; surrounding area businesses — <a href="https://land-r.com/admin?promo=true" style="color:white; font-weight:700; text-decoration:underline;">Click here to get started for free</a>
+<!-- NAV -->
+<nav>
+    <a href="/" class="nav-logo">
+        <img src="https://raw.githubusercontent.com/LogicNerds/land-r/main/Land-r%20Assets/Land-r%20Logo.png" alt="Land-r">
+    </a>
+    <div class="nav-links">
+        <a href="#how">How it works</a>
+        <a href="#what">What you get</a>
+        <a href="https://land-r.com/admin" class="nav-cta">Get Started</a>
     </div>
+</nav>
 
-    <!-- Hero -->
-    <section class="hero">
-        <h1>Your business deserves<br>a <em>real</em> online presence.</h1>
-        <p class="hero-sub">Land-r gives you a branded landing page, a request form, and a simple way to track every lead — no website, no tech skills, no hassle.</p>
+
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>A place for your<br>business to <em>land.</em></h1>
+        <p class="hero-sub">Land-r shows you exactly where your money is — so you can go get it.</p>
         <div class="hero-actions">
-            <a href="https://land-r.com/admin" class="btn-primary">Start 7-Day Free Trial</a>
+            <a href="https://land-r.com/admin" class="btn-primary">Get Started</a>
             <a href="#how" class="btn-secondary">See how it works</a>
         </div>
-        <p class="hero-note">No credit card required. $4.99/month after your trial.</p>
-    </section>
+    </div>
+    <div class="hero-visual">
+        <div class="mock-card">
+            <div class="mock-card-label">⚡ Money on the Table</div>
+            <div class="mock-card-title">What's waiting on you right now</div>
+            <div class="mock-grid">
+                <div class="mock-metric">
+                    <div class="mock-metric-label">Open Requests</div>
+                    <div class="mock-metric-value">7</div>
+                    <div class="mock-metric-sub">waiting on you</div>
+                </div>
+                <div class="mock-metric">
+                    <div class="mock-metric-label">Potential Value</div>
+                    <div class="mock-metric-value">$840</div>
+                    <div class="mock-metric-sub">if all fulfilled</div>
+                </div>
+                <div class="mock-metric">
+                    <div class="mock-metric-label">Oldest Open</div>
+                    <div class="mock-metric-value">3 days</div>
+                    <div class="mock-metric-sub">follow up now</div>
+                </div>
+                <div class="mock-metric">
+                    <div class="mock-metric-label">Gone Cold</div>
+                    <div class="mock-metric-value">2</div>
+                    <div class="mock-metric-sub">7+ days, no activity</div>
+                </div>
+            </div>
+            <div class="mock-requests">
+                <div class="mock-request-row">
+                    <span class="mock-request-name">Sarah M.</span>
+                    <span>Standard Cleaning — $120</span>
+                    <span class="mock-status s-new">New</span>
+                </div>
+                <div class="mock-request-row">
+                    <span class="mock-request-name">James T.</span>
+                    <span>Full Detail — $180</span>
+                    <span class="mock-status s-acc">Accepted</span>
+                </div>
+                <div class="mock-request-row">
+                    <span class="mock-request-name">Maria R.</span>
+                    <span>Curb Paint — $95</span>
+                    <span class="mock-status s-paid">Paid</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-    <div class="divider"></div>
+<div class="divider"></div>
 
-    <!-- Problem -->
-    <section class="problem">
+<!-- PROBLEM -->
+<section class="problem">
+    <div>
+        <h2>Things are falling through the cracks. Give them a place to land.</h2>
+        <p>Most service businesses are running out of DMs, texts, and mental notes. Someone reaches out on Instagram, you reply, life gets busy, and two weeks later you realize you never followed up. That's lost income.</p>
+        <p>Land-r shows the money you're leaving on the table, and helps you pick it up.</p>
+    </div>
+    <div>
+        <div class="mock-card" style="padding:20px;">
+            <div class="mock-card-label" style="margin-bottom:14px;">📋 My Requests</div>
+            <div class="mock-status-tabs">
+                <span class="mock-tab active">New <span class="mock-tab-count">(4)</span></span>
+                <span class="mock-tab">Accepted <span class="mock-tab-count">(2)</span></span>
+                <span class="mock-tab">Scheduled <span class="mock-tab-count">(1)</span></span>
+                <span class="mock-tab">Fulfilled</span>
+                <span class="mock-tab">Paid</span>
+                <span class="mock-tab">Rejected</span>
+                <span class="mock-tab">Cancelled</span>
+            </div>
+            <div class="mock-req-list">
+                <div class="mock-req-header">
+                    <span>Request #</span>
+                    <span>Customer</span>
+                    <span class="hide-sm">Contact</span>
+                    <span class="hide-sm">Total</span>
+                    <span class="hide-sm">Date</span>
+                    <span>Status</span>
+                </div>
+                <div class="mock-req-row">
+                    <span class="mock-rq-num">RQ-20260324-1042</span>
+                    <span class="mock-rq-bold">Sarah M.</span>
+                    <span class="hide-sm mock-rq-muted">sarah@gmail.com</span>
+                    <span class="hide-sm">$120.00</span>
+                    <span class="hide-sm mock-rq-muted">3/24/2026</span>
+                    <span class="mock-status s-new">New</span>
+                </div>
+                <div class="mock-req-row">
+                    <span class="mock-rq-num">RQ-20260324-0871</span>
+                    <span class="mock-rq-bold">James T.</span>
+                    <span class="hide-sm mock-rq-muted">(951) 555-0192</span>
+                    <span class="hide-sm">$180.00</span>
+                    <span class="hide-sm mock-rq-muted">3/24/2026</span>
+                    <span class="mock-status s-new">New</span>
+                </div>
+                <div class="mock-req-row">
+                    <span class="mock-rq-num">RQ-20260323-4455</span>
+                    <span class="mock-rq-bold">Maria R.</span>
+                    <span class="hide-sm mock-rq-muted">maria.r@yahoo.com</span>
+                    <span class="hide-sm">$95.00</span>
+                    <span class="hide-sm mock-rq-muted">3/23/2026</span>
+                    <span class="mock-status s-new">New</span>
+                </div>
+                <div class="mock-req-row">
+                    <span class="mock-rq-num">RQ-20260323-3301</span>
+                    <span class="mock-rq-bold">Devon K.</span>
+                    <span class="hide-sm mock-rq-muted">(909) 555-0374</span>
+                    <span class="hide-sm">$240.00</span>
+                    <span class="hide-sm mock-rq-muted">3/23/2026</span>
+                    <span class="mock-status s-new">New</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+    <div class="how-inner">
+        <span class="section-label">How it works</span>
+        <h2>Up and running<br>in less than a minute.</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">01</div>
+                <h3>Answer a few questions about your business</h3>
+                <p>The Setup Wizard will get you going. Your name, your services, your logo. Done.</p>
+            </div>
+            <div class="step" style="transition-delay:0.15s;">
+                <div class="step-number">02</div>
+                <h3>Share your link</h3>
+                <p>Drop it in your Instagram bio, send it in a text, print your QR code on a flyer. Customers click it, pick their services, and submit a request.</p>
+            </div>
+            <div class="step" style="transition-delay:0.3s;">
+                <div class="step-number">03</div>
+                <h3>Get paid, track everything</h3>
+                <p>Every request flows into your dashboard. Move jobs from New to Accepted to Fulfilled to Paid. See your revenue, your profit, and what's still waiting.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- OUTCOMES -->
+<section class="outcomes">
+    <div class="outcomes-header">
+        <span class="section-label">What Land-r does for your business</span>
+        <h2>Built for the service pros<br>who build communities.</h2>
+        <p>Land-r helps you focus on the work that grows your business.</p>
+    </div>
+    <div class="outcomes-grid">
+        <div class="outcome-card">
+            <span class="outcome-icon">🔗</span>
+            <h3>One link that does everything</h3>
+            <p>Your Land-r page is your storefront. Customers see your services, select what they want, and submit their info — no DMs, no phone tag, no back and forth.</p>
+            <span class="outcome-result">→ More requests, less chasing</span>
+        </div>
+        <div class="outcome-card" style="transition-delay:0.1s;">
+            <span class="outcome-icon">📋</span>
+            <h3>Every job tracked from request to paid</h3>
+            <p>New, Accepted, Scheduled, Fulfilled, Paid — every request moves through a clear pipeline. You always know where each job stands and what needs attention.</p>
+            <span class="outcome-result">→ Nothing falls through the cracks</span>
+        </div>
+        <div class="outcome-card" style="transition-delay:0.2s;">
+            <span class="outcome-icon">💰</span>
+            <h3>See your revenue and profit in real time</h3>
+            <p>Enter your service costs once. Land-r calculates your profit on every fulfilled job automatically. Know your numbers — not just revenue, but what you actually keep.</p>
+            <span class="outcome-result">→ Know your most profitable services</span>
+        </div>
+        <div class="outcome-card" style="transition-delay:0.3s;">
+            <span class="outcome-icon">⚡</span>
+            <h3>Never let a request go cold</h3>
+            <p>Money on the Table shows you how many open requests you have, their total value, and which ones have gone cold. Every login, it tells you what needs follow-up.</p>
+            <span class="outcome-result">→ Stop leaving money on the table</span>
+        </div>
+        <div class="outcome-card" style="transition-delay:0.4s;">
+            <span class="outcome-icon">📊</span>
+            <h3>Understand what's actually driving your business</h3>
+            <p>Conversion rate, acceptance rate, average job value, most requested service. The numbers that tell you if your business is growing — not just busy.</p>
+            <span class="outcome-result">→ Make smarter decisions</span>
+        </div>
+        <div class="outcome-card" style="transition-delay:0.5s;">
+            <span class="outcome-icon">🖨️</span>
+            <h3>Share your page everywhere — including offline</h3>
+            <p>Your QR code is generated automatically. Print it on business cards, flyers, yard signs, or your vehicle. Customers scan it and go straight to your request form.</p>
+            <span class="outcome-result">→ Turn foot traffic into requests</span>
+        </div>
+    </div>
+</section>
+
+<!-- MONEY ON THE TABLE -->
+<section class="mott-section">
+    <div class="mott-inner">
         <div>
-            <span class="section-label">The problem</span>
-            <h2>You're working hard. Your online presence should keep up.</h2>
-            <p>A lot of great small businesses are running entirely out of DMs and comment sections. It works — until it doesn't. Leads fall through. Requests get buried. There's no easy way to stay organized.</p>
-            <p>Land-r gives you one link to share anywhere. Customers click it, see your services, and submit a request. You get notified and track everything from a simple dashboard.</p>
+            <span class="section-label">Money on the Table</span>
+            <h2>Know exactly what's waiting on you.</h2>
+            <p>Most business owners don't know how much money is sitting in their pipeline at any given moment. Land-r shows you — open requests, their total potential value, how long the oldest one has been sitting, how many have gone cold.</p>
+            <p>Land-r helps you run your business instead of your business running you.</p>
         </div>
-        <div>
-            <div class="problem-visual">
-                <div class="problem-visual-title">Before &amp; After</div>
-                <div class="before-after">
-                    <div class="ba-item before">
-                        <div class="ba-label">Before</div>
-                        Sharing your phone number in comments. Answering the same questions over and over. Losing track of who reached out.
-                    </div>
-                    <div class="ba-arrow">↓</div>
-                    <div class="ba-item after">
-                        <div class="ba-label">With Land-r</div>
-                        One link. Customers see your services, submit a request, and you manage everything from one place.
-                    </div>
-                </div>
+        <div class="mott-visual">
+            <div class="mott-tile">
+                <div class="mott-tile-label">Open Requests</div>
+                <div class="mott-tile-value">7</div>
+                <div class="mott-tile-sub">New + Accepted + Scheduled</div>
             </div>
-        </div>
-    </section>
-
-    <div class="divider"></div>
-
-    <!-- How it works -->
-    <section class="how" id="how">
-        <div class="how-inner">
-            <span class="section-label">How it works</span>
-            <h2>Up and running<br>in under 10 minutes.</h2>
-            <div class="steps">
-                <div class="step">
-                    <div class="step-number">01</div>
-                    <h3>Set up your page</h3>
-                    <p>Add your business name, logo, colors, and the services you offer. No design experience needed.</p>
-                </div>
-                <div class="step" style="transition-delay:0.15s;">
-                    <div class="step-number">02</div>
-                    <h3>Share your link</h3>
-                    <p>Drop it in your social bio, send it in a text, post it anywhere you'd normally share your contact info.</p>
-                </div>
-                <div class="step" style="transition-delay:0.3s;">
-                    <div class="step-number">03</div>
-                    <h3>Manage your requests</h3>
-                    <p>Get notified when someone submits. Accept, schedule, and track every job from one simple dashboard.</p>
-                </div>
+            <div class="mott-tile">
+                <div class="mott-tile-label">Potential Value</div>
+                <div class="mott-tile-value">$840</div>
+                <div class="mott-tile-sub">Est. revenue if all fulfilled</div>
+            </div>
+            <div class="mott-tile">
+                <div class="mott-tile-label">Oldest Open</div>
+                <div class="mott-tile-value">3 days</div>
+                <div class="mott-tile-sub">Since oldest new request</div>
+            </div>
+            <div class="mott-tile">
+                <div class="mott-tile-label">Gone Cold</div>
+                <div class="mott-tile-value">2</div>
+                <div class="mott-tile-sub">No activity in 7+ days</div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Features -->
-    <section class="features" id="features">
-        <span class="section-label">What you get</span>
-        <h2>Everything you need.<br>Nothing you don't.</h2>
-        <p class="features-sub">If you can post on Facebook, you can run Land-r.</p>
-        <div class="features-grid">
-            <div class="feature">
-                <span class="feature-icon">🎨</span>
-                <h3>Branded Landing Page</h3>
-                <p>Your logo, your colors, your services. Customers land somewhere that looks like you.</p>
-            </div>
-            <div class="feature">
-                <span class="feature-icon">📥</span>
-                <h3>Request Capture</h3>
-                <p>Customers pick what they need and submit their info. You get notified. No more chasing DMs.</p>
-            </div>
-            <div class="feature">
-                <span class="feature-icon">📋</span>
-                <h3>Built-in CRM</h3>
-                <p>Every request is tracked. See who's new, who's scheduled, who's paid — all in one place.</p>
-            </div>
-            <div class="feature">
-                <span class="feature-icon">💰</span>
-                <h3>Flexible Pricing Display</h3>
-                <p>Show prices for standard services or keep them hidden for jobs that need a custom estimate.</p>
-            </div>
-            <div class="feature">
-                <span class="feature-icon">📱</span>
-                <h3>Works on Any Device</h3>
-                <p>Your customers are on their phones. Land-r looks great on every screen, no app required.</p>
-            </div>
-            <div class="feature">
-                <span class="feature-icon">🔗</span>
-                <h3>One Link, Everywhere</h3>
-                <p>Embed it on a website or just share the link. Works either way.</p>
-            </div>
-        </div>
-    </section>
+<!-- WHAT YOU GET -->
+<section class="what-you-get" id="what">
+    <span class="section-label">What you get</span>
+    <h2>Everything your service<br>business actually needs.</h2>
+    <ul class="what-list">
+        <li>Branded landing page & request form</li>
+        <li>Unlimited requests & services</li>
+        <li>Full request pipeline (New → Paid)</li>
+        <li>Money on the Table dashboard</li>
+        <li>Revenue & profit tracking</li>
+        <li>QR code generator</li>
+        <li>Social links on your page</li>
+        <li>Up to 3 team members</li>
+    </ul>
+</section>
 
-    <!-- Pricing -->
-    <section class="pricing" id="pricing">
-        <div class="pricing-inner">
-            <span class="section-label">Pricing</span>
-            <h2>Straightforward.<br>No surprises.</h2>
-            <div class="pricing-cards">
-                <div class="pricing-card">
-                    <p class="pricing-label">Monthly</p>
-                    <div class="pricing-amount"><sup>$</sup>4.99</div>
-                    <p class="pricing-period">per month, billed monthly</p>
-                    <ul class="pricing-features">
-                        <li>Branded landing page</li>
-                        <li>Unlimited requests</li>
-                        <li>Unlimited services</li>
-                        <li>Built-in request tracker</li>
-                        <li>Up to 3 team members</li>
-                        <li>7-day free trial</li>
-                    </ul>
-                    <a href="https://land-r.com/admin" class="btn-secondary">Start Free Trial</a>
-                </div>
-                <div class="pricing-card featured">
-                    <div class="pricing-badge">2 Months Free</div>
-                    <p class="pricing-label">Annual</p>
-                    <div class="pricing-amount"><sup>$</sup>49.99</div>
-                    <p class="pricing-period">per year — $4.17/month</p>
-                    <ul class="pricing-features">
-                        <li>Everything in Monthly</li>
-                        <li>Save $9.89 per year</li>
-                        <li>Billed once annually</li>
-                        <li>Cancel anytime</li>
-                        <li>7-day free trial</li>
-                        <li>&nbsp;</li>
-                    </ul>
-                    <a href="https://land-r.com/admin" class="btn-primary">Start Free Trial</a>
-                </div>
-            </div>
-            <p class="pricing-note">7-day free trial. No credit card required to get started.</p>
-        </div>
-    </section>
-
-    <!-- From Riverside -->
-    <section class="from">
+<!-- FROM RIVERSIDE -->
+<section class="from">
+    <div class="from-inner">
         <span class="section-label">Who built this</span>
         <h2>Built in Riverside, CA.</h2>
-        <p>I'm not a funded startup. I'm someone from Riverside who saw small business owners doing real work without the tools to match. Land-r is what I wished existed — something you can set up in a lunch break that actually makes your business easier to run.</p>
-        <p>Logic Nerds builds tools for the little guys. This is one of them.</p>
+        <p>"Most software companies aren't interested in the person who details cars out of their driveway, bakes out of their home kitchen, hauls junk, cleans homes...the people doing the real work. I built Land-r for the businesses that build up our community."</p>
         <div class="from-sig">
-            <strong>Elijah — Founder, Logic Nerds</strong>
-            Riverside, California
+            Elijah Mattox — Founder, Logic Nerds
+            <span>Riverside, California</span>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Bottom CTA -->
-    <section class="bottom-cta">
-        <h2>Your page is<br>ready when you are.</h2>
-        <p>Free for 7 days. No credit card needed.</p>
-        <a href="https://land-r.com/admin" class="btn-white">Start Free Trial</a>
-        <p class="bottom-note">$4.99/month after your trial. Cancel anytime.</p>
-    </section>
+<!-- BOTTOM CTA -->
+<section class="bottom-cta">
+    <h2>Your page is<br>ready when you are.</h2>
+    <p>Set up your Land-r now!</p>
+    <a href="https://land-r.com/admin" class="btn-white">Get Started</a>
+</section>
 
-    <!-- Footer -->
-    <footer>
-        <a href="#" class="footer-logo">
-            <img src="https://raw.githubusercontent.com/LogicNerds/land-r/main/Land-r%20Assets/Land-r%20Logo.png" alt="Land-r">
-        </a>
-        <div class="footer-links">
-            <a href="https://land-r.com/admin">Sign In</a>
-            <a href="/cdn-cgi/l/email-protection#93f6fffaf9f2fbd3fffcf4faf0fdf6e1f7e0bdfdf6e7">Contact</a>
-            <a href="https://logicnerds.net">Logic Nerds</a>
-        </div>
-        <p class="footer-copy">© 2026 Logic Nerds · Riverside, California · Land-r is a Logic Nerds product.</p>
-    </footer>
+<!-- FOOTER -->
+<footer>
+    <a href="/">
+        <img src="https://raw.githubusercontent.com/LogicNerds/land-r/main/Land-r%20Assets/Land-r%20Logo.png" alt="Land-r">
+    </a>
+    <div class="footer-links">
+        <a href="#how">How it works</a>
+        <a href="#what">What you get</a>
+        <a href="https://land-r.com/admin">Sign In</a>
+        <a href="https://logicnerds.net">Logic Nerds</a>
+    </div>
+    <p class="footer-copy">© 2026 Logic Nerds · Riverside, California · Land-r is a Logic Nerds product.</p>
+</footer>
 
-    <script>
-        // =====================================================================
-        // PROMO BANNER FLAG — set to true to show the promo banner
-        // Set to false to hide it when promo is over
-        const SHOW_PROMO_BANNER = true;
-        // =====================================================================
+<script>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.step, .outcome-card').forEach(el => observer.observe(el));
+</script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+    const app = initializeApp({ apiKey:"AIzaSyC1M0mrF7xBEZ_6zalErf-xWDrNDfzD_pI", authDomain:"quickquote-aaf57.firebaseapp.com", projectId:"quickquote-aaf57", storageBucket:"quickquote-aaf57.firebasestorage.app", messagingSenderId:"979036829063", appId:"1:979036829063:web:c587dd1664322dceaacf22", measurementId:"G-X8LZC1WVXT" });
+    getAnalytics(app);
+</script>
 
-        if (SHOW_PROMO_BANNER) {
-            document.getElementById('promoBanner').style.display = 'block';
-        }
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('visible');
+</body>
+</html>
