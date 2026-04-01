@@ -10,10 +10,46 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <style>
-        /* Quill alignment classes */
+        /* Quill rendered output — alignment + lists */
         .ql-align-center { text-align: center; }
         .ql-align-right  { text-align: right; }
         .ql-align-justify { text-align: justify; }
+
+        /* Lists rendered by Quill */
+        #heroMessage ol,
+        #heroMessage ul,
+        #disclaimerText ol,
+        #disclaimerText ul,
+        #whyText ol,
+        #whyText ul {
+            padding-left: 1.5em;
+            margin: 4px 0;
+        }
+
+        /* Aligned lists — move the whole list block, not just text */
+        #heroMessage .ql-align-center,
+        #disclaimerText .ql-align-center,
+        #whyText .ql-align-center {
+            text-align: center;
+            list-style-position: inside;
+            padding-left: 0;
+        }
+        #heroMessage .ql-align-right,
+        #disclaimerText .ql-align-right,
+        #whyText .ql-align-right {
+            text-align: right;
+            list-style-position: inside;
+            padding-left: 0;
+        }
+        #heroMessage .ql-align-justify,
+        #disclaimerText .ql-align-justify,
+        #whyText .ql-align-justify {
+            text-align: justify;
+        }
+
+        /* Quill indent */
+        .ql-indent-1 { padding-left: 3em; }
+        .ql-indent-2 { padding-left: 6em; }
     </style>
     <style>
         *, *::before, *::after {
@@ -112,6 +148,8 @@
 
         .hero-message p { margin-bottom: 8px; }
         .hero-message p:last-child { margin-bottom: 0; }
+        .hero-message li { font-size: 17px; color: var(--text-light); line-height: 1.7; }
+        .disclaimer-text li { font-size: 13px; color: var(--text-light); line-height: 1.6; }
 
         .hero-contact {
             display: flex;
@@ -145,7 +183,9 @@
         }
 
         .why-section p,
-        .why-section div {
+        #whyText,
+        #whyText p,
+        #whyText li {
             font-size: 17px;
             line-height: 1.7;
             color: rgba(255,255,255,0.92);
