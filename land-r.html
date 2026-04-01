@@ -137,7 +137,6 @@
         .why-section {
             background: var(--primary);
             padding: 36px 24px;
-            text-align: center;
         }
 
         .why-inner {
@@ -145,7 +144,8 @@
             margin: 0 auto;
         }
 
-        .why-section p {
+        .why-section p,
+        .why-section div {
             font-size: 17px;
             line-height: 1.7;
             color: rgba(255,255,255,0.92);
@@ -633,7 +633,7 @@
         <!-- Why Choose Us -->
         <div id="whySection" class="why-section hidden">
             <div class="why-inner">
-                <p id="whyText"></p>
+                <div id="whyText"></div>
             </div>
         </div>
 
@@ -868,9 +868,9 @@
             if (d.businessPhone) contactHTML += `<a href="tel:${d.businessPhone}">✆ ${d.businessPhone}</a>`;
             if (contactHTML) document.getElementById('heroContact').innerHTML = contactHTML;
 
-            // Why Choose Us
-            if (d.whyChooseUs && d.whyChooseUs.trim()) {
-                document.getElementById('whyText').textContent = d.whyChooseUs;
+            // Why Choose Us (Quill HTML)
+            if (d.whyChooseUs && d.whyChooseUs.replace(/<[^>]*>/g, '').trim()) {
+                document.getElementById('whyText').innerHTML = d.whyChooseUs;
                 document.getElementById('whySection').classList.remove('hidden');
             }
 
