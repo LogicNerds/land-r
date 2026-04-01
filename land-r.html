@@ -110,12 +110,19 @@
             background: var(--white);
             border-bottom: 1px solid var(--border);
             padding: 56px 24px 48px;
-            text-align: center;
         }
 
         .hero-inner {
             max-width: 680px;
             margin: 0 auto;
+        }
+
+        /* Elements that are always centered regardless of content alignment */
+        .hero-logo,
+        .hero h1,
+        .hero-contact,
+        .hero-socials {
+            text-align: center;
         }
 
         .hero-logo {
@@ -144,6 +151,7 @@
             color: var(--text-light);
             line-height: 1.7;
             margin-bottom: 28px;
+            text-align: left;
         }
 
         .hero-message p { margin-bottom: 8px; }
@@ -180,6 +188,7 @@
         .why-inner {
             max-width: 680px;
             margin: 0 auto;
+            text-align: left;
         }
 
         .why-section p,
