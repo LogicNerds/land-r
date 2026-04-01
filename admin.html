@@ -1728,6 +1728,17 @@
                             </div>
                         </div>
 
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>First Name</label>
+                                <input type="text" id="ownerFirstName" placeholder="Jane">
+                            </div>
+                            <div class="form-group">
+                                <label>Last Name</label>
+                                <input type="text" id="ownerLastName" placeholder="Smith">
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <label>Business Name</label>
                             <input type="text" id="businessName" placeholder="Acme Corp">
@@ -2238,7 +2249,7 @@
 
                                 <div class="form-group">
                                     <label>Why Choose Us <span class="label-hint">(optional - shown as a band below your hero)</span></label>
-                                    <textarea id="whyChooseUs" rows="3" placeholder="e.g. Family-owned and operated since 2010. We show up on time, do the job right, and treat your home like our own." style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;resize:vertical;"></textarea>
+                                    <div id="whyChooseUs" style="background: white; min-height: 80px;"></div>
                                 </div>
 
                                 <div class="form-group">
@@ -3259,6 +3270,8 @@
                 if (businessDoc.exists()) {
                     const data = businessDoc.data();
                     document.getElementById('businessName').value = data.businessName || '';
+                    document.getElementById('ownerFirstName').value = window.currentUserData?.firstName || '';
+                    document.getElementById('ownerLastName').value = window.currentUserData?.lastName || '';
                     document.getElementById('logoUrl').value = data.logoUrl || '';
                     document.getElementById('contactEmail').value = data.contactEmail || '';
                     document.getElementById('businessPhone').value = data.businessPhone || '';
@@ -3267,9 +3280,9 @@
                     document.getElementById('primaryColorHex').value = data.primaryColor || '#667eea';
                     document.getElementById('secondaryColorHex').value = data.secondaryColor || '#764ba2';
                     document.getElementById('landingHeadline').value = data.landingHeadline || '';
-                    document.getElementById('whyChooseUs').value = data.whyChooseUs || '';
                     if (landingMessageEditor) landingMessageEditor.root.innerHTML = data.landingMessage || '';
                     if (servicesDisclaimerEditor) servicesDisclaimerEditor.root.innerHTML = data.servicesDisclaimer || '';
+                    if (whyChooseUsEditor) whyChooseUsEditor.root.innerHTML = data.whyChooseUs || '';
                     document.getElementById('landingTextColor').value = data.landingTextColor || '#1f2937';
                     document.getElementById('landingTextColorHex').value = data.landingTextColor || '#1f2937';
                     document.getElementById('sidebarBusinessName').textContent = data.businessName || 'Your Business';
@@ -3337,6 +3350,13 @@
 
             try {
                 await setDoc(doc(db, 'businesses', window.businessId), businessData, { merge: true });
+                // Save first/last name to user doc
+                const firstName = document.getElementById('ownerFirstName').value.trim();
+                const lastName  = document.getElementById('ownerLastName').value.trim();
+                if (firstName || lastName) {
+                    await setDoc(doc(db, 'users', currentUser.uid), { firstName, lastName }, { merge: true });
+                    if (window.currentUserData) { window.currentUserData.firstName = firstName; window.currentUserData.lastName = lastName; }
+                }
                 alert('✓ Settings saved successfully!');
                 updateLandrUrl();
                 document.getElementById('sidebarBusinessName').textContent = businessData.businessName || 'Your Business';
@@ -3997,7 +4017,7 @@ window.addEventListener('message', function(e) {
                 landingHeadline: document.getElementById('landingHeadline').value,
                 landingMessage: landingMessageEditor.root.innerHTML,
                 servicesDisclaimer: servicesDisclaimerEditor.root.innerHTML,
-                whyChooseUs: document.getElementById('whyChooseUs').value,
+                whyChooseUs: whyChooseUsEditor.root.innerHTML,
                 landingTextColor: document.getElementById('landingTextColor').value,
                 socials: collectSocials(),
                 updatedAt: new Date().toISOString()
@@ -5510,19 +5530,20 @@ window.addEventListener('message', function(e) {
                     </div>
                     <div class="form-group">
                         <label>Why Choose Us <span class="label-hint">(optional)</span></label>
-                        <textarea id="wiz-whyChooseUs" rows="3" placeholder="Family-owned and operated since 2010. We show up on time, do the job right..." style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;resize:vertical;">${document.getElementById('whyChooseUs')?.value || ''}</textarea>
+                        <textarea id="wiz-whyChooseUs" rows="3" placeholder="Family-owned and operated since 2010. We show up on time, do the job right..." style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;resize:vertical;">${whyChooseUsEditor ? whyChooseUsEditor.getText().trim() : ''}</textarea>
                     </div>`,
                 save: async () => {
                     const welcomeText = document.getElementById('wiz-welcomeMessage').value.trim();
+                    const whyText = document.getElementById('wiz-whyChooseUs').value.trim();
                     const data = {
                         landingHeadline: document.getElementById('wiz-headline').value.trim(),
                         landingMessage: welcomeText ? `<p>${welcomeText}</p>` : '',
-                        whyChooseUs: document.getElementById('wiz-whyChooseUs').value.trim(),
+                        whyChooseUs: whyText ? `<p>${whyText}</p>` : '',
                         updatedAt: new Date().toISOString()
                     };
                     await setDoc(doc(db, 'businesses', window.businessId), data, { merge: true });
                     document.getElementById('landingHeadline').value = data.landingHeadline;
-                    document.getElementById('whyChooseUs').value = data.whyChooseUs;
+                    if (whyChooseUsEditor) whyChooseUsEditor.root.innerHTML = data.whyChooseUs;
                     if (landingMessageEditor) landingMessageEditor.root.innerHTML = data.landingMessage;
                     return true;
                 }
@@ -5739,7 +5760,7 @@ window.addEventListener('message', function(e) {
             if (headline) headline.value = data.landingHeadline || '';
             if (msg)      msg.value      = data.landingMessage ? data.landingMessage.replace(/<[^>]*>/g,'') : '';
             if (disc)     disc.value     = data.servicesDisclaimer ? data.servicesDisclaimer.replace(/<[^>]*>/g,'') : '';
-            if (why)      why.value      = data.whyChooseUs || '';
+            if (why)      why.value      = data.whyChooseUs ? data.whyChooseUs.replace(/<[^>]*>/g,'') : '';
             if (color)    color.value    = data.landingTextColor || '#1f2937';
             // Mobile socials
             renderSocialsList(data.socials || {}, 'socialsListMobile');
@@ -5776,11 +5797,12 @@ window.addEventListener('message', function(e) {
                 await setDoc(doc(db, 'businesses', window.businessId), data, { merge: true });
                 // Sync to desktop fields
                 document.getElementById('landingHeadline').value = headline;
-                document.getElementById('whyChooseUs').value = why;
+                if (whyChooseUsEditor) whyChooseUsEditor.root.innerHTML = data.whyChooseUs || '';
                 document.getElementById('landingTextColor').value = color;
                 document.getElementById('landingTextColorHex').value = color;
                 if (landingMessageEditor) landingMessageEditor.root.innerHTML = data.landingMessage;
                 if (servicesDisclaimerEditor) servicesDisclaimerEditor.root.innerHTML = data.servicesDisclaimer;
+                if (whyChooseUsEditor) whyChooseUsEditor.root.innerHTML = data.whyChooseUs;
                 alert('✓ Changes saved!');
             } catch(e) {
                 alert('Error saving: ' + e.message);
@@ -5979,17 +6001,23 @@ window.addEventListener('message', function(e) {
         // Initialize Quill Rich Text Editors
         let landingMessageEditor;
         let servicesDisclaimerEditor;
+        let whyChooseUsEditor;
 
         document.addEventListener('DOMContentLoaded', () => {
             landingMessageEditor = new Quill('#landingMessage', {
                 theme: 'snow',
                 placeholder: 'Tell customers about your services...',
-                modules: { toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['link'], ['clean']] }
+                modules: { toolbar: [['bold', 'italic', 'underline'], [{ 'align': [] }], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['link'], ['clean']] }
             });
             servicesDisclaimerEditor = new Quill('#servicesDisclaimer', {
                 theme: 'snow',
                 placeholder: 'Example: Additional $50 charge for vans or larger vehicles',
-                modules: { toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['clean']] }
+                modules: { toolbar: [['bold', 'italic', 'underline'], [{ 'align': [] }], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['clean']] }
+            });
+            whyChooseUsEditor = new Quill('#whyChooseUs', {
+                theme: 'snow',
+                placeholder: 'e.g. Family-owned and operated since 2010. We show up on time, do the job right, and treat your home like our own.',
+                modules: { toolbar: [['bold', 'italic', 'underline'], [{ 'align': [] }], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['clean']] }
             });
         });
 
