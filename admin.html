@@ -1430,6 +1430,41 @@
             display: none;
         }
 
+        /* ── CUSTOMER LIST MOBILE CARD (hidden on desktop, shown on mobile) ── */
+        .customer-row-mobile {
+            display: none;
+            align-items: center;
+            padding: 14px 16px;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            gap: 12px;
+            transition: background 0.15s;
+        }
+        .customer-row-mobile:hover { background: var(--bg-main); }
+        .customer-row-desktop { display: grid; }
+        .customer-list-header { display: grid; }
+        .customer-mobile-info { flex: 1; min-width: 0; }
+        .customer-mobile-name { font-size: 14px; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .customer-mobile-email { font-size: 12px; color: var(--text-secondary); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .customer-mobile-stats { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; flex-shrink: 0; }
+        .customer-mobile-rev { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+        .customer-mobile-open { font-size: 11px; font-weight: 600; color: var(--primary); }
+
+        /* ── CUSTOMER MODAL REQUEST ROW MOBILE ── */
+        .customer-modal-row-mobile {
+            display: none;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            background: var(--bg-card);
+            align-items: center;
+            gap: 10px;
+        }
+        .customer-modal-row-mobile:hover { background: var(--bg-main); }
+        .customer-modal-row-desktop { display: grid; }
+        .customer-modal-header { display: grid; }
+
         @media (max-width: 768px) {
 
             /* ── CORE LAYOUT ── */
@@ -1584,6 +1619,14 @@
 
             /* ── MOBILE BANNERS ── */
             .mobile-desktop-banner { display: none !important; }
+
+            /* ── MY CUSTOMERS — mobile card layout ── */
+            .customer-list-header { display: none !important; }
+            .customer-row-desktop { display: none !important; }
+            .customer-row-mobile { display: flex !important; }
+            .customer-modal-header { display: none !important; }
+            .customer-modal-row-desktop { display: none !important; }
+            .customer-modal-row-mobile { display: flex !important; }
         }
     </style>
 </head>
@@ -6041,12 +6084,9 @@ window.addEventListener('message', function(e) {
                 return;
             }
 
-            let html = '';
-
-            // Table header
-            html += `
+            let html = `
             <div class="card" style="padding:0;overflow:hidden;">
-                <div class="request-row request-row-header" style="grid-template-columns:2fr 1.5fr 80px 80px 80px 100px;">
+                <div class="request-row request-row-header customer-list-header" style="grid-template-columns:2fr 1.5fr 80px 80px 80px 100px;">
                     <div>Customer</div>
                     <div>Contact</div>
                     <div>Email Opt-in</div>
@@ -6056,15 +6096,11 @@ window.addEventListener('message', function(e) {
                 </div>
                 <div class="requests-table" style="border-radius:0;">`;
 
-            withEmail.forEach(r => {
-                html += customerRow(r, false);
-            });
+            withEmail.forEach(r => { html += customerRow(r, false); });
 
             if (noEmail.length > 0) {
                 html += `<div style="padding:10px 16px;background:var(--bg-main);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-secondary);border-top:1px solid var(--border);">No Email Provided (${noEmail.length})</div>`;
-                noEmail.forEach(r => {
-                    html += customerRow(r, true);
-                });
+                noEmail.forEach(r => { html += customerRow(r, true); });
             }
 
             html += `</div></div>`;
@@ -6079,15 +6115,31 @@ window.addEventListener('message', function(e) {
                 ? `<span style="color:#1a7a4a;font-weight:600;">✓</span>`
                 : `<span style="color:var(--border);">—</span>`;
             const clickId = isNoEmail ? `noemail-${r.id}` : encodeURIComponent(r.email);
+            const displayEmail = isNoEmail ? 'No email' : r.email;
+            const openLabel = r.openJobs > 0 ? `${r.openJobs} open job${r.openJobs !== 1 ? 's' : ''}` : '';
+
             return `
-                <div class="request-row" style="grid-template-columns:2fr 1.5fr 80px 80px 80px 100px;"
+                <!-- Desktop row -->
+                <div class="request-row customer-row-desktop" style="grid-template-columns:2fr 1.5fr 80px 80px 80px 100px;"
                     onclick="openCustomerModal('${clickId}')">
                     <div style="font-weight:600;">${r.name || '—'}</div>
                     <div>${emailCell}</div>
                     <div style="text-align:center;">${optIn}</div>
-                    <div style="font-weight:600;color:${r.openJobs>0?'var(--primary)':'var(--text-secondary)'};">${r.openJobs}</div>
+                    <div style="font-weight:600;color:${r.openJobs > 0 ? 'var(--primary)' : 'var(--text-secondary)'};">${r.openJobs}</div>
                     <div style="color:var(--text-secondary);">${r.completedJobs}</div>
                     <div style="font-weight:600;">$${r.totalRevenue.toFixed(2)}</div>
+                </div>
+                <!-- Mobile card -->
+                <div class="customer-row-mobile" onclick="openCustomerModal('${clickId}')">
+                    <div class="customer-mobile-info">
+                        <div class="customer-mobile-name">${r.name || '—'}</div>
+                        <div class="customer-mobile-email">${displayEmail}</div>
+                    </div>
+                    <div class="customer-mobile-stats">
+                        <div class="customer-mobile-rev">$${r.totalRevenue.toFixed(2)}</div>
+                        ${openLabel ? `<div class="customer-mobile-open">${openLabel}</div>` : ''}
+                    </div>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-secondary);flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
                 </div>`;
         }
 
@@ -6143,23 +6195,36 @@ window.addEventListener('message', function(e) {
                 const statusClass = `request-status-${status.toLowerCase()}`;
                 const date = q.createdAt ? new Date(q.createdAt).toLocaleDateString() : '—';
                 const source = q.source === 'manual' ? '<span style="font-size:10px;color:var(--text-secondary);margin-left:6px;">Direct</span>' : '';
+                const services = (q.services||[]).map(s=>s.name||s.serviceName||'').filter(Boolean).join(', ') || '—';
                 return `
-                <div class="request-row" style="grid-template-columns:1.4fr 1fr 100px 100px;cursor:pointer;"
+                <!-- Desktop -->
+                <div class="request-row customer-modal-row-desktop" style="grid-template-columns:1.4fr 1fr 100px 100px;cursor:pointer;"
                     onclick="closeCustomerModal();viewRequest('${q.id}')">
                     <div>
                         <div style="font-weight:600;color:var(--primary);font-size:13px;">${q.quoteNumber || '—'}</div>
                         <div style="font-size:12px;color:var(--text-secondary);">${date}</div>
                     </div>
-                    <div style="font-size:13px;">
-                        ${(q.services||[]).map(s=>s.name||s.serviceName||'').filter(Boolean).join(', ') || '—'}${source}
-                    </div>
+                    <div style="font-size:13px;">${services}${source}</div>
                     <div style="font-weight:600;">$${(q.totalEstimate||0).toFixed(2)}</div>
                     <div><span class="status-badge ${statusClass}">${status}</span></div>
+                </div>
+                <!-- Mobile -->
+                <div class="customer-modal-row-mobile" onclick="closeCustomerModal();viewRequest('${q.id}')">
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-weight:600;color:var(--primary);font-size:12px;">${q.quoteNumber || '—'}</div>
+                        <div style="font-size:12px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${services}</div>
+                        <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">${date}</div>
+                    </div>
+                    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;">
+                        <span class="status-badge ${statusClass}">${status}</span>
+                        <span style="font-size:13px;font-weight:700;">$${(q.totalEstimate||0).toFixed(2)}</span>
+                    </div>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-secondary);flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
                 </div>`;
             }).join('');
 
             document.getElementById('customerModalRequests').innerHTML = `
-                <div class="request-row request-row-header" style="grid-template-columns:1.4fr 1fr 100px 100px;">
+                <div class="request-row request-row-header customer-modal-header" style="grid-template-columns:1.4fr 1fr 100px 100px;">
                     <div>Request #</div><div>Services</div><div>Total</div><div>Status</div>
                 </div>
                 <div class="requests-table" style="border-radius:0 0 8px 8px;">${reqHtml}</div>`;
