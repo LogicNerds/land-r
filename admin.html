@@ -2871,7 +2871,7 @@
 
                     // Check if promo parameter is in URL and promo is active
                     const urlParams = new URLSearchParams(window.location.search);
-                    const hasPromo = FREE_PROMO_ACTIVE && urlParams.get('promo') === 'true';
+                    const hasPromo = FREE_PROMO_ACTIVE || urlParams.get('promo') === 'true';
 
                     if (hasPromo) {
                         // Promo: free account for life
