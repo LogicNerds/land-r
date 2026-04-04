@@ -1649,6 +1649,9 @@
                 <span class="mobile-drawer-icon">📋</span> My Requests
                 <span id="mobileRequestsBadge" class="nav-badge hidden" style="margin-left:4px;">0</span>
             </div>
+            <div class="mobile-drawer-item" id="mdNav-customers" onclick="mobileNav('customers')">
+                <span class="mobile-drawer-icon">👥</span> My Customers
+            </div>
             <div class="mobile-drawer-item" id="mdNav-numbers" onclick="mobileNav('numbers')">
                 <span class="mobile-drawer-icon">📊</span> My Numbers
             </div>
@@ -1682,6 +1685,10 @@
                     <div class="nav-item nav-mobile-show" onclick="showSection('requests')">
                         <span class="nav-icon">📋</span>
                         My Requests <span id="requestsBadge" class="nav-badge hidden">0</span>
+                    </div>
+                    <div class="nav-item nav-mobile-hide" onclick="showSection('customers')">
+                        <span class="nav-icon">👥</span>
+                        My Customers
                     </div>
                     <div class="nav-item nav-mobile-hide" onclick="showSection('numbers')">
                         <span class="nav-icon">📊</span>
@@ -2041,14 +2048,19 @@
                                     <div class="numbers-card-sub">Visitors to your Land-r</div>
                                 </div>
                                 <div class="numbers-card">
-                                    <div class="numbers-card-label">Requests</div>
+                                    <div class="numbers-card-label">From Your Page</div>
                                     <div class="numbers-card-value" id="metricRequests">—</div>
-                                    <div class="numbers-card-sub">People who sent a request</div>
+                                    <div class="numbers-card-sub">Requests from your Land-r page</div>
                                 </div>
-                                <div class="numbers-card" style="grid-column:1/-1;">
+                                <div class="numbers-card">
+                                    <div class="numbers-card-label">Direct</div>
+                                    <div class="numbers-card-value" id="metricDirect">—</div>
+                                    <div class="numbers-card-sub">Requests you entered yourself</div>
+                                </div>
+                                <div class="numbers-card">
                                     <div class="numbers-card-label">Conversion Rate</div>
                                     <div class="numbers-card-value" id="metricRate">—</div>
-                                    <div class="numbers-card-sub" id="metricRateSub">Visitors who became requests</div>
+                                    <div class="numbers-card-sub" id="metricRateSub">Page visitors who sent a request</div>
                                 </div>
                             </div>
                         </div>
@@ -2122,7 +2134,43 @@
                     </div>
                 </div>
 
-                <!-- ===================== MY LAND-R ===================== -->
+                <!-- ===================== MY CUSTOMERS ===================== -->
+                <div id="customersSection" class="hidden">
+                    <div class="top-bar">
+                        <div>
+                            <h1 class="page-title">My Customers</h1>
+                            <p class="page-subtitle">Everyone who has ever sent you a request</p>
+                        </div>
+                    </div>
+
+                    <!-- Search -->
+                    <div style="margin-bottom:20px;">
+                        <input type="text" id="customerSearch" placeholder="Search by name or email..."
+                            oninput="filterCustomers(this.value)"
+                            style="width:100%;max-width:380px;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;outline:none;">
+                    </div>
+
+                    <!-- Customer list -->
+                    <div id="customersList"></div>
+
+                    <!-- Customer detail modal -->
+                    <div id="customerModal" class="modal hidden" style="z-index:10002;">
+                        <div class="modal-content" style="max-width:680px;">
+                            <div class="modal-header">
+                                <div>
+                                    <h2 id="customerModalName" style="font-size:20px;">Customer</h2>
+                                    <div id="customerModalMeta" style="font-size:13px;color:var(--text-secondary);margin-top:2px;"></div>
+                                </div>
+                                <button class="modal-close" onclick="closeCustomerModal()">×</button>
+                            </div>
+                            <div class="modal-body" style="padding:24px;">
+                                <div id="customerModalStats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;"></div>
+                                <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:12px;">All Requests</div>
+                                <div id="customerModalRequests"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div id="landrSection" class="hidden">
                     <div class="top-bar">
                         <div>
@@ -3224,6 +3272,7 @@
             document.getElementById('requestsSection').classList.add('hidden');
             document.getElementById('landrSection').classList.add('hidden');
             document.getElementById('numbersSection').classList.add('hidden');
+            document.getElementById('customersSection').classList.add('hidden');
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             document.querySelectorAll('.mobile-drawer-item').forEach(item => item.classList.remove('active'));
 
@@ -3245,11 +3294,15 @@
                 document.querySelectorAll('.nav-item')[3].classList.add('active');
                 document.getElementById('mdNav-requests')?.classList.add('active');
                 loadRequests();
+            } else if (section === 'customers') {
+                document.getElementById('customersSection').classList.remove('hidden');
+                document.querySelectorAll('.nav-item')[4].classList.add('active');
+                document.getElementById('mdNav-customers')?.classList.add('active');
+                loadCustomers();
             } else if (section === 'numbers') {
                 document.getElementById('numbersSection').classList.remove('hidden');
-                document.querySelectorAll('.nav-item')[4].classList.add('active');
+                document.querySelectorAll('.nav-item')[5].classList.add('active');
                 document.getElementById('mdNav-numbers')?.classList.add('active');
-                // Re-sync the active button with the current filter state then load
                 const filterToUse = window.currentNumbersFilter || 'today';
                 document.querySelectorAll('.numbers-filter-btn').forEach(b => b.classList.remove('active'));
                 document.querySelectorAll('.numbers-filter-btn').forEach(b => {
@@ -5005,6 +5058,8 @@ window.addEventListener('message', function(e) {
                 window.numbersFilteredRequests = filtered;
 
                 const requestCount = filtered.length;
+                const organicCount = filtered.filter(r => r.source !== 'manual').length;
+                const directCount  = filtered.filter(r => r.source === 'manual').length;
                 let acceptedCount = 0;
                 let fulfilledCount = 0;
                 let totalRevenue = 0;
@@ -5071,10 +5126,10 @@ window.addEventListener('message', function(e) {
                     : null;
 
                 // ── CALCULATIONS ──
-                const convRate = views > 0 ? ((requestCount / views) * 100).toFixed(0) + '%' : '—';
-                const convSub = views > 0 && requestCount > 0
-                    ? `1 in ${Math.round(views / requestCount)} visitors sent a request`
-                    : views > 0 ? 'No requests yet' : 'No visits yet';
+                const convRate = views > 0 ? ((organicCount / views) * 100).toFixed(0) + '%' : '—';
+                const convSub = views > 0 && organicCount > 0
+                    ? `1 in ${Math.round(views / organicCount)} visitors sent a request`
+                    : views > 0 ? 'No page requests yet' : 'No visits yet';
                 const pctAccepted = requestCount > 0 ? Math.round((acceptedCount / requestCount) * 100) + '%' : '—';
                 const pctFulfilled = acceptedCount > 0 ? Math.round((fulfilledCount / acceptedCount) * 100) + '%' : '—';
                 const avgTime = fulfillTimes.length > 0
@@ -5093,7 +5148,8 @@ window.addEventListener('message', function(e) {
                 // ── UPDATE DOM ──
                 // Your Reach
                 document.getElementById('metricViews').textContent = views.toLocaleString();
-                document.getElementById('metricRequests').textContent = requestCount.toLocaleString();
+                document.getElementById('metricRequests').textContent = organicCount.toLocaleString();
+                document.getElementById('metricDirect').textContent = directCount.toLocaleString();
                 document.getElementById('metricRate').textContent = convRate;
                 document.getElementById('metricRateSub').textContent = convSub;
 
@@ -5900,6 +5956,221 @@ window.addEventListener('message', function(e) {
             } catch(e) { alert('Error: ' + e.message); }
         }
 
+        // ===================== MY CUSTOMERS =====================
+
+        let allCustomers = [];
+
+        async function loadCustomers() {
+            const list = document.getElementById('customersList');
+            list.innerHTML = '<div class="empty-state"><div class="spinner" style="margin:0 auto 12px"></div>Loading customers...</div>';
+
+            try {
+                const snap = await getDocs(query(collection(db, 'quotes'), where('businessId', '==', window.businessId)));
+                const quotes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                allCustomers = buildCustomerRecords(quotes);
+                renderCustomerList(allCustomers);
+            } catch(e) {
+                list.innerHTML = `<div class="empty-state">Error loading customers: ${e.message}</div>`;
+            }
+        }
+
+        function buildCustomerRecords(quotes) {
+            const byEmail = {};
+            const noEmail = [];
+
+            quotes.forEach(q => {
+                const email = (q.customerEmail || '').trim().toLowerCase();
+                const name  = q.customerName || '';
+                const date  = q.createdAt ? new Date(q.createdAt) : new Date(0);
+                const status = q.quoteStatus || 'New';
+                const isOpen = ['New','Accepted','Scheduled'].includes(status);
+                const isDone = ['Fulfilled','Paid'].includes(status);
+                const revenue = isDone ? (q.totalEstimate || 0) : 0;
+                const emailOptIn = q.emailOptIn === true;
+
+                if (!email) {
+                    noEmail.push({
+                        id: q.id, name, email: '', phone: q.customerPhone || '',
+                        emailOptIn: false, openJobs: isOpen ? 1 : 0,
+                        completedJobs: isDone ? 1 : 0, totalRevenue: revenue,
+                        quotes: [q], latestDate: date, noEmail: true
+                    });
+                    return;
+                }
+
+                if (!byEmail[email]) {
+                    byEmail[email] = {
+                        email, name, phone: q.customerPhone || '',
+                        emailOptIn: false, openJobs: 0, completedJobs: 0,
+                        totalRevenue: 0, quotes: [], latestDate: new Date(0)
+                    };
+                }
+
+                const rec = byEmail[email];
+                if (date > rec.latestDate) {
+                    rec.latestDate = date;
+                    rec.name  = name || rec.name;
+                    rec.phone = q.customerPhone || rec.phone;
+                }
+                if (emailOptIn) rec.emailOptIn = true;
+                if (isOpen) rec.openJobs++;
+                if (isDone) rec.completedJobs++;
+                rec.totalRevenue += revenue;
+                rec.quotes.push(q);
+            });
+
+            // Sort each customer's quotes newest first
+            const withEmail = Object.values(byEmail).map(r => {
+                r.quotes.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+                return r;
+            });
+            withEmail.sort((a,b) => b.latestDate - a.latestDate);
+
+            // No-email entries — sort newest first
+            noEmail.sort((a,b) => b.latestDate - a.latestDate);
+
+            return { withEmail, noEmail };
+        }
+
+        function renderCustomerList(customers) {
+            const list = document.getElementById('customersList');
+            const { withEmail, noEmail } = customers;
+
+            if (withEmail.length === 0 && noEmail.length === 0) {
+                list.innerHTML = '<div class="empty-state"><div style="font-size:40px;margin-bottom:12px;">👥</div><p style="font-size:16px;font-weight:500;color:var(--text-primary)">No customers yet</p><p style="font-size:14px;">Customers will appear here once requests come in.</p></div>';
+                return;
+            }
+
+            let html = '';
+
+            // Table header
+            html += `
+            <div class="card" style="padding:0;overflow:hidden;">
+                <div class="request-row request-row-header" style="grid-template-columns:2fr 1.5fr 80px 80px 80px 100px;">
+                    <div>Customer</div>
+                    <div>Contact</div>
+                    <div>Email Opt-in</div>
+                    <div>Open Jobs</div>
+                    <div>Completed</div>
+                    <div>Total Revenue</div>
+                </div>
+                <div class="requests-table" style="border-radius:0;">`;
+
+            withEmail.forEach(r => {
+                html += customerRow(r, false);
+            });
+
+            if (noEmail.length > 0) {
+                html += `<div style="padding:10px 16px;background:var(--bg-main);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-secondary);border-top:1px solid var(--border);">No Email Provided (${noEmail.length})</div>`;
+                noEmail.forEach(r => {
+                    html += customerRow(r, true);
+                });
+            }
+
+            html += `</div></div>`;
+            list.innerHTML = html;
+        }
+
+        function customerRow(r, isNoEmail) {
+            const emailCell = isNoEmail
+                ? `<span style="color:var(--text-secondary);font-size:12px;">No email</span>`
+                : `<div>${r.email}</div><div style="font-size:12px;color:var(--text-secondary);">${r.phone || ''}</div>`;
+            const optIn = r.emailOptIn
+                ? `<span style="color:#1a7a4a;font-weight:600;">✓</span>`
+                : `<span style="color:var(--border);">—</span>`;
+            const clickId = isNoEmail ? `noemail-${r.id}` : encodeURIComponent(r.email);
+            return `
+                <div class="request-row" style="grid-template-columns:2fr 1.5fr 80px 80px 80px 100px;"
+                    onclick="openCustomerModal('${clickId}')">
+                    <div style="font-weight:600;">${r.name || '—'}</div>
+                    <div>${emailCell}</div>
+                    <div style="text-align:center;">${optIn}</div>
+                    <div style="font-weight:600;color:${r.openJobs>0?'var(--primary)':'var(--text-secondary)'};">${r.openJobs}</div>
+                    <div style="color:var(--text-secondary);">${r.completedJobs}</div>
+                    <div style="font-weight:600;">$${r.totalRevenue.toFixed(2)}</div>
+                </div>`;
+        }
+
+        function filterCustomers(q) {
+            if (!allCustomers.withEmail) return;
+            const term = q.toLowerCase();
+            const filtered = {
+                withEmail: allCustomers.withEmail.filter(r =>
+                    r.name.toLowerCase().includes(term) ||
+                    r.email.toLowerCase().includes(term) ||
+                    r.phone.toLowerCase().includes(term)
+                ),
+                noEmail: term ? [] : allCustomers.noEmail
+            };
+            renderCustomerList(filtered);
+        }
+
+        function openCustomerModal(id) {
+            const { withEmail, noEmail } = allCustomers;
+            let record;
+
+            if (id.startsWith('noemail-')) {
+                const reqId = id.replace('noemail-', '');
+                record = noEmail.find(r => r.id === reqId);
+            } else {
+                const email = decodeURIComponent(id);
+                record = withEmail.find(r => r.email === email);
+            }
+            if (!record) return;
+
+            document.getElementById('customerModalName').textContent = record.name || 'Unknown';
+            document.getElementById('customerModalMeta').textContent =
+                [record.email, record.phone].filter(Boolean).join(' · ') || 'No contact info';
+
+            // Stats
+            document.getElementById('customerModalStats').innerHTML = `
+                <div class="numbers-card">
+                    <div class="numbers-card-label">Open Jobs</div>
+                    <div class="numbers-card-value" style="font-size:28px;">${record.openJobs}</div>
+                </div>
+                <div class="numbers-card">
+                    <div class="numbers-card-label">Completed</div>
+                    <div class="numbers-card-value" style="font-size:28px;">${record.completedJobs}</div>
+                </div>
+                <div class="numbers-card">
+                    <div class="numbers-card-label">Total Revenue</div>
+                    <div class="numbers-card-value" style="font-size:28px;">$${record.totalRevenue.toFixed(2)}</div>
+                </div>`;
+
+            // Request list
+            const reqHtml = record.quotes.map(q => {
+                const status = q.quoteStatus || 'New';
+                const statusClass = `request-status-${status.toLowerCase()}`;
+                const date = q.createdAt ? new Date(q.createdAt).toLocaleDateString() : '—';
+                const source = q.source === 'manual' ? '<span style="font-size:10px;color:var(--text-secondary);margin-left:6px;">Direct</span>' : '';
+                return `
+                <div class="request-row" style="grid-template-columns:1.4fr 1fr 100px 100px;cursor:pointer;"
+                    onclick="closeCustomerModal();viewRequest('${q.id}')">
+                    <div>
+                        <div style="font-weight:600;color:var(--primary);font-size:13px;">${q.quoteNumber || '—'}</div>
+                        <div style="font-size:12px;color:var(--text-secondary);">${date}</div>
+                    </div>
+                    <div style="font-size:13px;">
+                        ${(q.services||[]).map(s=>s.name||s.serviceName||'').filter(Boolean).join(', ') || '—'}${source}
+                    </div>
+                    <div style="font-weight:600;">$${(q.totalEstimate||0).toFixed(2)}</div>
+                    <div><span class="status-badge ${statusClass}">${status}</span></div>
+                </div>`;
+            }).join('');
+
+            document.getElementById('customerModalRequests').innerHTML = `
+                <div class="request-row request-row-header" style="grid-template-columns:1.4fr 1fr 100px 100px;">
+                    <div>Request #</div><div>Services</div><div>Total</div><div>Status</div>
+                </div>
+                <div class="requests-table" style="border-radius:0 0 8px 8px;">${reqHtml}</div>`;
+
+            document.getElementById('customerModal').classList.remove('hidden');
+        }
+
+        function closeCustomerModal() {
+            document.getElementById('customerModal').classList.add('hidden');
+        }
+
         // ===================== GLOBAL WINDOW BINDINGS =====================
 
         window.showSection = showSection;
@@ -5982,6 +6253,10 @@ window.addEventListener('message', function(e) {
         window.downloadQRCodeMobile = downloadQRCodeMobile;
         window.mobileOpenAddService = mobileOpenAddService;
         window.mobileAddServiceFromModal = mobileAddServiceFromModal;
+        window.loadCustomers = loadCustomers;
+        window.filterCustomers = filterCustomers;
+        window.openCustomerModal = openCustomerModal;
+        window.closeCustomerModal = closeCustomerModal;
         window.showWelcomeModal = showWelcomeModal;
         window.dismissWelcomeModal = dismissWelcomeModal;
         window.closeWelcomeOpenGuide = closeWelcomeOpenGuide;
