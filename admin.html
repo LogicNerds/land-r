@@ -1466,6 +1466,14 @@
         .customer-modal-header { display: grid; }
 
         @media (max-width: 768px) {
+            #requestorTemplateGrid,
+            #businessTemplateGrid {
+                grid-template-columns: 1fr !important;
+            }
+            #requestorTemplateGrid > div:last-child,
+            #businessTemplateGrid > div:last-child {
+                display: none !important;
+            }
 
             /* ── CORE LAYOUT ── */
             html, body { height: 100%; overflow: hidden; }
@@ -1685,6 +1693,9 @@
             <div class="mobile-drawer-item" id="mdNav-services" onclick="mobileNav('services')">
                 <span class="mobile-drawer-icon">◆</span> My Products & Services
             </div>
+            <div class="mobile-drawer-item" id="mdNav-emailTemplates" onclick="mobileNav('emailTemplates')">
+                <span class="mobile-drawer-icon">✉</span> Email Templates
+            </div>
             <div class="mobile-drawer-item" id="mdNav-landr" onclick="mobileNav('landr')">
                 <span class="mobile-drawer-icon">◉</span> My Land-r
             </div>
@@ -1720,6 +1731,10 @@
                     <div class="nav-item nav-mobile-hide" onclick="showSection('services')">
                         <span class="nav-icon">◆</span>
                         My Products & Services
+                    </div>
+                    <div class="nav-item nav-mobile-hide" onclick="showSection('emailTemplates')">
+                        <span class="nav-icon">✉</span>
+                        Email Templates
                     </div>
                     <div class="nav-item nav-mobile-hide" onclick="showSection('landr')">
                         <span class="nav-icon">◉</span>
@@ -2214,6 +2229,101 @@
                         </div>
                     </div>
                 </div>
+                <!-- ===================== EMAIL TEMPLATES ===================== -->
+                <div id="emailTemplatesSection" class="hidden">
+                    <div class="top-bar">
+                        <div>
+                            <h1 class="page-title">Email Templates</h1>
+                            <p class="page-subtitle">Customize the emails your customers and you receive</p>
+                        </div>
+                    </div>
+
+                    <!-- Merge tag legend -->
+                    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin-bottom:24px;font-size:13px;color:#1e40af;line-height:1.8;">
+                        <strong>Available merge tags</strong> — use these anywhere in your subject or message fields:<br>
+                        <code style="background:#dbeafe;padding:2px 6px;border-radius:4px;margin-right:8px;">{{request_number}}</code>
+                        <code style="background:#dbeafe;padding:2px 6px;border-radius:4px;margin-right:8px;">{{customer_name}}</code>
+                        <code style="background:#dbeafe;padding:2px 6px;border-radius:4px;">{{business_name}}</code>
+                    </div>
+
+                    <!-- ── REQUEST CONFIRMATION (to customer) ── -->
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:32px;align-items:start;" id="requestorTemplateGrid">
+                        <div class="card" style="margin-bottom:0;">
+                            <div class="card-header">
+                                <div>
+                                    <h3 class="card-title">Request Confirmation</h3>
+                                    <p class="card-description">Sent to the customer when they submit a request</p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Subject Line</label>
+                                <input type="text" id="tpl-requestor-subject"
+                                    placeholder="We received your request — {{request_number}}"
+                                    oninput="updateEmailPreview('requestor')"
+                                    style="width:100%;">
+                            </div>
+                            <div class="form-group">
+                                <label>Message <span class="label-hint">(shown above the services summary)</span></label>
+                                <textarea id="tpl-requestor-message" rows="4"
+                                    placeholder="We've received your request and will be in touch shortly."
+                                    oninput="updateEmailPreview('requestor')"
+                                    style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;resize:vertical;"></textarea>
+                            </div>
+                            <button class="btn btn-success" onclick="saveEmailTemplates()">Save Changes</button>
+                        </div>
+                        <!-- Preview -->
+                        <div style="position:sticky;top:24px;">
+                            <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:12px;">Preview</div>
+                            <div id="preview-requestor" style="border:1px solid var(--border);border-radius:8px;overflow:hidden;background:#f8fafc;">
+                                <div style="background:#e2e8f0;padding:10px 16px;font-size:12px;color:var(--text-secondary);display:flex;gap:8px;align-items:center;">
+                                    <span style="font-weight:600;">Subject:</span>
+                                    <span id="preview-requestor-subject" style="color:var(--text-primary);">We received your request — RQ-20240101-0001</span>
+                                </div>
+                                <div style="padding:24px;" id="preview-requestor-body"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── BUSINESS NOTIFICATION (to business) ── -->
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;" id="businessTemplateGrid">
+                        <div class="card" style="margin-bottom:0;">
+                            <div class="card-header">
+                                <div>
+                                    <h3 class="card-title">New Request Notification</h3>
+                                    <p class="card-description">Sent to you when a customer submits a request</p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Subject Line</label>
+                                <input type="text" id="tpl-business-subject"
+                                    placeholder="New request from {{customer_name}} — {{request_number}}"
+                                    oninput="updateEmailPreview('business')"
+                                    style="width:100%;">
+                            </div>
+                            <div class="form-group">
+                                <label>Message <span class="label-hint">(optional — shown above the customer info)</span></label>
+                                <textarea id="tpl-business-message" rows="4"
+                                    placeholder="Leave blank for no message."
+                                    oninput="updateEmailPreview('business')"
+                                    style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;resize:vertical;"></textarea>
+                            </div>
+                            <button class="btn btn-success" onclick="saveEmailTemplates()">Save Changes</button>
+                        </div>
+                        <!-- Preview -->
+                        <div style="position:sticky;top:24px;">
+                            <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:12px;">Preview</div>
+                            <div id="preview-business" style="border:1px solid var(--border);border-radius:8px;overflow:hidden;background:#f8fafc;">
+                                <div style="background:#e2e8f0;padding:10px 16px;font-size:12px;color:var(--text-secondary);display:flex;gap:8px;align-items:center;">
+                                    <span style="font-weight:600;">Subject:</span>
+                                    <span id="preview-business-subject" style="color:var(--text-primary);">New request from Jane Smith — RQ-20240101-0001</span>
+                                </div>
+                                <div style="padding:24px;" id="preview-business-body"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
                 <div id="landrSection" class="hidden">
                     <div class="top-bar">
                         <div>
@@ -3327,6 +3437,7 @@
         function showSection(section) {
             document.getElementById('settingsSection').classList.add('hidden');
             document.getElementById('servicesSection').classList.add('hidden');
+            document.getElementById('emailTemplatesSection').classList.add('hidden');
             document.getElementById('requestsSection').classList.add('hidden');
             document.getElementById('landrSection').classList.add('hidden');
             document.getElementById('numbersSection').classList.add('hidden');
@@ -3343,23 +3454,28 @@
                 document.querySelectorAll('.nav-item')[1].classList.add('active');
                 document.getElementById('mdNav-services')?.classList.add('active');
                 loadServices();
+            } else if (section === 'emailTemplates') {
+                document.getElementById('emailTemplatesSection').classList.remove('hidden');
+                document.querySelectorAll('.nav-item')[2].classList.add('active');
+                document.getElementById('mdNav-emailTemplates')?.classList.add('active');
+                loadEmailTemplates();
             } else if (section === 'landr') {
                 document.getElementById('landrSection').classList.remove('hidden');
-                document.querySelectorAll('.nav-item')[2].classList.add('active');
+                document.querySelectorAll('.nav-item')[3].classList.add('active');
                 document.getElementById('mdNav-landr')?.classList.add('active');
             } else if (section === 'requests') {
                 document.getElementById('requestsSection').classList.remove('hidden');
-                document.querySelectorAll('.nav-item')[3].classList.add('active');
+                document.querySelectorAll('.nav-item')[4].classList.add('active');
                 document.getElementById('mdNav-requests')?.classList.add('active');
                 loadRequests();
             } else if (section === 'customers') {
                 document.getElementById('customersSection').classList.remove('hidden');
-                document.querySelectorAll('.nav-item')[4].classList.add('active');
+                document.querySelectorAll('.nav-item')[5].classList.add('active');
                 document.getElementById('mdNav-customers')?.classList.add('active');
                 loadCustomers();
             } else if (section === 'numbers') {
                 document.getElementById('numbersSection').classList.remove('hidden');
-                document.querySelectorAll('.nav-item')[5].classList.add('active');
+                document.querySelectorAll('.nav-item')[6].classList.add('active');
                 document.getElementById('mdNav-numbers')?.classList.add('active');
                 const filterToUse = window.currentNumbersFilter || 'today';
                 document.querySelectorAll('.numbers-filter-btn').forEach(b => b.classList.remove('active'));
@@ -6303,6 +6419,125 @@ window.addEventListener('message', function(e) {
             document.getElementById('customerModal').classList.add('hidden');
         }
 
+        // ===================== EMAIL TEMPLATES =====================
+
+        const EMAIL_DEFAULTS = {
+            requestorConfirmation: {
+                subject: 'We received your request — {{request_number}}',
+                message: "We've received your request and will be in touch shortly."
+            },
+            businessNotification: {
+                subject: 'New request from {{customer_name}} — {{request_number}}',
+                message: ''
+            }
+        };
+
+        function mergePreviousTags(str) {
+            return (str || '')
+                .replace(/\{\{request_number\}\}/g, 'RQ-20240101-0001')
+                .replace(/\{\{customer_name\}\}/g, 'Jane Smith')
+                .replace(/\{\{business_name\}\}/g, document.getElementById('businessName')?.value || 'Your Business');
+        }
+
+        function updateEmailPreview(type) {
+            if (type === 'requestor') {
+                const subject = document.getElementById('tpl-requestor-subject').value
+                    || EMAIL_DEFAULTS.requestorConfirmation.subject;
+                const message = document.getElementById('tpl-requestor-message').value
+                    || EMAIL_DEFAULTS.requestorConfirmation.message;
+                const businessName = document.getElementById('businessName')?.value || 'Your Business';
+
+                document.getElementById('preview-requestor-subject').textContent = mergePreviousTags(subject);
+                document.getElementById('preview-requestor-body').innerHTML = `
+                    <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#0f172a;">
+                        <div style="font-size:18px;font-weight:700;margin-bottom:4px;">${businessName}</div>
+                        <div style="font-size:11px;color:#94a3b8;margin-bottom:20px;">Request RQ-20240101-0001</div>
+                        <div style="font-size:14px;color:#334155;margin-bottom:6px;">Hi Jane Smith,</div>
+                        <div style="font-size:14px;color:#334155;margin-bottom:20px;">${mergePreviousTags(message)}</div>
+                        <div style="background:#f1f5f9;border-radius:6px;padding:16px;margin-bottom:16px;">
+                            <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:10px;">Your Request Summary</div>
+                            <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid #e2e8f0;color:#334155;"><span>Example Service</span><span>$150.00</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:13px;padding-top:8px;font-weight:700;color:#0f172a;"><span>Total Estimate</span><span>$150.00</span></div>
+                        </div>
+                        <div style="font-size:12px;color:#64748b;">Questions? Reply to this email or reach out to us directly.</div>
+                        <div style="font-size:11px;color:#94a3b8;margin-top:20px;">Powered by Land-r</div>
+                    </div>`;
+            } else {
+                const subject = document.getElementById('tpl-business-subject').value
+                    || EMAIL_DEFAULTS.businessNotification.subject;
+                const message = document.getElementById('tpl-business-message').value || '';
+
+                document.getElementById('preview-business-subject').textContent = mergePreviousTags(subject);
+                const msgBlock = message
+                    ? `<div style="font-size:14px;color:#334155;margin-bottom:16px;">${mergePreviousTags(message)}</div>`
+                    : '';
+                document.getElementById('preview-business-body').innerHTML = `
+                    <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#0f172a;">
+                        <div style="font-size:18px;font-weight:700;margin-bottom:4px;">New Request</div>
+                        <div style="font-size:11px;color:#94a3b8;margin-bottom:20px;">RQ-20240101-0001</div>
+                        ${msgBlock}
+                        <div style="background:#f1f5f9;border-radius:6px;padding:16px;margin-bottom:12px;">
+                            <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:10px;">Customer</div>
+                            <div style="font-size:14px;font-weight:600;color:#0f172a;">Jane Smith</div>
+                            <div style="font-size:13px;color:#64748b;">jane@example.com</div>
+                            <div style="font-size:13px;color:#64748b;">(555) 123-4567</div>
+                        </div>
+                        <div style="background:#f1f5f9;border-radius:6px;padding:16px;margin-bottom:16px;">
+                            <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:10px;">Services Requested</div>
+                            <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid #e2e8f0;color:#334155;"><span>Example Service</span><span>$150.00</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:13px;padding-top:8px;font-weight:700;color:#0f172a;"><span>Total Estimate</span><span>$150.00</span></div>
+                        </div>
+                        <div style="display:inline-block;background:#2563eb;color:white;padding:10px 20px;border-radius:6px;font-size:13px;font-weight:600;">View in Dashboard</div>
+                        <div style="font-size:11px;color:#94a3b8;margin-top:20px;">Land-r by Logic Nerds</div>
+                    </div>`;
+            }
+        }
+
+        async function loadEmailTemplates() {
+            if (!currentUser || !window.businessId) return;
+            try {
+                const businessDoc = await getDoc(doc(db, 'businesses', window.businessId));
+                if (!businessDoc.exists()) return;
+                const templates = businessDoc.data().emailTemplates || {};
+                const rc = templates.requestorConfirmation || {};
+                const bn = templates.businessNotification || {};
+
+                document.getElementById('tpl-requestor-subject').value = rc.subject || '';
+                document.getElementById('tpl-requestor-message').value = rc.message || '';
+                document.getElementById('tpl-business-subject').value = bn.subject || '';
+                document.getElementById('tpl-business-message').value = bn.message || '';
+
+                updateEmailPreview('requestor');
+                updateEmailPreview('business');
+            } catch(e) {
+                console.error('loadEmailTemplates error:', e);
+            }
+        }
+
+        async function saveEmailTemplates() {
+            if (!currentUser || !window.businessId) return;
+            const data = {
+                emailTemplates: {
+                    requestorConfirmation: {
+                        subject: document.getElementById('tpl-requestor-subject').value.trim(),
+                        message: document.getElementById('tpl-requestor-message').value.trim()
+                    },
+                    businessNotification: {
+                        subject: document.getElementById('tpl-business-subject').value.trim(),
+                        message: document.getElementById('tpl-business-message').value.trim()
+                    }
+                },
+                updatedAt: new Date().toISOString()
+            };
+            try {
+                await setDoc(doc(db, 'businesses', window.businessId), data, { merge: true });
+                alert('✓ Email templates saved!');
+            } catch(e) {
+                alert('Error saving templates: ' + e.message);
+            }
+        }
+
+
         // ===================== GLOBAL WINDOW BINDINGS =====================
 
         window.showSection = showSection;
@@ -6402,6 +6637,9 @@ window.addEventListener('message', function(e) {
         window.wizardFinish = wizardFinish;
         window.wizardSkipService = wizardSkipService;
         window.wizardHandleLogoUpload = wizardHandleLogoUpload;
+        window.loadEmailTemplates = loadEmailTemplates;
+        window.saveEmailTemplates = saveEmailTemplates;
+        window.updateEmailPreview = updateEmailPreview;
 
         window.storageRef = ref;
         window.uploadBytesResumable = uploadBytesResumable;
